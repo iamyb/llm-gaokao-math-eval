@@ -1,0 +1,10 @@
+{"question": "1. 已知集合$M = \\{x|-1 < x < 3\\}$，$N = \\{x|x \\ge 2\\}$，则$M \\cup N = (\\quad)$\\nA. $(2,3)$\\nB. $(-1, +\\infty)$\\nC. $[2,3)$\\nD. $(-1,2]$", "answer": "", "_image": "page_001.png"}
+{"question": "2. 已知$z_1 = 3 - 2\\text{i}$，$z_2 = -1 + 4\\text{i}$，则$|z_1 + z_2| = (\\quad)$\\nA. $2\\sqrt{2}$\\nB. $\\text{i}$\\nC. $2$\\nD. $8$", "answer": "", "_image": "page_001.png"}
+{"question": "3. 已知双曲线$C: \\frac{x^2}{a^2} - \\frac{y^2}{4} = 1 (a > 0)$的渐近线方程为$y = \\pm \\frac{2}{3}x$，则$a$的值为$(\\quad)$\\nA. $2$\\nB. $3$\\nC. $4$\\nD. $9$", "answer": "", "_image": "page_001.png"}
+{"question": "4. 已知$(a - \\sqrt{x})^7$的展开式中的$x^2$的系数是$280$，则$a = (\\quad)$\\nA. $2$\\nB. $-2$\\nC. $1$\\nD. $-1$", "answer": "", "_image": "page_001.png"}
+{"question": "5. 下列函数$f(x)$是奇函数且在定义域上单调递增的是$(\\quad)$\\nA. $f(x) = \\frac{1}{x^2+1}$\\nB. $f(x) = \\sin x$\\nC. $f(x) = 2^{-x} - 2^x$\\nD. $f(x) = \\ln\\frac{5+x}{5-x}$", "answer": "", "_image": "page_001.png"}
+{"question": "6. 已知向量$\\vec{a}$，$\\vec{b}$满足$|\\vec{a} - \\vec{b}| = 2$，$\\vec{a} = (2,0)$，则$|\\vec{b}|$的最大值为$(\\quad)$\\nA. $1$\\nB. $2$\\nC. $3$\\nD. $4$", "answer": "", "_image": "page_001.png"}
+{"question": "7. $\\{a_n\\}$，$\\{b_n\\}$是无穷数列，则“存在常数$M$，使$a_n \\le M \\le b_n (n = 1,2,3,\\cdots)$”是“$a_n \\le b_n (n = 1,2,3,\\cdots)$”的$(\\quad)$\\nA. 充分不必要条件\\nB. 必要不充分条件\\nC. 充分必要条件\\nD. 既不充分也不必要条件", "answer": "", "_image": "page_001.png"}
+{"question": "8. $f(x) = \\sin(x + \\varphi) (0 < \\varphi < 2\\pi)$，将$f(x)$向$x$轴正方向平移$3\\varphi$个单位，得到的函数图像与$f(x)$图像关于$x$轴对称，则$\\varphi$的取值个数为$(\\quad)$\\nA. $1$\\nB. $2$\\nC. $3$\\nD. $4$", "answer": "", "_image": "page_001.png"}
+{"question": "9. 学校组织高一、高二学生参观甲、乙两地博物馆，每位学生可自主选择一处前往。已知高一学生总人数多于高二学生总人数，前往甲地的全体学生总数多于前往乙地的全体学生总数，则$(\\quad)$\\nA. 去甲地的高一学生人数多于去乙地的高一学生人数\\nB. 去甲地的高一学生人数多于去乙地的高二学生人数\\nC. 去甲地的高一学生人数不多于去乙地的高二学生人数\\nD. 去乙地的高二学生人数不少于去甲地的高二学生人数", "answer": "", "_image": "page_001.png"}
+{"question": "10. 摇杆机械装置，如图，$A$，$B$为定点，$C$，$D$是动点，$AD = 1$，$CD = 3$，$BC = \\frac{5}{2}$，$AB = 4$，则$\\cos\\angle ABC$的取值范围$(\\quad)$", "answer": "", "_image": "page_001.png"}
