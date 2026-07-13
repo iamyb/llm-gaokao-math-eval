@@ -52,9 +52,11 @@ def build_output_paths(year, pdf_path):
     return base_output, images_dir, questions_file, log_file
 
 
-def run_pdf_to_images(pdf_path, images_dir):
+def run_pdf_to_images(pdf_path, images_dir, merge_pages=None):
     """调用 pdf_to_images.py 转换 PDF 为图片"""
     cmd = [sys.executable, os.path.join(BASE_DIR, "pdf_to_images.py"), pdf_path, images_dir]
+    if merge_pages:
+        cmd.extend(["--merge-pages"] + [str(p) for p in merge_pages])
     print(f"  执行: {' '.join(cmd)}")
     result = subprocess.run(cmd, cwd=BASE_DIR)
     return result.returncode == 0
@@ -74,6 +76,8 @@ def main():
     parser.add_argument("--pdf", type=str, help="指定PDF文件名（支持部分匹配）")
     parser.add_argument("--skip-images", action="store_true", help="跳过转图片步骤")
     parser.add_argument("--skip-extract", action="store_true", help="跳过提取题目步骤")
+    parser.add_argument("--merge-pages", type=int, nargs="+", default=[1, 2],
+                        help="合并指定的页面（1-based），默认合并第1和第2页")
     args = parser.parse_args()
 
     # 检查输入目录
@@ -112,8 +116,8 @@ def main():
 
         # 步骤 1: 转图片
         if not args.skip_images:
-            print(f"  → 步骤 1: PDF 转图片...")
-            if not run_pdf_to_images(pdf_path, images_dir):
+            print(f"  → 步骤 1: PDF 转图片 (合并页: {args.merge_pages})...")
+            if not run_pdf_to_images(pdf_path, images_dir, merge_pages=args.merge_pages):
                 print(f"  ✗ 转图片失败，跳过该 PDF")
                 fail_count += 1
                 continue

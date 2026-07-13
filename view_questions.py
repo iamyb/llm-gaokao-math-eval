@@ -9,6 +9,8 @@ import sys
 import json
 import glob
 import argparse
+import html as html_lib
+import re
 from pathlib import Path
 from config import BASE_DIR, OUTPUT_DIR
 
@@ -16,6 +18,70 @@ from config import BASE_DIR, OUTPUT_DIR
 def sanitize_text(text):
     """修复 JSONL 中被误解析成控制字符的 LaTeX 反斜杠。"""
     return text.replace("\x08", "\\b") if text else text
+
+
+RAW_MATH_RUN_RE = re.compile(r"[A-Za-z0-9\\{}_^=+\-*/().,\[\] <>∩∪≤≥≠≈±·×÷√π∞∈∉⊂⊆⊃⊇→←↔]+")
+EXISTING_MATH_RE = re.compile(r"(\$\$.*?\$\$|\$.*?\$|\\\(.*?\\\)|\\\[.*?\\\])", re.S)
+MATH_CUE_RE = re.compile(r"[\\_^=+\-*/<>∈∪≤≥≠≈±·×÷√π∞]")
+
+
+def render_text_with_math(text):
+    """将题干中的 LaTeX 片段包裹进 MathJax 分隔符，并保留普通文本。"""
+    if not text:
+        return ""
+
+    def is_safe_math_segment(segment):
+        if '"' in segment or "'" in segment:
+            return False
+        if segment.count("{") != segment.count("}"):
+            return False
+        return True
+
+    def render_plain_segment(segment):
+        rendered = []
+        last_index = 0
+
+        for match in RAW_MATH_RUN_RE.finditer(segment):
+            if match.start() > last_index:
+                rendered.append(html_lib.escape(segment[last_index:match.start()]))
+
+            math_text = match.group(0)
+            if re.fullmatch(r"[_\.\s]+", math_text) or "_____" in math_text:
+                rendered.append(html_lib.escape(math_text))
+                last_index = match.end()
+                continue
+
+            if MATH_CUE_RE.search(math_text) and is_safe_math_segment(math_text):
+                rendered.append(f"\\({html_lib.escape(math_text)}\\)")
+            else:
+                rendered.append(html_lib.escape(math_text))
+            last_index = match.end()
+
+        if last_index < len(segment):
+            rendered.append(html_lib.escape(segment[last_index:]))
+
+        return "".join(rendered)
+
+    rendered_parts = []
+    last_index = 0
+
+    for match in EXISTING_MATH_RE.finditer(text):
+        if match.start() > last_index:
+            for line_index, line in enumerate(text[last_index:match.start()].split("\n")):
+                if line_index > 0:
+                    rendered_parts.append("<br>")
+                rendered_parts.append(render_plain_segment(line))
+
+        rendered_parts.append(html_lib.escape(match.group(0)))
+        last_index = match.end()
+
+    if last_index < len(text):
+        for line_index, line in enumerate(text[last_index:].split("\n")):
+            if line_index > 0:
+                rendered_parts.append("<br>")
+            rendered_parts.append(render_plain_segment(line))
+
+    return "".join(rendered_parts)
 
 
 def load_questions(jsonl_path):
@@ -160,7 +226,7 @@ def generate_html(questions_by_image, all_questions, jsonl_path, output_path):
         .section-body.open {{ display: block; }}
         .comparison {{
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 0;
         }}
         .comparison.no-image {{ grid-template-columns: 1fr; }}
@@ -174,7 +240,7 @@ def generate_html(questions_by_image, all_questions, jsonl_path, output_path):
         }}
         .original-image img {{
             max-width: 100%;
-            max-height: 70vh;
+            max-height: none;
             object-fit: contain;
             border-radius: 4px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -306,9 +372,12 @@ def generate_html(questions_by_image, all_questions, jsonl_path, output_path):
         for q in questions:
             answer_class = "" if q.get("answer") else " empty"
             answer_text = q.get("answer") or "暂无答案"
-            html += f"""                        <div class="question-item" data-question="{q['question']}">
-                            <div class="question-text">{q['question']}</div>
-                            <div class="question-answer{answer_class}">答案: {answer_text}</div>
+            question_attr = html_lib.escape(q['question'], quote=True)
+            question_html = render_text_with_math(q['question'])
+            answer_html = render_text_with_math(answer_text)
+            html += f"""                        <div class="question-item" data-question="{question_attr}">
+                            <div class="question-text">{question_html}</div>
+                            <div class="question-answer{answer_class}">答案: {answer_html}</div>
                         </div>
 """
 

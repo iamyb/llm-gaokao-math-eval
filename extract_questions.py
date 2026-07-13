@@ -141,6 +141,14 @@ async def main(image_dir=None, output_file=None, log_file=None):
         if f.lower().endswith((".png", ".jpg", ".jpeg"))
     ])
 
+    # 如果有合并图片，只保留合并图片，跳过所有单页
+    has_merged = any(img.startswith("page_merged_") for img in images)
+    if has_merged:
+        merged_only = [img for img in images if img.startswith("page_merged_")]
+        skipped = len(images) - len(merged_only)
+        log(f"检测到合并图片，跳过 {skipped} 张单页，只处理 {len(merged_only)} 张合并图")
+        images = merged_only
+
     if not images:
         log("✗ 未找到任何图片文件")
         sys.exit(1)
