@@ -1,0 +1,14 @@
+{"question": "1. 样本数据6,8,4,5,12的中位数为（ ）\nA. 5\nB. 6\nC. 8\nD. 9", "answer": "B"}
+{"question": "2. 已知平面向量\\vec{a}，\\vec{b}不共线，且2\\vec{a} + y\\vec{b} = x\\vec{a} - 3\\vec{b}，则（ ）\nA. x=2, y=-3\nB. x=-2, y=3\nC. x=2, y=3\nD. x=-2, y=-3", "answer": "B"}
+{"question": "3. 已知集合A={sin\\frac{7\\pi}{6}, cos\\frac{5\\pi}{3}, tan\\frac{5\\pi}{4}}, B={-\\frac{\\sqrt{3}}{2}, -\\frac{1}{2}, 1}，则A \\cap B = （ ）\nA. {-\\frac{\\sqrt{3}}{2}, -\\frac{1}{2}}\nB. {-\\frac{\\sqrt{3}}{2}, 1}\nC. {-\\frac{1}{2}, 1}\nD. {-\\frac{\\sqrt{3}}{2}, -\\frac{1}{2}, 1}", "answer": "C"}
+{"question": "4. 曲线y=5x+8lnx在点(1,5)处的切线方程为（ ）\nA. y=3x+2\nB. y=5x\nC. y=8x-3\nD. y=13x-8", "answer": "D"}
+{"question": "5. 已知抛物线C_1:y^2=2p_1x (p_1>0)和C_2:x^2=2p_2y (p_2>0)均经过点(4,8)，则C_1的焦点与C_2的焦点之间的距离为（ ）\nA. 12\nB. 4\\sqrt{5}\nC. 6\nD. \\frac{\\sqrt{65}}{2}", "answer": "D"}
+{"question": "6. 已知函数f(x)=\\frac{x+2}{e^x+a}的最大值为1，则a = （ ）\nA. \\frac{1}{2}\nB. 1\nC. \\frac{3}{2}\nD. 2", "answer": "B"}
+{"question": "7. 一百零八塔位于宁夏回族自治区青铜峡市，以其独特的建筑格局和深厚的历史文化闻名遐迩。该塔群共有108座塔，依山势自上而下排成12行，将第i行中塔的座数记为a_i(i=1,2,...,12)，其中a_1=1, a_2=a_3=3, a_4=a_5=5，且a_6, a_7, ..., a_{12}是一个首项为7，公差为2的等差数列。将a_1, a_2, ..., a_{12}分为6组，每组2个数，使得每组的2个数之和可构成一个项数为6且公差为d(d>0)的等差数列，则d = （ ）\nA. 2\nB. 4\nC. 6\nD. 8", "answer": "B"}
+{"question": "8. 设U={(x_1, x_2, x_3)|x_i \\in \\{-2,-1,1,2\"}, i=1,2,3}\\}为空间中64个点构成的集合，点P(1,1,1)，记样本空间\\Omega = C_U P，从\\Omega中随机取一个点，定义随机变量X如下：对\\Omega中的每个点A(x_1, x_2, x_3)，令X(A) = x_1 + x_2 + x_3，则X的数学期望值为（ ）\nA. -\\frac{1}{21}\nB. -\\frac{1}{63}\nC. 0\nD. \\frac{1}{7}", "answer": "C"}
+{"question": "9. 设z = 3 + 2i，则（ ）\nA. \\bar{z} = 3 - 2i\nB. |z| = 5\nC. z^2 = 5 + 12i\nD. \\frac{z+3}{z-i} \\in \\mathbf{R}", "answer": "ABCD"}
+{"question": "10. 在空间中，A、B为两个定点，动点C到直线AB的距离为2，动点D到直线AB的距离为1。若二面角C - AB - D为60°，则（ ）\nA. \\angle CAD \\ge 60^\\circ\nB. CD \\ge \\sqrt{3}\nC. 当AB \\perp CD时，CD \\perp平面ABD\nD. 当AB \\perp平面ACD时，AC \\perp AD", "answer": "ABD"}
+{"question": "11. 已知圆C_1:(x+1)^2+y^2=1，圆C_2:(x-1)^2+y^2=1，圆C_3:x^2+(y-\\sqrt{3})^2=1，直线l:y=kx+b与C_1, C_2, C_3均有两个交点。记l被C_1, C_2, C_3截得的弦长分别为s_1、s_2、s_3，则（ ）\nA. k可以取任意实数\nB. 满足s_1=s_2=s_3的直线l共有3条\nC. 满足s_1+s_2+s_3=3的直线l多于3条\nD. 当b=0时，s_1+s_2+s_3的最大值为\\frac{2\\sqrt{21}}{3}", "answer": "BD"}
+{"question": "12. 双曲线5x^2 - 6y^2 = 1的离心率为__________.", "answer": "\\frac{\\sqrt{21}}{3}"}
+{"question": "13. 已知f(x)=2sin(ax+\\theta) (a \\in Z, 0 \\le \\theta < 2\\pi)是偶函数，f(x)在区间(0, \\frac{\\pi}{2})单调递增。则\\theta =__________，f(\\frac{2\\pi}{3}) =__________.", "answer": "\\frac{\\pi}{2}, -2"}
+{"question": "14. 设实数q满足：存在数列{a_n}，使得对于任意n \\in N^*，均有a_1 + a_2 + \\cdots + a_{3n} = n^2 + n，且{a_n}中有某连续9项a_k, a_{k+1}, \\cdots, a_{k+8}是公比为q的等比数列。则q的最大值为__________.", "answer": "\\frac{\\sqrt{5}-1}{2}"}

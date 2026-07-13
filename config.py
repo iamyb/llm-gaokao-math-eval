@@ -6,7 +6,8 @@ import os
 # ==================== 路径配置 ====================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PDF_INPUT_DIR = os.path.join(BASE_DIR, "pdfs")       # PDF 输入根目录
-OUTPUT_DIR = os.path.join(BASE_DIR, "output")         # 输出根目录
+OUTPUT_DIR = os.path.join(BASE_DIR, "output")         # 输出根目录（待校验区）
+FINAL_DATA_DIR = os.path.join(BASE_DIR, "final_data") # 最终数据（已校验区）
 
 # ==================== 模型配置 ====================
 OPENAI_BASE_URL = "http://192.168.0.41:9292/v1"
