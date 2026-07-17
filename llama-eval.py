@@ -19,6 +19,7 @@ import requests
 from tqdm import tqdm
 import random
 from math import sqrt
+import config
 
 
 @dataclass
@@ -36,6 +37,50 @@ def wilson_interval(correct: int, total: int, z: float = 1.96) -> Tuple[float, f
     center = (p + z2 / 2) / (1 + z2)
     margin = z * sqrt((p * (1 - p) + z2 / 4) / total) / (1 + z2)
     return (center - margin, center + margin)
+
+
+def sanitize_path_component(value: str) -> str:
+    value = value.strip()
+    value = re.sub(r'[<>:"/\\|?*]+', '_', value)
+    value = re.sub(r'\s+', ' ', value)
+    return value.strip(' .') or 'unknown'
+
+
+def infer_output_hierarchy(dataset_path: Optional[str], dataset_dir: Optional[str]) -> Tuple[str, str]:
+    if dataset_path:
+        path = Path(dataset_path)
+        parts = path.parts
+        if 'final_data' in parts:
+            idx = parts.index('final_data')
+            if idx + 2 < len(parts):
+                return sanitize_path_component(parts[idx + 1]), sanitize_path_component(parts[idx + 2])
+        if len(parts) >= 3:
+            return sanitize_path_component(parts[-3]), sanitize_path_component(parts[-2])
+
+    if dataset_dir:
+        path = Path(dataset_dir)
+        parts = path.parts
+        if len(parts) >= 2:
+            return sanitize_path_component(parts[-2]), sanitize_path_component(parts[-1])
+        if len(parts) == 1:
+            return 'unknown_year', sanitize_path_component(parts[0])
+
+    return 'unknown_year', 'unknown_paper'
+
+
+def build_output_file_path(
+    output_file: Path,
+    output_root: Optional[Path],
+    dataset_path: Optional[str],
+    dataset_dir: Optional[str],
+    model_name: Optional[str],
+) -> Path:
+    if output_root is None:
+        return output_file
+
+    year, paper = infer_output_hierarchy(dataset_path, dataset_dir)
+    model_component = sanitize_path_component(model_name or 'model')
+    return Path(output_root) / year / paper / model_component / output_file.name
 
 cache_dir = Path.home() / ".cache" / "huggingface" / "datasets"
 cache_dir.mkdir(parents=True, exist_ok=True)
@@ -368,6 +413,7 @@ class EvalState:
                     }
 
             ci_lower, ci_upper = self.accuracy_ci()
+            self.output_file.parent.mkdir(parents=True, exist_ok=True)
             data = {
                 "id": self.dataset_type,
                 "model_name": self.model_name,
@@ -1555,6 +1601,12 @@ def main():
         help="Output file for eval state (default: llama-eval-state.json)"
     )
     parser.add_argument(
+        "--output-root",
+        type=Path,
+        default=Path(config.EVAL_OUTPUT_ROOT),
+        help="Root directory for eval outputs (default: eval_results)."
+    )
+    parser.add_argument(
         "--grader-type",
         type=str,
         default="llm",
@@ -1613,6 +1665,15 @@ def main():
         print("Error: GPQA dataset requires --grader-type llm")
         parser.print_help()
         sys.exit(1)
+
+    resolved_output = build_output_file_path(
+        args.output,
+        args.output_root,
+        args.dataset_path,
+        args.dataset_dir,
+        args.model,
+    )
+    args.output = resolved_output
 
     if args.output.exists():
         print(f"Loading existing eval state from {args.output}")

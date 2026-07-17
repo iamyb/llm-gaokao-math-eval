@@ -63,6 +63,27 @@ python validate_data.py --approve "上海" --force
 python validate_data.py --remove "上海"
 ```
 
+### 4. 运行评测
+
+`final_data/` 是已经人工校验过的数据，`llama-eval.py` 会基于它生成评测结果。建议把结果统一放到 `eval_results/` 下，并按 `年份 / 卷子 / 模型` 分层保存。
+
+```powershell
+python llama-eval.py --model Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP --server http://192.168.0.41:9292 --grader-type llm --grader-model qwen3.6-35b-a3b --grader-server http://localhost:10001 --dataset gaokao --dataset-path "final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl" --temperature 1.0 --top-k 20 --top-p 0.95 --min-p 0.00 --output 2026_gaokao_math_quanguo1.json --output-root eval_results --seed 1234 --threads 1
+```
+
+运行后会自动生成类似下面的目录：
+
+```text
+eval_results/
+	2026/
+		2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/
+			Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP/
+				2026_gaokao_math_quanguo1.json
+				2026_gaokao_math_quanguo1.json.html
+```
+
+如果同一模型多次运行，结果会写到同一个模型目录下；要避免覆盖，可以手动改 `--output` 文件名。
+
 ## 工作流程
 
 1. **放入 PDF** → `pdfs/2026/` 目录
