@@ -1,11 +1,12 @@
 """
-批量处理脚本 — 遍历 pdfs/ 下所有 PDF，依次执行：转图片 → 提取题目
+批量处理脚本 — 遍历 input/ 下所有 PDF，依次执行：转图片 → 提取题目 → 生成 HTML 预览
 用法:
     python batch_process.py                      # 处理所有 PDF
     python batch_process.py --year 2026          # 只处理 2026 年目录
     python batch_process.py --pdf 全国1           # 只处理文件名包含 "全国1" 的 PDF
     python batch_process.py --skip-images        # 跳过转图片（仅提取题目）
     python batch_process.py --skip-extract       # 跳过提取（仅转图片）
+    python batch_process.py --skip-view          # 跳过生成 HTML 预览
 """
 import os
 import sys
@@ -16,7 +17,7 @@ from scripts.config import BASE_DIR, PDF_INPUT_DIR, OUTPUT_DIR
 
 
 def find_pdfs(year=None, pdf_name=None):
-    """在 pdfs/ 目录下查找 PDF 文件，返回 (年份, 绝对路径) 列表"""
+    """在 input/ 目录下查找 PDF 文件，返回 (年份, 绝对路径) 列表"""
     results = []
 
     if year:
@@ -34,7 +35,7 @@ def find_pdfs(year=None, pdf_name=None):
         for pdf_path in sorted(glob.glob(os.path.join(search_dir, "*.pdf"))):
             if pdf_name and pdf_name not in os.path.basename(pdf_path):
                 continue
-            # 提取年份（相对于 pdfs/ 的第一级目录名）
+            # 提取年份（相对于 input/ 的第一级目录名）
             rel = os.path.relpath(pdf_path, PDF_INPUT_DIR)
             year_name = rel.split(os.sep)[0]
             results.append((year_name, pdf_path))
@@ -70,6 +71,14 @@ def run_extract_questions(images_dir, questions_file, log_file):
     return result.returncode == 0
 
 
+def run_view_questions(questions_file, output_html):
+    """调用 view_questions.py 生成 HTML 预览"""
+    cmd = [sys.executable, os.path.join(BASE_DIR, "scripts", "view_questions.py"), questions_file, output_html]
+    print(f"  执行: {' '.join(cmd)}")
+    result = subprocess.run(cmd, cwd=BASE_DIR)
+    return result.returncode == 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="批量处理高考 PDF：转图片 + 提取题目")
     parser.add_argument("--year", type=str, help="指定年份子目录（如 2026）")
@@ -78,6 +87,7 @@ def main():
     parser.add_argument("--skip-extract", action="store_true", help="跳过提取题目步骤")
     parser.add_argument("--merge-pages", type=int, nargs="+", default=[1, 2],
                         help="合并指定的页面（1-based），默认合并第1和第2页")
+    parser.add_argument("--skip-view", action="store_true", help="跳过生成 HTML 预览")
     args = parser.parse_args()
 
     # 检查输入目录
@@ -99,6 +109,7 @@ def main():
     print(f"  找到 {total} 个 PDF 文件")
     print(f"  跳过转图片: {args.skip_images}")
     print(f"  跳过提取: {args.skip_extract}")
+    print(f"  跳过预览: {args.skip_view}")
     print("=" * 60)
 
     success_count = 0
@@ -127,6 +138,15 @@ def main():
             print(f"  → 步骤 2: 提取题目...")
             if not run_extract_questions(images_dir, questions_file, log_file):
                 print(f"  ✗ 提取题目失败")
+                fail_count += 1
+                continue
+
+        # 步骤 3: 生成 HTML 预览
+        if not args.skip_view:
+            output_html = os.path.join(base_output, "questions.html")
+            print(f"  → 步骤 3: 生成 HTML 预览...")
+            if not run_view_questions(questions_file, output_html):
+                print(f"  ✗ 生成 HTML 预览失败")
                 fail_count += 1
                 continue
 

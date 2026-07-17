@@ -121,7 +121,7 @@ def pdf_to_images(pdf_path, output_dir, zoom=PDF_ZOOM, merge_pages=None):
 
 
 def find_pdfs(year=None, pdf_name=None):
-    """在 pdfs/ 目录下查找 PDF 文件"""
+    """在 input/ 目录下查找 PDF 文件"""
     if year:
         search_dir = os.path.join(PDF_INPUT_DIR, year)
     else:
@@ -158,8 +158,8 @@ def main():
     # 交互模式：列出可用 PDF
     pdfs = find_pdfs()
     if not pdfs:
-        log("✗ 在 pdfs/ 目录下未找到 PDF 文件")
-        log("   请将 PDF 放入 pdfs/<年份>/ 目录")
+        log("✗ 在 input/ 目录下未找到 PDF 文件")
+        log("   请将 PDF 放入 input/<年份>/ 目录")
         sys.exit(1)
 
     log(f"找到 {len(pdfs)} 个 PDF 文件:")

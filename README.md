@@ -8,8 +8,8 @@
 
 ```
 scripts/                       # 核心脚本（config.py、提取/转图/校验/预览）
-data/pdfs/2026/                 # PDF 输入目录
-data/output/2026/                # 提取结果（待校验区）
+data/input/2026/                # PDF 输入目录
+data/output/2026/                # 提取结果（待校验区，含 HTML 预览）
 data/final_data/2026/            # 最终数据（已校验区）
 data/eval_results/               # 评测结果（自动生成，已加入 .gitignore）
 ```
@@ -26,7 +26,7 @@ cp .env.example .env   # 按需修改 OPENAI_BASE_URL / OPENAI_API_KEY / MODEL_N
 ### 1. 批量处理 PDF
 
 ```bash
-# 处理所有 PDF
+# 处理所有 PDF（转图片 → 提取题目 → 生成 HTML 预览）
 python batch_process.py
 
 # 只处理 2026 年
@@ -40,19 +40,12 @@ python batch_process.py --skip-images
 
 # 跳过提取（仅转图片）
 python batch_process.py --skip-extract
+
+# 跳过生成 HTML 预览
+python batch_process.py --skip-view
 ```
 
-### 2. 预览题目
-
-```bash
-# 预览所有试卷
-python scripts/view_questions.py --all
-
-# 预览指定试卷
-python scripts/view_questions.py --pdf "全国1"
-```
-
-### 3. 校验管理
+### 2. 校验管理
 
 ```bash
 # 查看所有文件及状态
@@ -74,7 +67,7 @@ python scripts/validate_data.py --approve "上海" --force
 python scripts/validate_data.py --remove "上海"
 ```
 
-### 4. 运行评测
+### 3. 运行评测
 
 `data/final_data/` 是已经人工校验过的数据，`llama-eval.py` 会基于它生成评测结果。结果统一保存到 `data/eval_results/` 下，并按 `年份 / 卷子 / 模型` 分层保存。
 
@@ -97,9 +90,9 @@ data/eval_results/
 
 ## 工作流程
 
-1. **放入 PDF** → `data/pdfs/2026/` 目录
-2. **批量处理** → `python batch_process.py --year 2026`
-3. **人工校验** → `python scripts/view_questions.py --all` 在浏览器中检查
+1. **放入 PDF** → `data/input/2026/` 目录
+2. **批量处理** → `python batch_process.py --year 2026`（自动转图片、提取题目、生成 HTML 预览）
+3. **人工校验** → 在浏览器中打开 `data/output/2026/<试卷名>/questions.html`
 4. **确认通过** → `python scripts/validate_data.py --approve "关键词"`
 5. **最终数据** → `data/final_data/` 目录
 

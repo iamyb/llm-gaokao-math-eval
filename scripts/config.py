@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # ==================== 路径配置 ====================
-PDF_INPUT_DIR = os.path.join(BASE_DIR, "data", "pdfs")             # PDF 输入根目录
+PDF_INPUT_DIR = os.path.join(BASE_DIR, "data", "input")            # PDF 输入根目录
 OUTPUT_DIR = os.path.join(BASE_DIR, "data", "output")              # 输出根目录（待校验区）
 FINAL_DATA_DIR = os.path.join(BASE_DIR, "data", "final_data")      # 最终数据（已校验区）
 EVAL_OUTPUT_ROOT = os.path.join(BASE_DIR, "data", "eval_results")  # 评测结果根目录
