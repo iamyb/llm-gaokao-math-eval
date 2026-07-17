@@ -1,12 +1,12 @@
 """
-批量处理脚本 — 遍历 input/ 下所有 PDF，依次执行：转图片 → 提取题目 → 生成 HTML 预览
+数据集构建脚本 — 遍历 input/ 下所有 PDF，依次执行：转图片 → 提取题目 → 生成 HTML 预览
 用法:
-    python batch_process.py                      # 处理所有 PDF
-    python batch_process.py --year 2026          # 只处理 2026 年目录
-    python batch_process.py --pdf 全国1           # 只处理文件名包含 "全国1" 的 PDF
-    python batch_process.py --skip-images        # 跳过转图片（仅提取题目）
-    python batch_process.py --skip-extract       # 跳过提取（仅转图片）
-    python batch_process.py --skip-view          # 跳过生成 HTML 预览
+    python build_data.py                         # 处理所有 PDF
+    python build_data.py --year 2026             # 只处理 2026 年目录
+    python build_data.py --pdf 全国1              # 只处理文件名包含 "全国1" 的 PDF
+    python build_data.py --skip-images           # 跳过转图片（仅提取题目）
+    python build_data.py --skip-extract          # 跳过提取（仅转图片）
+    python build_data.py --skip-view             # 跳过生成 HTML 预览
 """
 import os
 import sys

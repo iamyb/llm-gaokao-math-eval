@@ -1,8 +1,8 @@
 [简体中文](README.md) | English
 
-# Gaokao Question Extraction Toolkit
+# Math Exam Dataset Builder
 
-Automatically extracts multiple-choice and fill-in-the-blank questions from Chinese Gaokao (college entrance exam) PDF papers.
+Extracts objective questions (multiple-choice, fill-in-the-blank) from math PDF exam papers to build datasets for evaluating local LLM capabilities.
 
 ## Directory Structure
 
@@ -27,19 +27,19 @@ cp .env.example .env   # edit OPENAI_BASE_URL / OPENAI_API_KEY / MODEL_NAME as n
 
 ```bash
 # Process all PDFs
-python batch_process.py
+python build_data.py
 
 # Process only the 2026 directory
-python batch_process.py --year 2026
+python build_data.py --year 2026
 
 # Process only a specific paper
-python batch_process.py --pdf "全国1"
+python build_data.py --pdf "全国1"
 
 # Skip image conversion (re-run extraction only)
-python batch_process.py --skip-images
+python build_data.py --skip-images
 
 # Skip extraction (image conversion only)
-python batch_process.py --skip-extract
+python build_data.py --skip-extract
 ```
 
 ### 2. Preview questions
@@ -98,7 +98,7 @@ If you re-run the same model multiple times, results go into the same model dire
 ## Workflow
 
 1. **Drop PDFs** into `data/pdfs/2026/`
-2. **Batch process** → `python batch_process.py --year 2026`
+2. **Batch process** → `python build_data.py --year 2026`
 3. **Manual review** → `python scripts/view_questions.py --all`, inspect in a browser
 4. **Approve** → `python scripts/validate_data.py --approve "keyword"`
 5. **Final data** lands in `data/final_data/`

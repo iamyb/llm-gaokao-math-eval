@@ -1,8 +1,8 @@
 简体中文 | [English](README.en.md)
 
-# 高考题目提取工具
+# 数学试卷数据集构建与评估工具
 
-从高考 PDF 试卷中自动提取选择题和填空题。
+从数学 PDF 试卷中提取客观题（选择题、填空题），构建数据集并评估本地大模型能力。
 
 ## 目录结构
 
@@ -27,22 +27,22 @@ cp .env.example .env   # 按需修改 OPENAI_BASE_URL / OPENAI_API_KEY / MODEL_N
 
 ```bash
 # 处理所有 PDF（转图片 → 提取题目 → 生成 HTML 预览）
-python batch_process.py
+python build_data.py
 
 # 只处理 2026 年
-python batch_process.py --year 2026
+python build_data.py --year 2026
 
 # 只处理特定试卷
-python batch_process.py --pdf "全国1"
+python build_data.py --pdf "全国1"
 
 # 跳过转图片（仅重新提取题目）
-python batch_process.py --skip-images
+python build_data.py --skip-images
 
 # 跳过提取（仅转图片）
-python batch_process.py --skip-extract
+python build_data.py --skip-extract
 
 # 跳过生成 HTML 预览
-python batch_process.py --skip-view
+python build_data.py --skip-view
 ```
 
 ### 2. 校验管理
@@ -91,7 +91,7 @@ data/eval_results/
 ## 工作流程
 
 1. **放入 PDF** → `data/input/2026/` 目录
-2. **批量处理** → `python batch_process.py --year 2026`（自动转图片、提取题目、生成 HTML 预览）
+2. **批量处理** → `python build_data.py --year 2026`（自动转图片、提取题目、生成 HTML 预览）
 3. **人工校验** → 在浏览器中打开 `data/output/2026/<试卷名>/questions.html`
 4. **确认通过** → `python scripts/validate_data.py --approve "关键词"`
 5. **最终数据** → `data/final_data/` 目录
