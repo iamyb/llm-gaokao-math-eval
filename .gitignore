@@ -4,4 +4,4 @@ __pycache__/
 .env
 data/output/**/images/
 data/output/**/questions.html
-data/eval_results/
+# data/eval_results/
