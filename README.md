@@ -1,3 +1,5 @@
+简体中文 | [English](README.en.md)
+
 # 高考题目提取工具
 
 从高考 PDF 试卷中自动提取选择题和填空题。
@@ -5,9 +7,18 @@
 ## 目录结构
 
 ```
-pdfs/2026/                    # PDF 输入目录
-output/2026/                  # 提取结果（待校验区）
-final_data/2026/              # 最终数据（已校验区）
+scripts/                       # 核心脚本（config.py、提取/转图/校验/预览）
+data/pdfs/2026/                 # PDF 输入目录
+data/output/2026/                # 提取结果（待校验区）
+data/final_data/2026/            # 最终数据（已校验区）
+data/eval_results/               # 评测结果（自动生成，已加入 .gitignore）
+```
+
+## 环境准备
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env   # 按需修改 OPENAI_BASE_URL / OPENAI_API_KEY / MODEL_NAME
 ```
 
 ## 快速开始
@@ -35,46 +46,46 @@ python batch_process.py --skip-extract
 
 ```bash
 # 预览所有试卷
-python view_questions.py --all
+python scripts/view_questions.py --all
 
 # 预览指定试卷
-python view_questions.py --pdf "全国1"
+python scripts/view_questions.py --pdf "全国1"
 ```
 
 ### 3. 校验管理
 
 ```bash
 # 查看所有文件及状态
-python validate_data.py --list
+python scripts/validate_data.py --list
 
 # 查看统计信息
-python validate_data.py --status
+python scripts/validate_data.py --status
 
 # 校验通过，复制到 final_data
-python validate_data.py --approve "上海"
+python scripts/validate_data.py --approve "上海"
 
 # 批量复制全部
-python validate_data.py --approve-all
+python scripts/validate_data.py --approve-all
 
 # 覆盖已存在的文件
-python validate_data.py --approve "上海" --force
+python scripts/validate_data.py --approve "上海" --force
 
 # 从 final_data 移除（重新校验）
-python validate_data.py --remove "上海"
+python scripts/validate_data.py --remove "上海"
 ```
 
 ### 4. 运行评测
 
-`final_data/` 是已经人工校验过的数据，`llama-eval.py` 会基于它生成评测结果。建议把结果统一放到 `eval_results/` 下，并按 `年份 / 卷子 / 模型` 分层保存。
+`data/final_data/` 是已经人工校验过的数据，`llama-eval.py` 会基于它生成评测结果。结果统一保存到 `data/eval_results/` 下，并按 `年份 / 卷子 / 模型` 分层保存。
 
 ```powershell
-python llama-eval.py --model Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP --server http://192.168.0.41:9292 --grader-type llm --grader-model qwen3.6-35b-a3b --grader-server http://localhost:10001 --dataset gaokao --dataset-path "final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl" --temperature 1.0 --top-k 20 --top-p 0.95 --min-p 0.00 --output 2026_gaokao_math_quanguo1.json --output-root eval_results --seed 1234 --threads 1
+python llama-eval.py --model Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP --server http://<YOUR_SERVER_IP>:9292 --grader-type llm --grader-model qwen3.6-35b-a3b --grader-server http://localhost:10001 --dataset gaokao --dataset-path "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl" --temperature 1.0 --top-k 20 --top-p 0.95 --min-p 0.00 --output 2026_gaokao_math_quanguo1.json --output-root data/eval_results --seed 1234 --threads 1
 ```
 
 运行后会自动生成类似下面的目录：
 
 ```text
-eval_results/
+data/eval_results/
 	2026/
 		2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/
 			Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP/
@@ -86,19 +97,20 @@ eval_results/
 
 ## 工作流程
 
-1. **放入 PDF** → `pdfs/2026/` 目录
+1. **放入 PDF** → `data/pdfs/2026/` 目录
 2. **批量处理** → `python batch_process.py --year 2026`
-3. **人工校验** → `python view_questions.py --all` 在浏览器中检查
-4. **确认通过** → `python validate_data.py --approve "关键词"`
-5. **最终数据** → `final_data/` 目录
+3. **人工校验** → `python scripts/view_questions.py --all` 在浏览器中检查
+4. **确认通过** → `python scripts/validate_data.py --approve "关键词"`
+5. **最终数据** → `data/final_data/` 目录
 
 ## 配置
 
-编辑 `config.py` 修改模型参数：
+复制 `.env.example` 为 `.env` 并修改（或直接设置环境变量），也可以直接编辑 `scripts/config.py` 修改其余参数：
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `OPENAI_BASE_URL` | `http://192.168.0.41:9292/v1` | API 地址 |
-| `MODEL_NAME` | `Qwen3.5-9B-UD-Q6_K_XL-MTP` | 模型名称 |
+| `OPENAI_BASE_URL` | `http://localhost:8080/v1` | API 地址（.env 配置） |
+| `MODEL_NAME` | `your-model-name` | 模型名称（.env 配置） |
 | `MAX_RETRIES` | `3` | 最大重试次数 |
 | `PROCESS_DELAY` | `1` | 图片处理间隔（秒） |
+

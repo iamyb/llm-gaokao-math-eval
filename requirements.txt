@@ -1,0 +1,7 @@
+pydantic>=2.0
+pydantic-ai>=0.0.14
+PyMuPDF>=1.23
+Pillow>=10.0
+requests>=2.31
+tqdm>=4.66
+python-dotenv>=1.0

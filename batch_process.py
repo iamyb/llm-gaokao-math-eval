@@ -12,7 +12,7 @@ import sys
 import glob
 import argparse
 import subprocess
-from config import BASE_DIR, PDF_INPUT_DIR, OUTPUT_DIR
+from scripts.config import BASE_DIR, PDF_INPUT_DIR, OUTPUT_DIR
 
 
 def find_pdfs(year=None, pdf_name=None):
@@ -54,7 +54,7 @@ def build_output_paths(year, pdf_path):
 
 def run_pdf_to_images(pdf_path, images_dir, merge_pages=None):
     """调用 pdf_to_images.py 转换 PDF 为图片"""
-    cmd = [sys.executable, os.path.join(BASE_DIR, "pdf_to_images.py"), pdf_path, images_dir]
+    cmd = [sys.executable, os.path.join(BASE_DIR, "scripts", "pdf_to_images.py"), pdf_path, images_dir]
     if merge_pages:
         cmd.extend(["--merge-pages"] + [str(p) for p in merge_pages])
     print(f"  执行: {' '.join(cmd)}")
@@ -64,7 +64,7 @@ def run_pdf_to_images(pdf_path, images_dir, merge_pages=None):
 
 def run_extract_questions(images_dir, questions_file, log_file):
     """调用 extract_questions.py 从图片中提取题目"""
-    cmd = [sys.executable, os.path.join(BASE_DIR, "extract_questions.py"), images_dir, questions_file, log_file]
+    cmd = [sys.executable, os.path.join(BASE_DIR, "scripts", "extract_questions.py"), images_dir, questions_file, log_file]
     print(f"  执行: {' '.join(cmd)}")
     result = subprocess.run(cmd, cwd=BASE_DIR)
     return result.returncode == 0

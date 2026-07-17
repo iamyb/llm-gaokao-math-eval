@@ -19,7 +19,7 @@ import requests
 from tqdm import tqdm
 import random
 from math import sqrt
-import config
+from scripts import config
 
 
 @dataclass
