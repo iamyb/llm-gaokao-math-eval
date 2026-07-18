@@ -8,7 +8,7 @@
 {"question": "8. 设U={(x_1, x_2, x_3)|x_i \\in \\{-2,-1,1,2\"}, i=1,2,3}\\}为空间中64个点构成的集合，点P(1,1,1)，记样本空间\\Omega = C_U P，从\\Omega中随机取一个点，定义随机变量X如下：对\\Omega中的每个点A(x_1, x_2, x_3)，令X(A) = x_1 + x_2 + x_3，则X的数学期望值为（ ）\nA. -\\frac{1}{21}\nB. -\\frac{1}{63}\nC. 0\nD. \\frac{1}{7}", "answer": "A"}
 {"question": "9. 设z = 3 + 2i，则（ ）\nA. \\bar{z} = 3 - 2i\nB. |z| = 5\nC. z^2 = 5 + 12i\nD. \\frac{z+3}{z-i} \\in \\mathbf{R}", "answer": "ACD"}
 {"question": "10. 在空间中，A、B为两个定点，动点C到直线AB的距离为2，动点D到直线AB的距离为1。若二面角C - AB - D为60°，则（ ）\nA. \\angle CAD \\ge 60^\\circ\nB. CD \\ge \\sqrt{3}\nC. 当AB \\perp CD时，CD \\perp平面ABD\nD. 当AB \\perp平面ACD时，AC \\perp AD", "answer": "BC"}
-{"question": "11. 已知圆C_1:(x+1)^2+y^2=1，圆C_2:(x-1)^2+y^2=1，圆C_3:x^2+(y-\\sqrt{3})^2=1，直线l:y=kx+b与C_1, C_2, C_3均有两个交点。记l被C_1, C_2, C_3截得的弦长分别为s_1、s_2、s_3，则（ ）\nA. k可以取任意实数\nB. 满足s_1=s_2=s_3的直线l共有3条\nC. 满足s_1+s_2+s_3=3的直线l多于3条\nD. 当b=0时，s_1+s_2+s_3的最大值为\\frac{2\\sqrt{21}}{3}", "answer": "BC"}
+{"question": "11. 已知圆C_1:(x+1)^2+y^2=1，圆C_2:(x-1)^2+y^2=1，圆C_3:x^2+(y-\\sqrt{3})^2=1，直线l:y=kx+b与C_1, C_2, C_3均有两个交点。记l被C_1, C_2, C_3截得的弦长分别为s_1、s_2、s_3，则（ ）\nA. k可以取任意实数\nB. 满足s_1=s_2=s_3的直线l共有3条\nC. 满足s_1+s_2+s_3=3的直线l多于3条\nD. 当b=0时，s_1+s_2+s_3的最大值为\\frac{2\\sqrt{21}}{3}", "answer": "BCD"}
 {"question": "12. 双曲线5x^2 - 6y^2 = 1的离心率为__________.", "answer": "\\frac{\\sqrt{66}}{6}"}
-{"question": "13. 已知f(x)=2sin(ax+\\theta) (a \\in Z, 0 \\le \\theta < 2\\pi)是偶函数，f(x)在区间(0, \\frac{\\pi}{2})单调递增。则\\theta =__________，f(\\frac{2\\pi}{3}) =__________.", "answer": "\\frac{3\\pi}{2}, -2"}
-{"question": "14. 设实数q满足：存在数列{a_n}，使得对于任意n \\in N^*，均有a_1 + a_2 + \\cdots + a_{3n} = n^2 + n，且{a_n}中有某连续9项a_k, a_{k+1}, \\cdots, a_{k+8}是公比为q的等比数列。则q的最大值为__________.", "answer": "4"}
+{"question": "13. 已知f(x)=2sin(ax+\\theta) (a \\in Z, 0 \\le \\theta < 2\\pi)是偶函数，f(x)在区间(0, \\frac{\\pi}{2})单调递增。则\\theta =__________，f(\\frac{2\\pi}{3}) =__________.", "answer": "\\frac{3\\pi}{2}, 1"}
+{"question": "14. 设实数q满足：存在数列{a_n}，使得对于任意n \\in N^*，均有a_1 + a_2 + \\cdots + a_{3n} = n^2 + n，且{a_n}中有某连续9项a_k, a_{k+1}, \\cdots, a_{k+8}是公比为q的等比数列。则q的最大值为__________.", "answer": "\\sqrt[3]{\\frac{3}{2}}"}
