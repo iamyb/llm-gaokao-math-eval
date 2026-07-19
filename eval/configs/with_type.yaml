@@ -1,6 +1,6 @@
 global:
-  output_root: "data/eval_results"
-  dataset_path: "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl"
+  output_root: "eval/results/eval_results_with_type"
+  dataset_path: "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions_with_type.jsonl"
   grader_type: "llm"
   grader_model: "qwen3.6-35b-a3b"
   grader_server: "http://localhost:10001"

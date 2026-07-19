@@ -1,0 +1,2891 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GAOKAO Eval</title>
+<style>
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; background: #fff; color: #222; }
+        .bar { padding: 8px 0; font-size: 13px; color: #555; font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 2px 12px; align-items: baseline; }
+        .bar .label { color: #888; }
+        .bar .value { color: #222; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; }
+        th { text-align: left; padding: 6px 8px; border-bottom: 2px solid #ccc; font-weight: 600; }
+        td { padding: 4px 8px; border-bottom: 1px solid #eee; vertical-align: top; }
+        .task-row { cursor: pointer; }
+        .task-row:hover { background: #f5f5f5; }
+        .correct { color: #1a7f37; }
+        .incorrect { color: #cf222e; }
+        .pending { color: #888; }
+        .error { color: #9a6700; }
+        .details-row { display: none; }
+        .details-row.open { display: table-row; }
+        .details-content { padding: 8px 16px; background: #f6f8fa; font-size: 12px; }
+        .details-content b { color: #555; }
+        .details-content pre { background: #fff; border: 1px solid #e1e4e8; padding: 8px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; margin: 4px 0 8px; }
+        .summary-table { margin-bottom: 16px; font-size: 13px; width: 100%; }
+        .summary-row { background: #fafbfc; }
+        .summary-row:hover { background: #f5f5f5; }
+        .summary-table th { text-align: right; font-weight: 600; }
+        .summary-table th:first-child { text-align: left; }
+        .summary-table th[colspan] { text-align: center; }
+        .summary-table td { text-align: right; }
+        .summary-table td:first-child { text-align: left; }
+        .tabs { display: flex; border-bottom: 2px solid #ddd; margin: 12px 0 0; }
+        .tab-btn { padding: 6px 16px; border: none; background: none; font-size: 13px; cursor: pointer; color: #555; border-bottom: 2px solid transparent; margin-bottom: -2px; font-weight: 500; }
+        .tab-btn:hover { color: #222; }
+        .tab-btn.active { color: #222; border-bottom-color: #222; font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+</style>
+</head>
+<body>
+    <div class="bar">
+        <div class="label">Dataset</div><div class="value"><b>GAOKAO</b></div>
+        <div class="label">Model</div><div class="value"><b>gemma-4-31B-it-UD-Q6_K_XL</b></div>
+        <div class="label">Accuracy</div><div class="value"><b>92.9%</b> [68.5%, 98.7%]</div>
+        <div class="label">Correct</div><div class="value"><span class="correct">13</span> / 14</div>
+        <div class="label">Pending</div><div class="value">0</div>
+        <div class="label">Time</div><div class="value">1661.6s</div>
+        <div class="label">Sampling</div><div class="value">temperature=1.0, top_k=64, top_p=0.95, min_p=0.0</div>
+    </div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="detailed" onclick="switchTab(this)">Detailed</button>
+        <button class="tab-btn" data-tab="summary" onclick="switchTab(this)">Summary</button>
+    </div>
+    <div id="tab-detailed" class="tab-content active">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th></th>
+                    <th>Gold</th>
+                    <th>Answer</th>
+                    <th>Tokens</th>
+                    <th>T/s</th>
+                    <th>Gen s</th>
+                    <th>Server</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="task-row" onclick="toggleDetails('gaokao_000_000')">
+                <td>gaokao_000_000</td>
+                <td class="correct">✓</td>
+                <td>B</td>
+                <td class="correct">B</td>
+                <td>577</td>
+                <td>54.3</td>
+                <td>10.6</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_000" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（单选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+1. 样本数据6,8,4,5,12的中位数为（ ）
+A. 5
+B. 6
+C. 8
+D. 9
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了求出样本数据 6, 8, 4, 5, 12 的中位数，我们需要遵循以下步骤：
+
+1.  **将数据按从小到大的顺序排列**：
+    原数据为：6, 8, 4, 5, 12
+    排列后为：4, 5, 6, 8, 12
+
+2.  **确定样本数量**：
+    数据的总个数 $n = 5$。
+
+3.  **寻找中位数**：
+    由于样本数量 $n$ 是奇数，中位数就是排列后处于中间位置的那个数。
+    中间位置的索引为 $\frac{n+1}{2} = \frac{5+1}{2} = 3$。
+    在排序后的数列 (4, 5, 6, 8, 12) 中，第 3 个数是 6。
+
+因此，该组数据的中位数为 6。
+
+对照选项：
+A. 5
+B. 6
+C. 8
+D. 9
+
+正确答案是 B。
+
+\boxed{B}</pre>
+                        <b>Reasoning</b><pre>*   The given sample data is: 6, 8, 4, 5, 12.
+    *   The goal is to find the median of these numbers.
+
+    *   The median is the middle value of a data set when the numbers are arranged in order (ascending or descending).
+    *   If the number of data points ($n$) is odd, the median is the middle element (the $\frac{n+1}{2}$-th element).
+    *   If the number of data points ($n$) is even, the median is the average of the two middle elements.
+
+    *   The data points are: 6, 8, 4, 5, 12.
+    *   Ascending order: 4, 5, 6, 8, 12.
+
+    *   The number of data points ($n$) is 5.
+    *   Since 5 is an odd number, the median is the middle element.
+    *   The middle element is the $\frac{5+1}{2} = 3$rd element.
+
+    *   Looking at the ordered list (4, 5, 6, 8, 12), the 3rd element is 6.
+
+    *   A. 5
+    *   B. 6
+    *   C. 8
+    *   D. 9
+    *   The calculated median is 6, which corresponds to option B.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;\n\u5bf9\u7167\u9009\u9879\uff1a\nA. 5\nB. 6\nC. 8\nD. 9\n\n\u6b63\u786e\u7b54\u6848\u662f B\u3002\n\n\\boxed{B}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_001')">
+                <td>gaokao_000_001</td>
+                <td class="correct">✓</td>
+                <td>A</td>
+                <td class="correct">A</td>
+                <td>1281</td>
+                <td>45.6</td>
+                <td>28.1</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_001" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（单选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+2. 已知平面向量\vec{a}，\vec{b}不共线，且2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}，则（ ）
+A. x=2, y=-3
+B. x=-2, y=3
+C. x=2, y=3
+D. x=-2, y=-3
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>题目要求求解满足等式 $2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}$ 的 $x$ 和 $y$ 的值，其中平面向量 $\vec{a}$ 和 $\vec{b}$ 不共线。
+
+**推理步骤如下：**
+
+1.  **分析已知条件：**
+    已知 $\vec{a}, \vec{b}$ 不共线。在向量空间中，如果两个向量不共线，那么它们是线性无关的。这意味着，如果存在标量 $c_1, c_2$ 使得 $c_1\vec{a} + c_2\vec{b} = \vec{0}$，那么必然有 $c_1 = 0$ 且 $c_2 = 0$。
+
+2.  **整理等式：**
+    将给定的等式 $2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}$ 进行变形，将所有项移到等式的一侧：
+    $2\vec{a} - x\vec{a} + y\vec{b} + 3\vec{b} = \vec{0}$
+    提取公因式 $\vec{a}$ 和 $\vec{b}$：
+    $(2 - x)\vec{a} + (y + 3)\vec{b} = \vec{0}$
+
+3.  **利用不共线性质求解：**
+    由于 $\vec{a}$ 和 $\vec{b}$ 不共线，根据线性无关的定义，上述等式成立的唯一条件是 $\vec{a}$ 和 $\vec{b}$ 的系数均为 0：
+    $\begin{cases} 2 - x = 0 \\ y + 3 = 0 \end{cases}$
+
+4.  **计算结果：**
+    由 $2 - x = 0$ 得 $x = 2$。
+    由 $y + 3 = 0$ 得 $y = -3$。
+
+5.  **匹配选项：**
+    对比给定选项：
+    A. $x=2, y=-3$
+    B. $x=-2, y=3$
+    C. $x=2, y=3$
+    D. $x=-2, y=-3$
+    计算结果 $x=2, y=-3$ 与选项 A 相符。
+
+\boxed{A}</pre>
+                        <b>Reasoning</b><pre>*   Given: $\vec{a}, \vec{b}$ are non-collinear plane vectors.
+    *   Given equation: $2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}$.
+    *   Goal: Find the values of $x$ and $y$.
+
+    *   $2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}$
+    *   Rearrange the equation to bring terms with $\vec{a}$ to one side and terms with $\vec{b}$ to the other side, or bring all terms to one side.
+    *   Bringing all terms to one side:
+        $(2 - x)\vec{a} + (y + 3)\vec{b} = \vec{0}$
+
+    *   Since $\vec{a}$ and $\vec{b}$ are non-collinear (不共线), they are linearly independent.
+    *   For any scalars $c_1$ and $c_2$, if $c_1\vec{a} + c_2\vec{b} = \vec{0}$ and $\vec{a}, \vec{b}$ are non-collinear, then $c_1 = 0$ and $c_2 = 0$.
+
+    *   $c_1 = 2 - x$
+    *   $c_2 = y + 3$
+    *   Therefore, we must have:
+        $2 - x = 0 \Rightarrow x = 2$
+        $y + 3 = 0 \Rightarrow y = -3$
+
+    *   Check the options:
+        A. $x=2, y=-3$
+        B. $x=-2, y=3$
+        C. $x=2, y=3$
+        D. $x=-2, y=-3$
+    *   The results $x=2$ and $y=-3$ match Option A.
+
+    *   Equation: $2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}$
+    *   Substitute $x=2, y=-3$:
+        Left side: $2\vec{a} + (-3)\vec{b} = 2\vec{a} - 3\vec{b}$
+        Right side: $2\vec{a} - 3\vec{b}$
+        LHS = RHS. Correct.
+
+    *   Wait, let me re-read the question carefully. &quot;2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}&quot;.
+    *   Is there any other possible interpretation? No, it looks straightforward.
+    *   The condition &quot;$\vec{a}, \vec{b}$ are non-collinear&quot; is crucial. It ensures that the coefficients of $\vec{a}$ and $\vec{b}$ on both sides must be equal.
+    *   Coefficients of $\vec{a}$: $2 = x$
+    *   Coefficients of $\vec{b}$: $y = -3$
+    *   Thus, $x=2, y=-3$.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;\n5.  **\u5339\u914d\u9009\u9879\uff1a**\n    \u5bf9\u6bd4\u7ed9\u5b9a\u9009\u9879\uff1a\n    A. $x=2, y=-3$\n    B. $x=-2, y=3$\n    C. $x=2, y=3$\n    D. $x=-2, y=-3$\n    \u8ba1\u7b97\u7ed3\u679c $x=2, y=-3$ \u4e0e\u9009\u9879 A \u76f8\u7b26\u3002\n\n\\boxed{A}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_002')">
+                <td>gaokao_000_002</td>
+                <td class="correct">✓</td>
+                <td>C</td>
+                <td class="correct">C</td>
+                <td>1398</td>
+                <td>48.9</td>
+                <td>28.6</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_002" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（单选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+3. 已知集合A={sin\frac{7\pi}{6}, cos\frac{5\pi}{3}, tan\frac{5\pi}{4}}, B={-\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1}，则A \cap B = （ ）
+A. {-\frac{\sqrt{3}}{2}, -\frac{1}{2}}
+B. {-\frac{\sqrt{3}}{2}, 1}
+C. {-\frac{1}{2}, 1}
+D. {-\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了求集合 $A \cap B$，我们需要先计算出集合 $A$ 中各个元素的具体值。
+
+**第一步：计算集合 $A$ 的元素**
+1. 计算 $\sin\frac{7\pi}{6}$：
+   $\frac{7\pi}{6} = \pi + \frac{\pi}{6}$
+   根据诱导公式 $\sin(\pi + \theta) = -\sin\theta$，得：
+   $\sin\frac{7\pi}{6} = -\sin\frac{\pi}{6} = -\frac{1}{2}$
+
+2. 计算 $\cos\frac{5\pi}{3}$：
+   $\frac{5\pi}{3} = 2\pi - \frac{\pi}{3}$
+   根据诱导公式 $\cos(2\pi - \theta) = \cos\theta$，得：
+   $\cos\frac{5\pi}{3} = \cos\frac{\pi}{3} = \frac{1}{2}$
+
+3. 计算 $\tan\frac{5\pi}{4}$：
+   $\frac{5\pi}{4} = \pi + \frac{\pi}{4}$
+   根据诱导公式 $\tan(\pi + \theta) = \tan\theta$，得：
+   $\tan\frac{5\pi}{4} = \tan\frac{\pi}{4} = 1$
+
+因此，集合 $A = \{-\frac{1}{2}, \frac{1}{2}, 1\}$。
+
+**第二步：求 $A \cap B$**
+已知集合 $B = \{-\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1\}$。
+我们需要找到同时属于集合 $A$ 和集合 $B$ 的元素：
+- $-\frac{1}{2}$ 在 $A$ 中，也在 $B$ 中。
+- $\frac{1}{2}$ 在 $A$ 中，但不在 $B$ 中。
+- $1$ 在 $A$ 中，也在 $B$ 中。
+- $-\frac{\sqrt{3}}{2}$ 不在 $A$ 中，但在 $B$ 中。
+
+所以，$A \cap B = \{-\frac{1}{2}, 1\}$。
+
+**第三步：匹配选项**
+对照给出的选项：
+A. $\{-\frac{\sqrt{3}}{2}, -\frac{1}{2}\}$
+B. $\{-\frac{\sqrt{3}}{2}, 1\}$
+C. $\{-\frac{1}{2}, 1\}$
+D. $\{-\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1\}$
+
+结果与选项 C 一致。
+
+\boxed{C}</pre>
+                        <b>Reasoning</b><pre>The problem asks for the intersection of two sets, $A$ and $B$.
+    Set $A = \{ \sin\frac{7\pi}{6}, \cos\frac{5\pi}{3}, \tan\frac{5\pi}{4} \}$
+    Set $B = \{ -\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1 \}$
+
+    *   $\sin\frac{7\pi}{6}$:
+        $\frac{7\pi}{6} = \pi + \frac{\pi}{6}$.
+        $\sin(\pi + \theta) = -\sin\theta$.
+        $\sin\frac{7\pi}{6} = -\sin\frac{\pi}{6} = -\frac{1}{2}$.
+
+    *   $\cos\frac{5\pi}{3}$:
+        $\frac{5\pi}{3} = 2\pi - \frac{\pi}{3}$.
+        $\cos(2\pi - \theta) = \cos\theta$.
+        $\cos\frac{5\pi}{3} = \cos\frac{\pi}{3} = \frac{1}{2}$.
+
+    *   $\tan\frac{5\pi}{4}$:
+        $\frac{5\pi}{4} = \pi + \frac{\pi}{4}$.
+        $\tan(\pi + \theta) = \tan\theta$.
+        $\tan\frac{5\pi}{4} = \tan\frac{\pi}{4} = 1$.
+
+    So, set $A = \{ -\frac{1}{2}, \frac{1}{2}, 1 \}$.
+
+    Set $A = \{ -\frac{1}{2}, \frac{1}{2}, 1 \}$
+    Set $B = \{ -\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1 \}$
+
+    $A \cap B$ consists of elements that are present in both sets.
+    Comparing the elements:
+    - $-\frac{1}{2}$ is in both $A$ and $B$.
+    - $\frac{1}{2}$ is in $A$ but not in $B$.
+    - $1$ is in both $A$ and $B$.
+    - $-\frac{\sqrt{3}}{2}$ is in $B$ but not in $A$.
+
+    Therefore, $A \cap B = \{ -\frac{1}{2}, 1 \}$.
+
+    Looking at the choices:
+    A. $\{-\frac{\sqrt{3}}{2}, -\frac{1}{2}\}$
+    B. $\{-\frac{\sqrt{3}}{2}, 1\}$
+    C. $\{-\frac{1}{2}, 1\}$
+    D. $\{-\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1\}$
+
+    The result $\{-\frac{1}{2}, 1\}$ matches choice C.
+
+    - $\sin(7\pi/6) = \sin(210^\circ) = -1/2$. Correct.
+    - $\cos(5\pi/3) = \cos(300^\circ) = 1/2$. Correct.
+    - $\tan(5\pi/4) = \tan(225^\circ) = 1$. Correct.
+    - $A = \{-1/2, 1/2, 1\}$. Correct.
+    - $B = \{-\sqrt{3}/2, -1/2, 1\}$. Correct.
+    - $A \cap B = \{-1/2, 1\}$. Correct.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;**\u7b2c\u4e09\u6b65\uff1a\u5339\u914d\u9009\u9879**\n\u5bf9\u7167\u7ed9\u51fa\u7684\u9009\u9879\uff1a\nA. $\\{-\\frac{\\sqrt{3}}{2}, -\\frac{1}{2}\\}$\nB. $\\{-\\frac{\\sqrt{3}}{2}, 1\\}$\nC. $\\{-\\frac{1}{2}, 1\\}$\nD. $\\{-\\frac{\\sqrt{3}}{2}, -\\frac{1}{2}, 1\\}$\n\n\u7ed3\u679c\u4e0e\u9009\u9879 C \u4e00\u81f4\u3002\n\n\\boxed{C}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_003')">
+                <td>gaokao_000_003</td>
+                <td class="correct">✓</td>
+                <td>D</td>
+                <td class="correct">D</td>
+                <td>1012</td>
+                <td>49.0</td>
+                <td>20.7</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_003" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（单选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+4. 曲线y=5x+8lnx在点(1,5)处的切线方程为（ ）
+A. y=3x+2
+B. y=5x
+C. y=8x-3
+D. y=13x-8
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>这是一个关于求函数在某一点处切线方程的数学题。我们需要按照以下步骤进行解答：
+
+**1. 确定切线的斜率**
+切线在某一点的斜率等于该函数在该点处的导数。
+给定函数为：$y = 5x + 8\ln x$
+对其求导：
+$$y&#39; = \frac{d}{dx}(5x) + \frac{d}{dx}(8\ln x)$$
+$$y&#39; = 5 + 8 \cdot \frac{1}{x} = 5 + \frac{8}{x}$$
+
+**2. 计算点 $(1, 5)$ 处的斜率 $k$**
+将 $x = 1$ 代入导数公式中：
+$$k = y&#39; \Big|_{x=1} = 5 + \frac{8}{1} = 5 + 8 = 13$$
+所以，切线的斜率 $k = 13$。
+
+**3. 求切线方程**
+使用点斜式方程 $y - y_0 = k(x - x_0)$，其中 $(x_0, y_0) = (1, 5)$ 且 $k = 13$：
+$$y - 5 = 13(x - 1)$$
+展开并化简：
+$$y - 5 = 13x - 13$$
+$$y = 13x - 13 + 5$$
+$$y = 13x - 8$$
+
+**4. 匹配选项**
+对比计算结果与给定选项：
+A. $y = 3x + 2$
+B. $y = 5x$
+C. $y = 8x - 3$
+D. $y = 13x - 8$
+
+计算结果与选项 D 完全一致。
+
+\boxed{D}</pre>
+                        <b>Reasoning</b><pre>The goal is to find the equation of the tangent line to the curve $y = 5x + 8\ln x$ at the point $(1, 5)$.
+
+    *   Curve equation: $y = f(x) = 5x + 8\ln x$
+    *   Point: $P(1, 5)$
+
+    *   The slope of the tangent line at a point $(x_0, y_0)$ is given by the derivative of the function evaluated at $x_0$.
+    *   $f(x) = 5x + 8\ln x$
+    *   $f&#39;(x) = \frac{d}{dx}(5x) + \frac{d}{dx}(8\ln x)$
+    *   $f&#39;(x) = 5 + 8 \cdot \frac{1}{x} = 5 + \frac{8}{x}$
+
+    *   $x_0 = 1$
+    *   $k = f&#39;(1) = 5 + \frac{8}{1} = 5 + 8 = 13$
+
+    *   The equation of a line with slope $k$ passing through point $(x_0, y_0)$ is:
+        $y - y_0 = k(x - x_0)$
+    *   Substitute $k = 13$, $x_0 = 1$, and $y_0 = 5$:
+        $y - 5 = 13(x - 1)$
+    *   Simplify the equation:
+        $y - 5 = 13x - 13$
+        $y = 13x - 13 + 5$
+        $y = 13x - 8$
+
+    *   A: $y = 3x + 2$
+    *   B: $y = 5x$
+    *   C: $y = 8x - 3$
+    *   D: $y = 13x - 8$
+    *   Matching result: Option D.
+
+    *   Point $(1, 5)$ is on the curve: $y = 5(1) + 8\ln(1) = 5 + 0 = 5$. Correct.
+    *   Derivative $f&#39;(x) = 5 + 8/x$. Correct.
+    *   Slope at $x=1$: $f&#39;(1) = 13$. Correct.
+    *   Equation $y - 5 = 13(x - 1) \implies y = 13x - 8$. Correct.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;**4. \u5339\u914d\u9009\u9879**\n\u5bf9\u6bd4\u8ba1\u7b97\u7ed3\u679c\u4e0e\u7ed9\u5b9a\u9009\u9879\uff1a\nA. $y = 3x + 2$\nB. $y = 5x$\nC. $y = 8x - 3$\nD. $y = 13x - 8$\n\n\u8ba1\u7b97\u7ed3\u679c\u4e0e\u9009\u9879 D \u5b8c\u5168\u4e00\u81f4\u3002\n\n\\boxed{D}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_004')">
+                <td>gaokao_000_004</td>
+                <td class="correct">✓</td>
+                <td>D</td>
+                <td class="correct">D</td>
+                <td>1853</td>
+                <td>46.2</td>
+                <td>40.1</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_004" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（单选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+5. 已知抛物线C_1:y^2=2p_1x (p_1&gt;0)和C_2:x^2=2p_2y (p_2&gt;0)均经过点(4,8)，则C_1的焦点与C_2的焦点之间的距离为（ ）
+A. 12
+B. 4\sqrt{5}
+C. 6
+D. \frac{\sqrt{65}}{2}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了求出抛物线 $C_1$ 和 $C_2$ 的焦点之间的距离，我们需要先确定这两条抛物线的方程及其焦点坐标。
+
+**第一步：确定抛物线 $C_1$ 的方程和焦点**
+已知 $C_1: y^2 = 2p_1x$ 且经过点 $(4, 8)$。
+将 $x = 4, y = 8$ 代入方程：
+$8^2 = 2p_1(4)$
+$64 = 8p_1$
+$p_1 = 8$
+因此，抛物线 $C_1$ 的方程为 $y^2 = 16x$。
+对于标准形式 $y^2 = 2px$ 的抛物线，其焦点坐标为 $(\frac{p}{2}, 0)$。
+这里 $2p_1 = 16 \implies p_1 = 8$，所以焦点 $F_1$ 的坐标为 $(\frac{8}{2}, 0) = (4, 0)$。
+
+**第二步：确定抛物线 $C_2$ 的方程和焦点**
+已知 $C_2: x^2 = 2p_2y$ 且经过点 $(4, 8)$。
+将 $x = 4, y = 8$ 代入方程：
+$4^2 = 2p_2(8)$
+$16 = 16p_2$
+$p_2 = 1$
+因此，抛物线 $C_2$ 的方程为 $x^2 = 2y$。
+对于标准形式 $x^2 = 2py$ 的抛物线，其焦点坐标为 $(0, \frac{p}{2})$。
+这里 $2p_2 = 2 \implies p_2 = 1$，所以焦点 $F_2$ 的坐标为 $(0, \frac{1}{2})$。
+
+**第三步：计算两个焦点之间的距离**
+已知 $F_1(4, 0)$ 和 $F_2(0, \frac{1}{2})$，利用两点间距离公式：
+$d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}$
+$d = \sqrt{(0 - 4)^2 + (\frac{1}{2} - 0)^2}$
+$d = \sqrt{(-4)^2 + (\frac{1}{2})^2}$
+$d = \sqrt{16 + \frac{1}{4}}$
+$d = \sqrt{\frac{64}{4} + \frac{1}{4}}$
+$d = \sqrt{\frac{65}{4}}$
+$d = \frac{\sqrt{65}}{2}$
+
+对比选项，结果与选项 D 相符。
+
+\boxed{D}</pre>
+                        <b>Reasoning</b><pre>*   Parabola $C_1: y^2 = 2p_1x$ ($p_1 &gt; 0$)
+    *   Parabola $C_2: x^2 = 2p_2y$ ($p_2 &gt; 0$)
+    *   Both pass through the point $(4, 8)$.
+    *   Need to find the distance between the foci of $C_1$ and $C_2$.
+
+    *   $C_1$ passes through $(4, 8)$, so substitute $x=4, y=8$ into $y^2 = 2p_1x$:
+        $8^2 = 2p_1(4)$
+        $64 = 8p_1$
+        $p_1 = 8$
+    *   The equation of $C_1$ is $y^2 = 2(8)x$, which is $y^2 = 16x$.
+    *   For a parabola $y^2 = 2px$, the focus $F_1$ is $(\frac{p}{2}, 0)$.
+    *   Here $2p_1 = 16$, so $p_1 = 8$. Wait, the standard form is usually $y^2 = 2px$, so the focus is $(\frac{2p}{4}, 0)$? No.
+    *   Wait, let&#39;s re-check the standard form. For $y^2 = 2px$, the focus is $(\frac{p}{2}, 0)$.
+    *   In $y^2 = 16x$, $2p_1 = 16$, so $p_1 = 8$.
+    *   The focus $F_1$ is $(\frac{p_1}{2}, 0) = (\frac{8}{2}, 0) = (4, 0)$.
+
+    *   $C_2$ passes through $(4, 8)$, so substitute $x=4, y=8$ into $x^2 = 2p_2y$:
+        $4^2 = 2p_2(8)$
+        $16 = 16p_2$
+        $p_2 = 1$
+    *   The equation of $C_2$ is $x^2 = 2(1)y$, which is $x^2 = 2y$.
+    *   For a parabola $x^2 = 2py$, the focus $F_2$ is $(0, \frac{p}{2})$.
+    *   Here $2p_2 = 2$, so $p_2 = 1$.
+    *   The focus $F_2$ is $(0, \frac{p_2}{2}) = (0, \frac{1}{2})$.
+
+    *   $F_1 = (4, 0)$
+    *   $F_2 = (0, 1/2)$
+    *   Distance $F_1F_2 = \sqrt{(4-0)^2 + (0-1/2)^2}$
+    *   $F_1F_2 = \sqrt{4^2 + (-1/2)^2}$
+    *   $F_1F_2 = \sqrt{16 + 1/4}$
+    *   $F_1F_2 = \sqrt{64/4 + 1/4}$
+    *   $F_1F_2 = \sqrt{65/4} = \frac{\sqrt{65}}{2}$
+
+    *   $C_1: y^2 = 2p_1x$. If $F_1 = (\frac{p_1}{2}, 0)$, then the equation is $y^2 = 4(\frac{p_1}{2})x = 2p_1x$. Correct.
+    *   $C_2: x^2 = 2p_2y$. If $F_2 = (0, \frac{p_2}{2})$, then the equation is $x^2 = 4(\frac{p_2}{2})y = 2p_2y$. Correct.
+    *   $C_1$ passes through (4, 8): $8^2 = 2p_1(4) \Rightarrow 64 = 8p_1 \Rightarrow p_1 = 8$.
+        Focus $F_1 = (p_1/2, 0) = (4, 0)$. Correct.
+    *   $C_2$ passes through (4, 8): $4^2 = 2p_2(8) \Rightarrow 16 = 16p_2 \Rightarrow p_2 = 1$.
+        Focus $F_2 = (0, p_2/2) = (0, 1/2)$. Correct.
+    *   Distance $F_1F_2 = \sqrt{(4-0)^2 + (0-1/2)^2} = \sqrt{16 + 1/4} = \sqrt{65/4} = \frac{\sqrt{65}}{2}$.
+
+    *   A. 12
+    *   B. $4\sqrt{5}$
+    *   C. 6
+    *   D. $\frac{\sqrt{65}}{2}$
+    *   Our result matches D.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;$d = \\sqrt{(0 - 4)^2 + (\\frac{1}{2} - 0)^2}$\n$d = \\sqrt{(-4)^2 + (\\frac{1}{2})^2}$\n$d = \\sqrt{16 + \\frac{1}{4}}$\n$d = \\sqrt{\\frac{64}{4} + \\frac{1}{4}}$\n$d = \\sqrt{\\frac{65}{4}}$\n$d = \\frac{\\sqrt{65}}{2}$\n\n\u5bf9\u6bd4\u9009\u9879\uff0c\u7ed3\u679c\u4e0e\u9009\u9879 D \u76f8\u7b26\u3002\n\n\\boxed{D}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_005')">
+                <td>gaokao_000_005</td>
+                <td class="correct">✓</td>
+                <td>B</td>
+                <td class="correct">B</td>
+                <td>5464</td>
+                <td>40.1</td>
+                <td>136.1</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_005" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（单选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+6. 已知函数f(x)=\frac{x+2}{e^x+a}的最大值为1，则a = （ ）
+A. \frac{1}{2}
+B. 1
+C. \frac{3}{2}
+D. 2
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了求函数 $f(x) = \frac{x+2}{e^x+a}$ 的最大值为 1 时 $a$ 的值，我们可以按照以下步骤进行推理：
+
+1.  **求导数以寻找极值点**：
+    首先，我们对函数 $f(x)$ 求导：
+    $$f&#39;(x) = \frac{1 \cdot (e^x+a) - (x+2) \cdot e^x}{(e^x+a)^2} = \frac{e^x + a - xe^x - 2e^x}{(e^x+a)^2} = \frac{a - (x+1)e^x}{(e^x+a)^2}$$
+
+2.  **确定最大值所在的点 $x_0$**：
+    设函数在 $x = x_0$ 处取得最大值。此时，导数 $f&#39;(x_0) = 0$：
+    $$a - (x_0+1)e^{x_0} = 0 \implies a = (x_0+1)e^{x_0}$$
+
+3.  **利用最大值为 1 的条件**：
+    已知最大值 $f(x_0) = 1$，代入函数表达式：
+    $$f(x_0) = \frac{x_0+2}{e^{x_0}+a} = 1 \implies x_0+2 = e^{x_0}+a$$
+
+4.  **联立方程组解 $x_0$ 和 $a$**：
+    我们将 $a = (x_0+1)e^{x_0}$ 代入上述方程 $x_0+2 = e^{x_0}+a$ 中：
+    $$x_0+2 = e^{x_0} + (x_0+1)e^{x_0}$$
+    $$x_0+2 = (1 + x_0+1)e^{x_0}$$
+    $$x_0+2 = (x_0+2)e^{x_0}$$
+    $$(x_0+2)(e^{x_0}-1) = 0$$
+    由此可得 $x_0 = -2$ 或 $x_0 = 0$。
+
+5.  **检验解的合理性**：
+    - 若 $x_0 = -2$，则 $a = (-2+1)e^{-2} = -e^{-2}$。此时分母 $e^x - e^{-2}$ 在 $x=-2$ 时为 $0$，且 $\lim_{x \to -2} f(x) = e^2 \approx 7.389 \neq 1$，因此不符合题意。
+    - 若 $x_0 = 0$，则 $a = (0+1)e^0 = 1$。
+      此时 $f(x) = \frac{x+2}{e^x+1}$，且 $f(0) = \frac{0+2}{e^0+1} = \frac{2}{2} = 1$。
+      检查导数 $f&#39;(x) = \frac{1-(x+1)e^x}{(e^x+1)^2}$。令 $g(x) = 1-(x+1)e^x$，其导数 $g&#39;(x) = -(x+2)e^x$。在 $x=0$ 附近，$g(0)=0$ 且 $g&#39;(0)=-2 &lt; 0$，说明 $f&#39;(x)$ 在 $x=0$ 左侧为正，右侧为负，因此 $f(0)=1$ 确实是最大值。
+
+综上所述，$a$ 的值为 1。
+
+\boxed{B}</pre>
+                        <b>Reasoning</b><pre>The problem asks for the value of $a$ such that the maximum value of the function $f(x) = \frac{x+2}{e^x+a}$ is 1.
+
+    $f(x) = \frac{x+2}{e^x+a}$
+    Let $y = f(x)$. We are given that the maximum value of $y$ is 1.
+
+    $f&#39;(x) = \frac{1 \cdot (e^x+a) - (x+2) \cdot e^x}{(e^x+a)^2}$
+    $f&#39;(x) = \frac{e^x + a - xe^x - 2e^x}{(e^x+a)^2} = \frac{a - xe^x - e^x}{(e^x+a)^2} = \frac{a - (x+1)e^x}{(e^x+a)^2}$
+
+    The maximum occurs where $f&#39;(x) = 0$ (assuming $f(x)$ is differentiable and the maximum is not at the boundaries of the domain).
+    $f&#39;(x) = 0 \implies a - (x+1)e^x = 0 \implies a = (x+1)e^x$.
+
+    Let $x_0$ be the point where the maximum occurs. Then $a = (x_0+1)e^{x_0}$.
+    At $x=x_0$, the maximum value is $f(x_0) = 1$.
+    $f(x_0) = \frac{x_0+2}{e^{x_0}+a} = 1$
+    $x_0+2 = e^{x_0}+a$
+
+    We have two equations with $x_0$ and $a$:
+    1) $a = (x_0+1)e^{x_0}$
+    2) $a = x_0+2 - e^{x_0}$
+
+    Equating the two expressions for $a$:
+    $(x_0+1)e^{x_0} = x_0+2 - e^{x_0}$
+    $x_0 e^{x_0} + e^{x_0} = x_0+2 - e^{x_0}$
+    $x_0 e^{x_0} + 2e^{x_0} = x_0+2$
+    $(x_0+2)e^{x_0} = x_0+2$
+    $(x_0+2)(e^{x_0}-1) = 0$
+
+    This gives two possibilities for $x_0$:
+    Case 1: $x_0+2 = 0 \implies x_0 = -2$
+    Case 2: $e^{x_0}-1 = 0 \implies x_0 = 0$
+
+    If $x_0 = -2$:
+    $a = (x_0+1)e^{x_0} = (-2+1)e^{-2} = -1 \cdot e^{-2} = -e^{-2}$
+    Check if $f(x)$ has a maximum at $x_0 = -2$ with $a = -e^{-2}$:
+    $f(x) = \frac{x+2}{e^x-e^{-2}}$.
+    As $x \to -2$, the denominator $e^x-e^{-2} \to 0$ and the numerator $x+2 \to 0$.
+    The limit $\lim_{x \to -2} f(x) = \lim_{x \to -2} \frac{1}{e^x} = \frac{1}{e^{-2}} = e^2$.
+    But we are given the maximum value is 1. Also, if $a = -e^{-2}$, the function has a singularity at $x = -2$. This is unlikely to be the intended solution. Let&#39;s check Case 2.
+
+    If $x_0 = 0$:
+    $a = (x_0+1)e^{x_0} = (0+1)e^0 = 1 \cdot 1 = 1$.
+    Check if $f(x)$ has a maximum at $x_0 = 0$ with $a = 1$:
+    $f(x) = \frac{x+2}{e^x+1}$.
+    Is $f(0) = 1$?
+    $f(0) = \frac{0+2}{e^0+1} = \frac{2}{1+1} = \frac{2}{2} = 1$.
+    Is $x_0 = 0$ a maximum?
+    Check $f&#39;(x) = \frac{1 - (x+1)e^x}{(e^x+1)^2}$.
+    For $x &lt; 0$: Let $g(x) = 1 - (x+1)e^x$.
+    $g&#39;(x) = -[1 \cdot e^x + (x+1)e^x] = -(x+2)e^x$.
+    For $x \in (-2, 0)$, $g&#39;(x) &lt; 0$, so $g(x)$ is decreasing.
+    $g(0) = 1 - (0+1)e^0 = 1-1 = 0$.
+    Since $g(x)$ is decreasing on $(-2, 0)$ and $g(0)=0$, $g(x) &gt; 0$ for $x \in (-2, 0)$.
+    For $x &gt; 0$, $g&#39;(x) = -(x+2)e^x &lt; 0$, so $g(x)$ is decreasing.
+    Since $g(0)=0$, $g(x) &lt; 0$ for $x &gt; 0$.
+    Thus, $f&#39;(x) &gt; 0$ for $x \in (-2, 0)$ and $f&#39;(x) &lt; 0$ for $x &gt; 0$.
+    This means $f(x)$ has a local maximum at $x=0$.
+
+    Let&#39;s re-examine $x \in (-\infty, -2)$.
+    For $x &lt; -2$, $g&#39;(x) = -(x+2)e^x &gt; 0$.
+    So $g(x)$ is increasing on $(-\infty, -2)$.
+    As $x \to -\infty$, $g(x) \to 1 - 0 = 1$.
+    Since $g(x)$ is increasing on $(-\infty, -2)$, $g(x)$ stays between 1 and $g(-2) = 1 - (-2+1)e^{-2} = 1 + e^{-2} \approx 1.135$.
+    So $f&#39;(x) &gt; 0$ for all $x &lt; 0$.
+    Wait, let me re-verify:
+    $g(x) = 1 - (x+1)e^x$
+    $g&#39;(x) = -(x+2)e^x$
+    $g&#39;(x) = 0 \implies x = -2$.
+    $g&#39;(x) &gt; 0$ for $x &lt; -2$ (since $x+2 &lt; 0$).
+    $g&#39;(x) &lt; 0$ for $x &gt; -2$.
+    So $g(x)$ increases from $g(-\infty)=1$ to $g(-2)=1+e^{-2}$, then decreases to $g(0)=0$, then continues to decrease to $g(\infty)=-\infty$.
+    Thus, $f&#39;(x) = \frac{g(x)}{(e^x+1)^2}$.
+    $f&#39;(x)$ is positive for $x &lt; 0$ and negative for $x &gt; 0$.
+    Therefore, the absolute maximum of $f(x)$ occurs at $x=0$ and its value is $f(0) = \frac{0+2}{e^0+1} = 1$.
+
+    Wait, the options are A: 1/2, B: 1, C: 3/2, D: 2.
+    My result $a=1$ matches option B.
+
+    Let&#39;s double check.
+    $f(x) = \frac{x+2}{e^x+a}$
+    If $a=1$, $f(x) = \frac{x+2}{e^x+1}$.
+    $f&#39;(x) = \frac{1(e^x+1) - (x+2)e^x}{(e^x+1)^2} = \frac{e^x+1 - xe^x-2e^x}{(e^x+1)^2} = \frac{1-xe^x-e^x}{(e^x+1)^2} = \frac{1-(x+1)e^x}{(e^x+1)^2}$.
+    $f&#39;(x) = 0 \implies (x+1)e^x = 1$.
+    Let $h(x) = (x+1)e^x$.
+    $h&#39;(x) = 1 \cdot e^x + (x+1)e^x = (x+2)e^x$.
+    $h&#39;(x) = 0$ at $x = -2$.
+    $h(x)$ decreases from $h(-\infty)=0$ to $h(-2)=-e^{-2} \approx -0.135$, then increases to $h(0)=1$ and then to $h(\infty)=\infty$.
+    So $h(x)=1$ only at $x=0$.
+    Since $f&#39;(x) = \frac{1-h(x)}{(e^x+1)^2}$, $f&#39;(x) &gt; 0$ for $x &lt; 0$ and $f&#39;(x) &lt; 0$ for $x &gt; 0$.
+    So the maximum is indeed at $x=0$.
+    $f(0) = \frac{0+2}{e^0+1} = \frac{2}{2} = 1$.
+    The result $a=1$ is correct.
+
+    Is it possible for $a$ to be something else?
+    We had $(x_0+2)(e^{x_0}-1) = 0$.
+    If $x_0 = -2$, then $a = (x_0+1)e^{x_0} = -e^{-2}$.
+    But if $a = -e^{-2}$, the denominator $e^x+a = e^x-e^{-2}$ becomes 0 at $x=-2$.
+    $f(x) = \frac{x+2}{e^x-e^{-2}}$.
+    As $x \to -2$, $f(x) \to \frac{1}{e^{-2}} = e^2 \approx 7.389$.
+    This is not a maximum value of 1. In fact, it&#39;s a limit. If $x$ is slightly larger than -2, $f(x)$ is positive. If $x$ is slightly smaller than -2, $f(x)$ is negative. So there is a vertical asymptote at $x=-2$.
+    Wait, the limit is $e^2$. Let&#39;s check the behavior around $x=-2$.
+    $f(x) = \frac{x+2}{e^x-e^{-2}}$.
+    As $x \to -2^+$, $x+2 \to 0^+$ and $e^x-e^{-2} \to 0^+$, so $f(x) \to e^2$.
+    As $x \to -2^-$, $x+2 \to 0^-$ and $e^x-e^{-2} \to 0^-$, so $f(x) \to e^2$.
+    Wait, so the function has a removable singularity at $x=-2$?
+    No, the denominator is $e^x - e^{-2}$.
+    At $x=-2$, the denominator is $e^{-2}-e^{-2} = 0$.
+    The numerator is $-2+2 = 0$.
+    Using L&#39;Hopital&#39;s rule: $\lim_{x \to -2} \frac{x+2}{e^x-e^{-2}} = \lim_{x \to -2} \frac{1}{e^x} = \frac{1}{e^{-2}} = e^2$.
+    So if we define $f(-2) = e^2$, the function is continuous. But it doesn&#39;t have a maximum of 1.
+
+    Let&#39;s check other options just in case.
+    If $a=1/2$, $f(x) = \frac{x+2}{e^x+1/2}$.
+    $f&#39;(x) = \frac{1/2 - (x+1)e^x}{(e^x+1/2)^2}$.
+    $f&#39;(x)=0 \implies (x+1)e^x = 1/2$.
+    Let $h(x) = (x+1)e^x$. We know $h(x)$ increases from $-e^{-2}$ to $\infty$ for $x &gt; -2$.
+    $h(0)=1, h(-1)=0$. So $h(x)=1/2$ for some $x_0 \in (-1, 0)$.
+    At this $x_0$, $f(x_0) = \frac{x_0+2}{e^{x_0}+1/2}$.
+    Since $e^{x_0} = \frac{1}{2(x_0+1)}$, $f(x_0) = \frac{x_0+2}{\frac{1}{2(x_0+1)} + \frac{1}{2}} = \frac{2(x_0+2)}{\frac{1}{x_0+1} + 1} = \frac{2(x_0+2)}{\frac{1+x_0+1}{x_0+1}} = \frac{2(x_0+2)(x_0+1)}{x_0+2} = 2(x_0+1)$.
+    Since $x_0 \in (-1, 0)$, $f(x_0) = 2(x_0+1)$ is between $2(0)=0$ and $2(1)=2$.
+    Specifically, since $h(x)=1/2$ and $x_0 \in (-1, 0)$, we need to see if $2(x_0+1)=1$.
+    If $2(x_0+1)=1$, then $x_0 = -1/2$.
+    If $x_0 = -1/2$, then $h(x_0) = (-1/2+1)e^{-1/2} = \frac{1}{2} e^{-1/2} = \frac{1}{2\sqrt{e}}$.
+    But we had $h(x_0) = 1/2$.
+    Since $\frac{1}{2\sqrt{e}} \neq 1/2$, the maximum is not 1.
+
+    If $a=3/2$, $f(x) = \frac{x+2}{e^x+3/2}$.
+    $f&#39;(x) = \frac{3/2 - (x+1)e^x}{(e^x+3/2)^2}$.
+    $f&#39;(x)=0 \implies (x+1)e^x = 3/2$.
+    $x_0$ will be some value $&gt; 0$ since $h(0)=1$ and $h(x)$ is increasing for $x &gt; -2$.
+    The maximum value is $f(x_0) = \frac{x_0+2}{e^{x_0}+3/2}$.
+    Substitute $e^{x_0} = \frac{3}{2(x_0+1)}$:
+    $f(x_0) = \frac{x_0+2}{\frac{3}{2(x_0+1)} + \frac{3}{2}} = \frac{2(x_0+2)}{\frac{3}{x_0+1} + 3} = \frac{2(x_0+2)}{\frac{3+3x_0+3}{x_0+1}} = \frac{2(x_0+2)(x_0+1)}{3x_0+6} = \frac{2(x_0+2)(x_0+1)}{3(x_0+2)} = \frac{2(x_0+1)}{3}$.
+    We want $f(x_0) = 1 \implies 2(x_0+1) = 3 \implies x_0+1 = 3/2 \implies x_0 = 1/2$.
+    Now check if $h(1/2) = 3/2$:
+    $h(1/2) = (1/2+1)e^{1/2} = \frac{3}{2} \sqrt{e} \approx \frac{3}{2} (1.648) = 2.472$.
+    But we need $h(x_0) = 3/2 = 1.5$.
+    So $a=3/2$ is not the answer.
+
+    If $a=2$, $f(x) = \frac{x+2}{e^x+2}$.
+    $f&#39;(x) = \frac{2 - (x+1)e^x}{(e^x+2)^2}$.
+    $f&#39;(x)=0 \implies (x+1)e^x = 2$.
+    $x_0$ is some value $&gt; 0$.
+    Maximum value $f(x_0) = \frac{x_0+2}{e^{x_0}+2}$.
+    Substitute $e^{x_0} = \frac{2}{x_0+1}$:
+    $f(x_0) = \frac{x_0+2}{\frac{2}{x_0+1} + 2} = \frac{(x_0+2)(x_0+1)}{2 + 2(x_0+1)} = \frac{(x_0+2)(x_0+1)}{2x_0+4} = \frac{(x_0+2)(x_0+1)}{2(x_0+2)} = \frac{x_0+1}{2}$.
+    We want $f(x_0) = 1 \implies x_0+1 = 2 \implies x_0 = 1$.
+    Now check if $h(1) = 2$:
+    $h(1) = (1+1)e^1 = 2e \approx 5.436$.
+    But we need $h(x_0) = 2$.
+    So $a=2$ is not the answer.
+
+    Wait, let me re-calculate the $f(x_0)$ general formula.
+    $f(x) = \frac{x+2}{e^x+a}$
+    $f&#39;(x) = \frac{a-(x+1)e^x}{(e^x+a)^2} = 0 \implies a = (x_0+1)e^{x_0}$.
+    Then $f(x_0) = \frac{x_0+2}{e^{x_0}+a} = \frac{x_0+2}{e^{x_0} + (x_0+1)e^{x_0}} = \frac{x_0+2}{(x_0+2)e^{x_0}} = \frac{1}{e^{x_0}} = e^{-x_0}$.
+    We are given $f(x_0) = 1$, so $e^{-x_0} = 1 \implies x_0 = 0$.
+    Then $a = (x_0+1)e^{x_0} = (0+1)e^0 = 1$.
+    This confirms $a=1$ is the correct answer.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;\n5.  **\u68c0\u9a8c\u89e3\u7684\u5408\u7406\u6027**\uff1a\n    - \u82e5 $x_0 = -2$\uff0c\u5219 $a = (-2+1)e^{-2} = -e^{-2}$\u3002\u6b64\u65f6\u5206\u6bcd $e^x - e^{-2}$ \u5728 $x=-2$ \u65f6\u4e3a $0$\uff0c\u4e14 $\\lim_{x \\to -2} f(x) = e^2 \\approx 7.389 \\neq 1$\uff0c\u56e0\u6b64\u4e0d\u7b26\u5408\u9898\u610f\u3002\n    - \u82e5 $x_0 = 0$\uff0c\u5219 $a = (0+1)e^0 = 1$\u3002\n      \u6b64\u65f6 $f(x) = \\frac{x+2}{e^x+1}$\uff0c\u4e14 $f(0) = \\frac{0+2}{e^0+1} = \\frac{2}{2} = 1$\u3002\n      \u68c0\u67e5\u5bfc\u6570 $f&#39;(x) = \\frac{1-(x+1)e^x}{(e^x+1)^2}$\u3002\u4ee4 $g(x) = 1-(x+1)e^x$\uff0c\u5176\u5bfc\u6570 $g&#39;(x) = -(x+2)e^x$\u3002\u5728 $x=0$ \u9644\u8fd1\uff0c$g(0)=0$ \u4e14 $g&#39;(0)=-2 &lt; 0$\uff0c\u8bf4\u660e $f&#39;(x)$ \u5728 $x=0$ \u5de6\u4fa7\u4e3a\u6b63\uff0c\u53f3\u4fa7\u4e3a\u8d1f\uff0c\u56e0\u6b64 $f(0)=1$ \u786e\u5b9e\u662f\u6700\u5927\u503c\u3002\n\n\u7efc\u4e0a\u6240\u8ff0\uff0c$a$ \u7684\u503c\u4e3a 1\u3002\n\n\\boxed{B}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_006')">
+                <td>gaokao_000_006</td>
+                <td class="correct">✓</td>
+                <td>B</td>
+                <td class="correct">B</td>
+                <td>6095</td>
+                <td>39.5</td>
+                <td>154.2</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_006" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（单选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+7. 一百零八塔位于宁夏回族自治区青铜峡市，以其独特的建筑格局和深厚的历史文化闻名遐迩。该塔群共有108座塔，依山势自上而下排成12行，将第i行中塔的座数记为a_i(i=1,2,...,12)，其中a_1=1, a_2=a_3=3, a_4=a_5=5，且a_6, a_7, ..., a_{12}是一个首项为7，公差为2的等差数列。将a_1, a_2, ..., a_{12}分为6组，每组2个数，使得每组的2个数之和可构成一个项数为6且公差为d(d&gt;0)的等差数列，则d = （ ）
+A. 2
+B. 4
+C. 6
+D. 8
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了求解此题，我们首先确定所有行中塔的座数 $a_1, a_2, \dots, a_{12}$。
+
+**1. 确定各行的塔数 $a_i$：**
+- 给定 $a_1 = 1$
+- $a_2 = 3, a_3 = 3$
+- $a_4 = 5, a_5 = 5$
+- $a_6, a_7, \dots, a_{12}$ 是一个首项为 7，公差为 2 的等差数列。
+  $a_6 = 7$
+  $a_7 = 7 + 2 = 9$
+  $a_8 = 7 + 2 \times 2 = 11$
+  $a_9 = 7 + 3 \times 2 = 13$
+  $a_{10} = 7 + 4 \times 2 = 15$
+  $a_{11} = 7 + 5 \times 2 = 17$
+  $a_{12} = 7 + 6 \times 2 = 19$
+
+因此，所有塔的座数为集合：$\{1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19\}$。
+校验总数：$1 + 3+3 + 5+5 + 7+9+11+13+15+17+19 = 1 + 6 + 10 + \frac{7(7+19)}{2} = 17 + 91 = 108$。正确。
+
+**2. 分析分组合计的等差数列：**
+将 12 个数分为 6 组，每组 2 个数，设每组之和为 $S_1, S_2, S_3, S_4, S_5, S_6$。
+由于每组之和构成一个项数为 6 且公差为 $d (d&gt;0)$ 的等差数列，则：
+$S_k = S_1 + (k-1)d$
+所有组之和等于所有塔的总数：
+$\sum_{k=1}^6 S_k = 108 \Rightarrow \frac{6}{2}(2S_1 + 5d) = 108 \Rightarrow 3(2S_1 + 5d) = 108 \Rightarrow 2S_1 + 5d = 36$
+
+**3. 利用数值特性排除选项：**
+观察到所有 $a_i$ 均为奇数。两个奇数之和必为偶数，因此 $S_1, S_2, \dots, S_6$ 必须全部为偶数。
+因为 $S_2 = S_1 + d$，若 $S_1$ 和 $S_2$ 均为偶数，则公差 $d$ 必须为偶数。
+- 若 $d=2$：$2S_1 + 5(2) = 36 \Rightarrow 2S_1 = 26 \Rightarrow S_1 = 13$（奇数，矛盾）。
+- 若 $d=4$：$2S_1 + 5(4) = 36 \Rightarrow 2S_1 = 16 \Rightarrow S_1 = 8$（偶数，可能）。
+- 若 $d=6$：$2S_1 + 5(6) = 36 \Rightarrow 2S_1 = 6 \Rightarrow S_1 = 3$（奇数，矛盾）。
+- 若 $d=8$：$2S_1 + 5(8) = 36 \Rightarrow 2S_1 = -4 \Rightarrow S_1 = -2$（不可能）。
+
+**4. 验证 $d=4$ 的可行性：**
+当 $d=4$ 时，和数列为 $8, 12, 16, 20, 24, 28$。
+我们可以尝试将 $\{1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19\}$ 进行配对：
+- $S_1 = 3 + 5 = 8$
+- $S_2 = 3 + 9 = 12$
+- $S_3 = 5 + 11 = 16$
+- $S_4 = 1 + 19 = 20$
+- $S_5 = 7 + 17 = 24$
+- $S_6 = 13 + 15 = 28$
+所有数字恰好被使用一次，组合成立。
+
+因此，公差 $d = 4$。
+
+\boxed{B}</pre>
+                        <b>Reasoning</b><pre>*   Total number of towers: 108.
+    *   Number of rows: 12.
+    *   Tower counts per row: $a_1, a_2, \dots, a_{12}$.
+    *   Given values:
+        *   $a_1 = 1$
+        *   $a_2 = 3$
+        *   $a_3 = 3$
+        *   $a_4 = 5$
+        *   $a_5 = 5$
+        *   $a_6, a_7, \dots, a_{12}$ form an arithmetic progression with first term $a_6 = 7$ and common difference $2$.
+
+    *   $a_6 = 7$
+    *   $a_7 = 7 + 2 = 9$
+    *   $a_8 = 7 + 2 \times 2 = 11$
+    *   $a_9 = 7 + 3 \times 2 = 13$
+    *   $a_{10} = 7 + 4 \times 2 = 15$
+    *   $a_{11} = 7 + 5 \times 2 = 17$
+    *   $a_{12} = 7 + 6 \times 2 = 19$
+
+    *Check the total count:*
+    $\sum a_i = 1 + 3 + 3 + 5 + 5 + 7 + 9 + 11 + 13 + 15 + 17 + 19$
+    $= 1 + 6 + 10 + (7 + 19) \times \frac{7}{2}$
+    $= 17 + 26 \times 3.5 = 17 + 91 = 108$. (Correct)
+
+    *   The numbers are $\{1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19\}$.
+    *   We need to group them into 6 pairs $(x_1, y_1), (x_2, y_2), \dots, (x_6, y_6)$ such that the sums $S_k = x_k + y_k$ (for $k=1, \dots, 6$) form an arithmetic progression with common difference $d &gt; 0$.
+
+    *   The sums are $S_1 &lt; S_2 &lt; S_3 &lt; S_4 &lt; S_5 &lt; S_6$.
+    *   The common difference is $d$.
+    *   $S_k = S_1 + (k-1)d$.
+    *   The sum of all $S_k$ is the sum of all $a_i$:
+        $\sum_{k=1}^6 S_k = 108$
+        $\frac{6}{2}(2S_1 + 5d) = 108$
+        $3(2S_1 + 5d) = 108$
+        $2S_1 + 5d = 36$
+
+    *   Since $d &gt; 0$ and $S_1$ must be at least $1+3 = 4$ (the sum of the two smallest elements), we can test possible values for $d$:
+        *   If $d=2$: $2S_1 + 10 = 36 \Rightarrow 2S_1 = 26 \Rightarrow S_1 = 13$.
+        *   If $d=4$: $2S_1 + 20 = 36 \Rightarrow 2S_1 = 16 \Rightarrow S_1 = 8$.
+        *   If $d=6$: $2S_1 + 30 = 36 \Rightarrow 2S_1 = 6 \Rightarrow S_1 = 3$. (But the smallest possible sum $a_1+a_2$ is $1+3=4$, so $S_1 \ge 4$. Thus $d=6$ is too large).
+        *   If $d=8$: $2S_1 + 40 = 36 \Rightarrow 2S_1 = -4$. (Impossible).
+
+    *   So $d$ could be 2 or 4. Let&#39;s test them.
+
+    *   If $d=4$, then $S_1 = 8$.
+    *   The sums $S_k$ are: $8, 12, 16, 20, 24, 28$.
+    *   The set of numbers is $\{1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19\}$.
+    *   Let&#39;s try to form these sums:
+        *   $S_6 = 28$: The only way to get 28 is $19+9$ or $17+11$ or $15+13$. Let&#39;s try $19+9 = 28$.
+        *   $S_5 = 24$: $17+7 = 24$ or $15+9$ (but 9 is used) or $13+11 = 24$. Let&#39;s try $17+7 = 24$.
+        *   $S_4 = 20$: $15+5 = 20$ or $13+7$ (but 7 is used) or $11+9$ (but 9 is used). Let&#39;s try $15+5 = 20$.
+        *   $S_3 = 16$: $13+3 = 16$ or $11+5 = 16$ or $9+7$ (both used). Let&#39;s try $11+5 = 16$.
+        *   $S_2 = 12$: $13-1=12$ (no), $9+3=12$ (but 9 is used), $7+5$ (both used), $11+1$ (but 11 is used), $13-1$ is not a sum. Wait, let&#39;s re-evaluate.
+        *   $S_1 = 8$: $5+3 = 8$ or $7+1 = 8$ (but 7 is used). Let&#39;s try $5+3 = 8$.
+
+    *   Let&#39;s re-try the $d=4$ case more systematically.
+        Numbers: $\{1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19\}$
+        Sums: $8, 12, 16, 20, 24, 28$
+        - $S_6 = 28$: (19, 9), (17, 11), (15, 13).
+        - $S_5 = 24$: (19, 5), (17, 7), (15, 9), (13, 11).
+        - $S_4 = 20$: (19, 1), (17, 3), (15, 5), (13, 7), (11, 9).
+        - $S_3 = 16$: (15, 1), (13, 3), (11, 5), (9, 7).
+        - $S_2 = 12$: (11, 1), (9, 3), (7, 5).
+        - $S_1 = 8$: (7, 1), (5, 3).
+
+        Let&#39;s try $S_1 = 5+3 = 8$.
+        Remaining: $\{1, 3, 5, 7, 9, 11, 13, 15, 17, 19\}$
+        $S_2 = 12$: (11, 1), (9, 3), (7, 5).
+        Try $S_2 = 9+3 = 12$.
+        Remaining: $\{1, 5, 7, 11, 13, 15, 17, 19\}$
+        $S_3 = 16$: (15, 1), (11, 5), (9, 7 - gone).
+        Try $S_3 = 11+5 = 16$.
+        Remaining: $\{1, 7, 13, 15, 17, 19\}$
+        $S_4 = 20$: (19, 1), (13, 7).
+        Try $S_4 = 13+7 = 20$.
+        Remaining: $\{1, 15, 17, 19\}$
+        $S_5 = 24$: (19, 5 - gone), (17, 7 - gone), (15, 9 - gone), (13, 11 - gone).
+        No pair sums to 24. Let&#39;s backtrack.
+
+        Let&#39;s try $S_4 = 19+1 = 20$.
+        Remaining: $\{7, 13, 15, 17\}$
+        $S_5 = 24$: (17, 7) = 24.
+        Remaining: $\{13, 15\}$
+        $S_6 = 13+15 = 28$.
+        Wait! This works!
+        Pairs: (5,3), (9,3), (11,5), (19,1), (17,7), (15,13).
+        Sums: 8, 12, 16, 20, 24, 28.
+        Numbers used: $\{5, 3, 9, 3, 11, 5, 19, 1, 17, 7, 15, 13\}$.
+        Let&#39;s check if these are exactly the $a_i$ we had: $\{1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19\}$.
+        Yes, they are!
+
+    *   Let&#39;s re-verify the $d=4$ pairing again:
+        - $S_1 = 3 + 5 = 8$
+        - $S_2 = 3 + 9 = 12$
+        - $S_3 = 5 + 11 = 16$
+        - $S_4 = 1 + 19 = 20$
+        - $S_5 = 7 + 17 = 24$
+        - $S_6 = 13 + 15 = 28$
+        All numbers used: 1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19.
+        All sums: 8, 12, 16, 20, 24, 28.
+        The common difference is $d=4$.
+
+    *   If $d=2$, $S_1 = 13$.
+    *   Sums $S_k$: $13, 15, 17, 19, 21, 23$.
+    *   Let&#39;s check if we can form these from $\{1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19\}$.
+    *   $S_6 = 23$: (19, 4 - no), (17, 6 - no), (15, 8 - no), (13, 10 - no), (11, 12 - no).
+        Wait, the numbers are $\{1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19\}$.
+        To get $S_6=23$:
+        - $19+x=23 \Rightarrow x=4$ (Not in set)
+        - $17+x=23 \Rightarrow x=6$ (Not in set)
+        - $15+x=23 \Rightarrow x=8$ (Not in set)
+        - $13+x=23 \Rightarrow x=10$ (Not in set)
+        - $11+x=23 \Rightarrow x=12$ (Not in set)
+        No pair can sum to 23.
+        Wait, let me re-check the numbers.
+        $a_1=1$
+        $a_2=3, a_3=3$
+        $a_4=5, a_5=5$
+        $a_6=7, a_7=9, a_8=11, a_9=13, a_{10}=15, a_{11}=17, a_{12}=19$.
+        The numbers are all odd.
+        If you sum two odd numbers, the result must be an even number.
+        Therefore, all $S_k$ must be even.
+        If $d=2$, $S_1=13$, then $S_1$ is odd, which is impossible because the sum of any two $a_i$ (all odd) must be even.
+        So $d$ must be even and $S_1$ must be even.
+        If $2S_1 + 5d = 36$:
+        If $d=2$, $2S_1 = 26 \Rightarrow S_1=13$ (Odd - impossible).
+        If $d=4$, $2S_1 = 16 \Rightarrow S_1=8$ (Even - possible).
+        If $d=6$, $2S_1 = 6 \Rightarrow S_1=3$ (Odd - impossible).
+        If $d=8$, $2S_1 = -4$ (Impossible).
+        If $d=10$, $2S_1 = -14$ (Impossible).
+
+    *   All $a_i$ are odd.
+    *   The sum of any two odd numbers is always even.
+    *   Thus, $S_1, S_2, S_3, S_4, S_5, S_6$ must all be even.
+    *   Since $S_{k+1} = S_k + d$, for $S_k$ and $S_{k+1}$ to both be even, $d$ must be even.
+    *   $2S_1 + 5d = 36$.
+    *   Since $S_1$ must be even, let $S_1 = 2m$.
+    *   $4m + 5d = 36$.
+    *   Possible values for $d$ (even and $d&gt;0$):
+        *   $d=2 \Rightarrow 4m = 36 - 10 = 26$ (No integer $m$).
+        *   $d=4 \Rightarrow 4m = 36 - 20 = 16 \Rightarrow m=4 \Rightarrow S_1=8$.
+        *   $d=6 \Rightarrow 4m = 36 - 30 = 6$ (No integer $m$).
+        *   $d=8 \Rightarrow 4m = 36 - 40 = -4$ (Impossible).
+
+    The only possible value for $d$ that allows all $S_k$ to be even is $d=4$.
+
+    $a_1=1, a_2=3, a_3=3, a_4=5, a_5=5, a_6=7, a_7=9, a_8=11, a_9=13, a_{10}=15, a_{11}=17, a_{12}=19$.
+    Pairs:
+    (3, 5) $\rightarrow 8$
+    (3, 9) $\rightarrow 12$
+    (5, 11) $\rightarrow 16$
+    (1, 19) $\rightarrow 20$
+    (7, 17) $\rightarrow 24$
+    (13, 15) $\rightarrow 28$
+    Check numbers: 1 (once), 3 (twice), 5 (twice), 7 (once), 9 (once), 11 (once), 13 (once), 15 (once), 17 (once), 19 (once).
+    All match the list.
+    Check sums: 8, 12, 16, 20, 24, 28.
+    Common difference $d = 12-8 = 4$.
+
+    The possible answers are A. 2, B. 4, C. 6, D. 8.
+    Our result $d=4$ is option B.
+
+    - Total towers: $\sum a_i = 1+3+3+5+5+7+9+11+13+15+17+19 = 108$. Correct.
+    - Sequence $a_6, \dots, a_{12}$: $7, 9, 11, 13, 15, 17, 19$. (First term 7, difference 2, length 7). Correct.
+    - Pairing into 6 groups of 2: $(x_1, y_1), \dots, (x_6, y_6)$. Correct.
+    - Sums $S_k = x_k + y_k$ form an arithmetic progression with $d&gt;0$. Correct.
+    - Sum of $S_k = 108$. Correct.
+    - All $a_i$ are odd, so $S_k$ must be even. Correct.
+    - $2S_1 + 5d = 36$. Correct.
+    - $d=4$ gives $S_1=8$, and all $S_k$ are even. Correct.
+    - $d=2$ gives $S_1=13$, but $S_k$ must be even. Correct.
+    - $d=6$ gives $S_1=3$, but $S_k$ must be even. Correct.
+    - $d=8$ gives $S_1=-2$. Incorrect.
+
+    Wait, let&#39;s re-calculate $2S_1 + 5d = 36$ again.
+    Sum $S_k = S_1 + (S_1+d) + (S_1+2d) + (S_1+3d) + (S_1+4d) + (S_1+5d) = 6S_1 + 15d = 108$.
+    $6S_1 + 15d = 108$.
+    Divide by 3: $2S_1 + 5d = 36$.
+    Yes, that&#39;s correct.
+
+    Let&#39;s double check the $d=2$ case again.
+    $6S_1 + 15(2) = 108 \Rightarrow 6S_1 + 30 = 108 \Rightarrow 6S_1 = 78 \Rightarrow S_1 = 13$.
+    If $S_1=13, S_2=15, S_3=17, S_4=19, S_5=21, S_6=23$.
+    As established, since all $a_i$ are odd, any sum $S_k = a_i + a_j$ must be even.
+    Thus, $S_1=13$ is impossible.
+
+    Double check $d=4$:
+    $6S_1 + 15(4) = 108 \Rightarrow 6S_1 + 60 = 108 \Rightarrow 6S_1 = 48 \Rightarrow S_1 = 8$.
+    $S_1=8, S_2=12, S_3=16, S_4=20, S_5=24, S_6=28$.
+    All are even, which is consistent with $a_i$ being odd.
+
+    Double check $d=6$:
+    $6S_1 + 15(6) = 108 \Rightarrow 6S_1 + 90 = 108 \Rightarrow 6S_1 = 18 \Rightarrow S_1 = 3$.
+    Since $S_1$ must be even, $S_1=3$ is impossible.
+
+    Double check $d=8$:
+    $6S_1 + 15(8) = 108 \Rightarrow 6S_1 + 120 = 108 \Rightarrow 6S_1 = -12 \Rightarrow S_1 = -2$.
+    Impossible since $a_i &gt; 0$.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;- $S_2 = 3 + 9 = 12$\n- $S_3 = 5 + 11 = 16$\n- $S_4 = 1 + 19 = 20$\n- $S_5 = 7 + 17 = 24$\n- $S_6 = 13 + 15 = 28$\n\u6240\u6709\u6570\u5b57\u6070\u597d\u88ab\u4f7f\u7528\u4e00\u6b21\uff0c\u7ec4\u5408\u6210\u7acb\u3002\n\n\u56e0\u6b64\uff0c\u516c\u5dee $d = 4$\u3002\n\n\\boxed{B}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_007')">
+                <td>gaokao_000_007</td>
+                <td class="correct">✓</td>
+                <td>A</td>
+                <td class="correct">A</td>
+                <td>2516</td>
+                <td>42.3</td>
+                <td>59.5</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_007" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（单选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+8. 设U={(x_1, x_2, x_3)|x_i \in \{-2,-1,1,2&quot;}, i=1,2,3}\}为空间中64个点构成的集合，点P(1,1,1)，记样本空间\Omega = C_U P，从\Omega中随机取一个点，定义随机变量X如下：对\Omega中的每个点A(x_1, x_2, x_3)，令X(A) = x_1 + x_2 + x_3，则X的数学期望值为（ ）
+A. -\frac{1}{21}
+B. -\frac{1}{63}
+C. 0
+D. \frac{1}{7}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>首先，分析题目给出的集合 $U$ 和样本空间 $\Omega$。
+集合 $U = \{(x_1, x_2, x_3) \mid x_i \in \{-2, -1, 1, 2\}, i=1,2,3\}$，其元素个数为 $4 \times 4 \times 4 = 64$ 个点。
+点 $P = (1, 1, 1)$ 是 $U$ 中的一个点。
+样本空间 $\Omega = C_U P$，这里 $C_U P$ 通常表示点 $P$ 在集合 $U$ 中的补集，即 $\Omega = U \setminus \{P\}$。
+因此，样本空间 $\Omega$ 中包含的点数为 $|\Omega| = 64 - 1 = 63$ 个。
+
+定义随机变量 $X(A) = x_1 + x_2 + x_3$，其中 $A(x_1, x_2, x_3) \in \Omega$。
+我们要计算 $X$ 的数学期望 $E[X]$。根据期望的定义：
+$$E[X] = \frac{1}{|\Omega|} \sum_{A \in \Omega} X(A)$$
+
+首先，计算 $X(A)$ 在整个集合 $U$ 上的总和 $\sum_{A \in U} X(A)$：
+$$\sum_{A \in U} X(A) = \sum_{x_1 \in \{-2,-1,1,2\}} \sum_{x_2 \in \{-2,-1,1,2\}} \sum_{x_3 \in \{-2,-1,1,2\}} (x_1 + x_2 + x_3)$$
+由于 $\sum_{x_i \in \{-2,-1,1,2\}} x_i = (-2) + (-1) + 1 + 2 = 0$，我们可以将其分解为：
+$$\sum_{A \in U} X(A) = \sum_{x_1, x_2, x_3} x_1 + \sum_{x_1, x_2, x_3} x_2 + \sum_{x_1, x_2, x_3} x_3$$
+$$= 4 \times 4 \times \sum_{x_1} x_1 + 4 \times 4 \times \sum_{x_2} x_2 + 4 \times 4 \times \sum_{x_3} x_3$$
+$$= 16(0) + 16(0) + 16(0) = 0$$
+
+接下来，计算 $\Omega$ 中所有点的 $X$ 之和。因为 $\Omega = U \setminus \{P\}$，所以：
+$$\sum_{A \in \Omega} X(A) = \sum_{A \in U} X(A) - X(P)$$
+已知 $P = (1, 1, 1)$，则 $X(P) = 1 + 1 + 1 = 3$。
+因此：
+$$\sum_{A \in \Omega} X(A) = 0 - 3 = -3$$
+
+最后，计算期望值：
+$$E[X] = \frac{-3}{63} = -\frac{1}{21}$$
+
+对照选项：
+A. $-\frac{1}{21}$
+B. $-\frac{1}{63}$
+C. 0
+D. $\frac{1}{7}$
+
+正确选项为 A。
+
+\boxed{A}</pre>
+                        <b>Reasoning</b><pre>*   $U = \{(x_1, x_2, x_3) \mid x_i \in \{-2, -1, 1, 2\}, i = 1, 2, 3\}$.
+    *   The set $U$ contains $4 \times 4 \times 4 = 64$ points.
+    *   Point $P = (1, 1, 1)$.
+    *   Sample space $\Omega = C_U P$.
+    *   Wait, what does $C_U P$ mean?
+    *   In some contexts, $C_U P$ could mean the set of all points in $U$ *except* $P$.
+    *   Let&#39;s check if that makes sense. $\Omega = U \setminus \{P\}$.
+    *   $U$ has 64 points, so $\Omega$ has $64 - 1 = 63$ points.
+    *   The random variable $X(A) = x_1 + x_2 + x_3$ for $A(x_1, x_2, x_3) \in \Omega$.
+    *   We need to find the expected value $E[X]$.
+
+    *   $E[X] = \frac{1}{|\Omega|} \sum_{A \in \Omega} X(A)$.
+    *   $|\Omega| = 63$.
+    *   $\sum_{A \in \Omega} X(A) = \sum_{A \in U} X(A) - X(P)$.
+
+    *   $U = \{(x_1, x_2, x_3) \mid x_i \in \{-2, -1, 1, 2\}\}$.
+    *   $\sum_{A \in U} X(A) = \sum_{x_1 \in \{-2, -1, 1, 2\}} \sum_{x_2 \in \{-2, -1, 1, 2\}} \sum_{x_3 \in \{-2, -1, 1, 2\}} (x_1 + x_2 + x_3)$.
+    *   This is equal to $\sum_{x_1} \sum_{x_2} \sum_{x_3} x_1 + \sum_{x_1} \sum_{x_2} \sum_{x_3} x_2 + \sum_{x_1} \sum_{x_2} \sum_{x_3} x_3$.
+    *   $\sum_{x_1 \in \{-2, -1, 1, 2\}} x_1 = (-2) + (-1) + 1 + 2 = 0$.
+    *   So, $\sum_{x_1} \sum_{x_2} \sum_{x_3} x_1 = 4 \times 4 \times \sum_{x_1} x_1 = 16 \times 0 = 0$.
+    *   Similarly, $\sum_{x_1} \sum_{x_2} \sum_{x_3} x_2 = 0$ and $\sum_{x_1} \sum_{x_2} \sum_{x_3} x_3 = 0$.
+    *   Therefore, $\sum_{A \in U} X(A) = 0 + 0 + 0 = 0$.
+
+    *   $P = (1, 1, 1)$.
+    *   $X(P) = 1 + 1 + 1 = 3$.
+
+    *   $\sum_{A \in \Omega} X(A) = 0 - X(P) = 0 - 3 = -3$.
+    *   $|\Omega| = 63$.
+    *   $E[X] = \frac{-3}{63} = -\frac{1}{21}$.
+
+    *   $U = \{-2, -1, 1, 2\}^3$.
+    *   $P = (1, 1, 1)$.
+    *   $\Omega = U \setminus \{P\}$.
+    *   $X(x_1, x_2, x_3) = x_1 + x_2 + x_3$.
+    *   Sum of $X(A)$ over all $A \in U$:
+        $\sum_{x_1, x_2, x_3} (x_1 + x_2 + x_3) = 64 \times E_{U}[X]$, where $E_U[X]$ is the mean of $X$ over $U$.
+        $E_U[X] = E[x_1] + E[x_2] + E[x_3] = 0 + 0 + 0 = 0$.
+        So $\sum_{A \in U} X(A) = 0$.
+    *   $X(P) = 1+1+1=3$.
+    *   Sum over $\Omega$: $\sum_{A \in \Omega} X(A) = 0 - 3 = -3$.
+    *   Number of elements in $\Omega$: $64 - 1 = 63$.
+    *   $E[X] = \frac{-3}{63} = -\frac{1}{21}$.
+
+    *   Wait, could $C_U P$ mean something else?
+    *   In some contexts, $C_n^k$ means combination. But $C_U P$ doesn&#39;t look like that.
+    *   $U$ is a set, $P$ is a point. $C_U P$ might be the complement of $P$ in $U$.
+    *   Let&#39;s re-read: &quot;记样本空间 $\Omega = C_U P$&quot;.
+    *   In Chinese mathematical notation, $C_U P$ is sometimes used to denote the complement of $P$ relative to $U$, often written as $\complement_U P$ or $U \setminus \{P\}$.
+    *   Let&#39;s check the options: A. $-1/21$, B. $-1/63$, C. 0, D. $1/7$.
+    *   My calculation gives $-1/21$, which is option A.
+
+    *   $U = \{-2, -1, 1, 2\}^3 \implies |U| = 4^3 = 64$.
+    *   $P = (1, 1, 1) \in U$.
+    *   $\Omega = U \setminus \{P\} \implies |\Omega| = 63$.
+    *   $X(x_1, x_2, x_3) = x_1 + x_2 + x_3$.
+    *   Sum of $X$ over $U$: $\sum_{x_1, x_2, x_3 \in \{-2, -1, 1, 2\}} (x_1+x_2+x_3) = \sum x_1 \sum_{x_2} \sum_{x_3} 1 + \dots = 0 \cdot 16 + 0 \cdot 16 + 0 \cdot 16 = 0$.
+    *   Sum of $X$ over $\Omega$: $\sum_{A \in U} X(A) - X(P) = 0 - (1+1+1) = -3$.
+    *   Expected value $E[X] = \frac{-3}{63} = -\frac{1}{21}$.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;\n\u5bf9\u7167\u9009\u9879\uff1a\nA. $-\\frac{1}{21}$\nB. $-\\frac{1}{63}$\nC. 0\nD. $\\frac{1}{7}$\n\n\u6b63\u786e\u9009\u9879\u4e3a A\u3002\n\n\\boxed{A}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_008')">
+                <td>gaokao_000_008</td>
+                <td class="correct">✓</td>
+                <td>ACD</td>
+                <td class="correct">ACD</td>
+                <td>1580</td>
+                <td>47.6</td>
+                <td>33.2</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_008" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（多选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+9. 设z = 3 + 2i，则（ ）
+A. \bar{z} = 3 - 2i
+B. |z| = 5
+C. z^2 = 5 + 12i
+D. \frac{z+3}{z-i} \in \mathbf{R}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>这是一道关于复数运算的数学题。我们逐步分析每个选项：
+
+**已知：** $z = 3 + 2i$
+
+**分析选项 A：**
+复数 $z = a + bi$ 的共轭复数为 $\bar{z} = a - bi$。
+对于 $z = 3 + 2i$，其共轭复数 $\bar{z} = 3 - 2i$。
+因此，选项 A 正确。
+
+**分析选项 B：**
+复数 $z = a + bi$ 的模为 $|z| = \sqrt{a^2 + b^2}$。
+对于 $z = 3 + 2i$，其模为 $|z| = \sqrt{3^2 + 2^2} = \sqrt{9 + 4} = \sqrt{13}$。
+因为 $\sqrt{13} \neq 5$，所以选项 B 错误。
+
+**分析选项 C：**
+计算 $z^2$：
+$z^2 = (3 + 2i)^2 = 3^2 + 2 \cdot 3 \cdot 2i + (2i)^2$
+$z^2 = 9 + 12i + 4i^2$
+由于 $i^2 = -1$，则 $z^2 = 9 + 12i - 4 = 5 + 12i$。
+因此，选项 C 正确。
+
+**分析选项 D：**
+计算表达式 $\frac{z+3}{z-i}$：
+将 $z = 3 + 2i$ 代入：
+$\frac{z+3}{z-i} = \frac{(3 + 2i) + 3}{(3 + 2i) - i} = \frac{6 + 2i}{3 + i}$
+为了简化这个分式，我们将分子和分母同时乘以分母的共轭复数 $3 - i$：
+$\frac{6 + 2i}{3 + i} = \frac{(6 + 2i)(3 - i)}{(3 + i)(3 - i)} = \frac{18 - 6i + 6i - 2i^2}{3^2 - i^2}$
+$\frac{18 - 2(-1)}{9 - (-1)} = \frac{18 + 2}{9 + 1} = \frac{20}{10} = 2$
+由于 $2$ 是一个实数，所以 $\frac{z+3}{z-i} \in \mathbf{R}$。
+因此，选项 D 正确。
+
+综上所述，正确选项为 A, C, D。
+
+\boxed{ACD}</pre>
+                        <b>Reasoning</b><pre>The problem asks to evaluate four statements (A, B, C, D) regarding the complex number $z = 3 + 2i$. This is a multiple-choice question (specifically a &quot;multiple-response&quot; or &quot;multiple-choice&quot; question where more than one option might be correct).
+
+    Given $z = 3 + 2i$.
+    *   The real part $Re(z) = 3$.
+    *   The imaginary part $Im(z) = 2$.
+
+    *   **Statement A: $\bar{z} = 3 - 2i$**
+        *   The conjugate of a complex number $z = a + bi$ is $\bar{z} = a - bi$.
+        *   For $z = 3 + 2i$, $\bar{z} = 3 - 2i$.
+        *   Statement A is **Correct**.
+
+    *   **Statement B: $|z| = 5$**
+        *   The modulus of a complex number $z = a + bi$ is $|z| = \sqrt{a^2 + b^2}$.
+        *   For $z = 3 + 2i$, $|z| = \sqrt{3^2 + 2^2} = \sqrt{9 + 4} = \sqrt{13}$.
+        *   $\sqrt{13} \neq 5$.
+        *   Statement B is **Incorrect**.
+
+    *   **Statement C: $z^2 = 5 + 12i$**
+        *   $z^2 = (3 + 2i)^2$.
+        *   Expand using $(a+b)^2 = a^2 + 2ab + b^2$:
+            $z^2 = 3^2 + 2(3)(2i) + (2i)^2$
+            $z^2 = 9 + 12i + 4i^2$
+        *   Since $i^2 = -1$:
+            $z^2 = 9 + 12i - 4 = 5 + 12i$.
+        *   Statement C is **Correct**.
+
+    *   **Statement D: $\frac{z+3}{z-i} \in \mathbf{R}$**
+        *   Let&#39;s calculate the expression $w = \frac{z+3}{z-i}$.
+        *   Substitute $z = 3 + 2i$:
+            $w = \frac{(3 + 2i) + 3}{(3 + 2i) - i}$
+            $w = \frac{6 + 2i}{3 + i}$
+        *   Simplify the fraction by multiplying the numerator and denominator by the conjugate of the denominator ($3 - i$):
+            $w = \frac{(6 + 2i)(3 - i)}{(3 + i)(3 - i)}$
+            $w = \frac{18 - 6i + 6i - 2i^2}{3^2 - i^2}$
+            $w = \frac{18 - 2(-1)}{9 - (-1)}$
+            $w = \frac{18 + 2}{9 + 1}$
+            $w = \frac{20}{10} = 2$.
+        *   Since $2 \in \mathbf{R}$, statement D is **Correct**.
+
+    *   A: Correct
+    *   B: Incorrect ($\sqrt{13} \neq 5$)
+    *   C: Correct
+    *   D: Correct
+
+    *   Wait, let me double-check C again. $(3+2i)^2 = 9 + 12i + 4(-1) = 5 + 12i$. Yes.
+    *   Double-check D again. $z+3 = 6+2i$. $z-i = 3+i$. $\frac{6+2i}{3+i} = \frac{2(3+i)}{3+i} = 2$. Yes.
+    *   Double-check A again. Conjugate of $3+2i$ is $3-2i$. Yes.
+    *   Double-check B again. $\sqrt{3^2+2^2} = \sqrt{13}$. Yes.
+
+    The correct options are A, C, and D.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;$\\frac{z+3}{z-i} = \\frac{(3 + 2i) + 3}{(3 + 2i) - i} = \\frac{6 + 2i}{3 + i}$\n\u4e3a\u4e86\u7b80\u5316\u8fd9\u4e2a\u5206\u5f0f\uff0c\u6211\u4eec\u5c06\u5206\u5b50\u548c\u5206\u6bcd\u540c\u65f6\u4e58\u4ee5\u5206\u6bcd\u7684\u5171\u8f6d\u590d\u6570 $3 - i$\uff1a\n$\\frac{6 + 2i}{3 + i} = \\frac{(6 + 2i)(3 - i)}{(3 + i)(3 - i)} = \\frac{18 - 6i + 6i - 2i^2}{3^2 - i^2}$\n$\\frac{18 - 2(-1)}{9 - (-1)} = \\frac{18 + 2}{9 + 1} = \\frac{20}{10} = 2$\n\u7531\u4e8e $2$ \u662f\u4e00\u4e2a\u5b9e\u6570\uff0c\u6240\u4ee5 $\\frac{z+3}{z-i} \\in \\mathbf{R}$\u3002\n\u56e0\u6b64\uff0c\u9009\u9879 D \u6b63\u786e\u3002\n\n\u7efc\u4e0a\u6240\u8ff0\uff0c\u6b63\u786e\u9009\u9879\u4e3a A, C, D\u3002\n\n\\boxed{ACD}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_009')">
+                <td>gaokao_000_009</td>
+                <td class="correct">✓</td>
+                <td>BC</td>
+                <td class="correct">BC</td>
+                <td>8703</td>
+                <td>39.0</td>
+                <td>223.1</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_009" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（多选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+10. 在空间中，A、B为两个定点，动点C到直线AB的距离为2，动点D到直线AB的距离为1。若二面角C - AB - D为60°，则（ ）
+A. \angle CAD \ge 60^\circ
+B. CD \ge \sqrt{3}
+C. 当AB \perp CD时，CD \perp平面ABD
+D. 当AB \perp平面ACD时，AC \perp AD
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了解答这个问题，我们建立空间直角坐标系。设直线 $AB$ 为 $z$ 轴，点 $A$ 为原点 $(0, 0, 0)$，点 $B$ 为 $(0, 0, d)$（其中 $d$ 是 $A, B$ 两点之间的距离）。
+
+根据已知条件：
+1. 动点 $C$ 到直线 $AB$ 的距离为 $2$，且二面角 $C-AB-D$ 为 $60^\circ$。我们可以设点 $C$ 的坐标为 $(2\cos 60^\circ, 2\sin 60^\circ, z_C) = (1, \sqrt{3}, z_C)$。
+2. 动点 $D$ 到直线 $AB$ 的距离为 $1$。为了方便，我们将点 $D$ 置于 $xz$ 平面上，设点 $D$ 的坐标为 $(1, 0, z_D)$。
+
+这样设置确保了点 $C$ 和 $D$ 到 $z$ 轴（直线 $AB$）的距离分别为 $2$ 和 $1$，且平面 $CAB$ 与平面 $DAB$ 之间的夹角（二面角 $C-AB-D$）为 $60^\circ$。
+
+**分析选项 A：$\angle CAD \ge 60^\circ$**
+$\vec{AC} = (1, \sqrt{3}, z_C)$，$\vec{AD} = (1, 0, z_D)$。
+$\cos(\angle CAD) = \frac{\vec{AC} \cdot \vec{AD}}{|\vec{AC}| |\vec{AD}|} = \frac{1 + 0 + z_C z_D}{\sqrt{1+3+z_C^2} \sqrt{1+0+z_D^2}} = \frac{1 + z_C z_D}{\sqrt{4+z_C^2} \sqrt{1+z_D^2}}$。
+当 $z_C = 4, z_D = 1$ 时，$\cos(\angle CAD) = \frac{1+4}{\sqrt{20}\sqrt{2}} = \frac{5}{\sqrt{40}} = \frac{5}{2\sqrt{10}} \approx 0.79$。
+由于 $\cos 60^\circ = 0.5$，且 $0.79 &gt; 0.5$，这意味着 $\angle CAD &lt; 60^\circ$。因此，选项 A 错误。
+
+**分析选项 B：$CD \ge \sqrt{3}$**
+$CD^2 = (1-1)^2 + (\sqrt{3}-0)^2 + (z_C-z_D)^2 = 0 + 3 + (z_C-z_D)^2 = 3 + (z_C-z_D)^2$。
+因为 $(z_C-z_D)^2 \ge 0$，所以 $CD^2 \ge 3$，即 $CD \ge \sqrt{3}$。因此，选项 B 正确。
+
+**分析选项 C：当 $AB \perp CD$ 时，$CD \perp$ 平面 $ABD$**
+$\vec{AB} = (0, 0, d)$，$\vec{CD} = (1-1, 0-\sqrt{3}, z_D-z_C) = (0, -\sqrt{3}, z_D-z_C)$。
+$AB \perp CD \iff \vec{AB} \cdot \vec{CD} = 0 \iff d(z_D-z_C) = 0 \iff z_C = z_D$。
+此时 $\vec{CD} = (0, -\sqrt{3}, 0)$。
+平面 $ABD$ 包含 $\vec{AB} = (0, 0, d)$ 和 $\vec{AD} = (1, 0, z_D)$。其法向量为 $\vec{n}_{ABD} = \vec{AB} \times \vec{AD} = (0, d, 0)$。
+因为 $\vec{CD} = (0, -\sqrt{3}, 0)$ 与 $\vec{n}_{ABD} = (0, d, 0)$ 平行，所以 $CD \perp$ 平面 $ABD$。因此，选项 C 正确。
+
+**分析选项 D：当 $AB \perp$ 平面 $ACD$ 时，$AC \perp AD$**
+平面 $ACD$ 的法向量 $\vec{n}_{ACD} = \vec{AC} \times \vec{AD} = (1, \sqrt{3}, z_C) \times (1, 0, z_D) = (\sqrt{3}z_D, z_C-z_D, -\sqrt{3})$。
+$AB \perp$ 平面 $ACD \iff \vec{AB} \parallel \vec{n}_{ACD} \iff (0, 0, d) \parallel (\sqrt{3}z_D, z_C-z_D, -\sqrt{3})$。
+这要求 $\sqrt{3}z_D = 0$ 且 $z_C-z_D = 0$，即 $z_C = z_D = 0$。
+此时 $\vec{AC} = (1, \sqrt{3}, 0)$，$\vec{AD} = (1, 0, 0)$。
+$\vec{AC} \cdot \vec{AD} = 1 \cdot 1 + \sqrt{3} \cdot 0 + 0 \cdot 0 = 1 \ne 0$，所以 $AC$ 不垂直于 $AD$。因此，选项 D 错误。
+
+综上所述，正确答案为 B 和 C。
+
+\boxed{BC}</pre>
+                        <b>Reasoning</b><pre>*   Fixed points: A, B.
+    *   Line AB is the axis of rotation for points C and D.
+    *   Distance from C to line AB = 2 (let this distance be $h_C = 2$).
+    *   Distance from D to line AB = 1 (let this distance be $h_D = 1$).
+    *   The dihedral angle $C-AB-D$ is $60^\circ$.
+    *   We need to evaluate statements A, B, C, and D.
+
+    *   Let the line AB be the z-axis of a Cartesian coordinate system.
+    *   Let $A = (0, 0, a)$ and $B = (0, 0, b)$.
+    *   Let $C = (2\cos\theta_C, 2\sin\theta_C, z_C)$ and $D = (1\cos\theta_D, 1\sin\theta_D, z_D)$.
+    *   The dihedral angle $C-AB-D$ is the angle between the planes $CAB$ and $DAB$.
+    *   The projection of C onto line AB is $C&#39; = (0, 0, z_C)$ and the projection of D onto line AB is $D&#39; = (0, 0, z_D)$.
+    *   The vector $C&#39;C = (2\cos\theta_C, 2\sin\theta_C, 0)$ and $D&#39;D = (1\cos\theta_D, 1\sin\theta_D, 0)$.
+    *   The dihedral angle is the angle between these two vectors in the xy-plane.
+    *   Let&#39;s set $\theta_D = 0$. Then $D = (1, 0, z_D)$.
+    *   The dihedral angle is $60^\circ$, so $\theta_C = 60^\circ$ (or $-60^\circ$, but that&#39;s symmetric).
+    *   $C = (2\cos 60^\circ, 2\sin 60^\circ, z_C) = (1, \sqrt{3}, z_C)$.
+    *   $D = (1, 0, z_D)$.
+    *   Points A and B are on the z-axis. Let A be the origin $(0,0,0)$ for simplicity (since A and B are fixed, we only need to know the distance between them, but the problem asks about $\angle CAD$ and $CD$, so A can be set at the origin). Wait, A and B are fixed points, so the line AB is fixed. Let&#39;s set A = (0,0,0) and B = (0,0,d) where $d &gt; 0$.
+
+    *   $A = (0, 0, 0)$
+    *   $C = (1, \sqrt{3}, z_C)$
+    *   $D = (1, 0, z_D)$
+    *   $C&#39; = (0, 0, z_C)$ is the projection of C on AB. $C&#39;C = \sqrt{1^2 + (\sqrt{3})^2} = 2$.
+    *   $D&#39; = (0, 0, z_D)$ is the projection of D on AB. $D&#39;D = \sqrt{1^2 + 0^2} = 1$.
+    *   The dihedral angle $C-AB-D$ is $60^\circ$.
+    *   $C = (2\cos 60^\circ, 2\sin 60^\circ, z_C) = (1, \sqrt{3}, z_C)$.
+    *   $D = (1, 0, z_D)$.
+    *   $A = (0, 0, 0)$.
+
+    *   $C = (1, \sqrt{3}, z_C)$, $D = (1, 0, z_D)$, $A = (0, 0, 0)$.
+    *   $\vec{AC} = (1, \sqrt{3}, z_C)$, $\vec{AD} = (1, 0, z_D)$.
+    *   $|\vec{AC}| = \sqrt{1 + 3 + z_C^2} = \sqrt{4 + z_C^2}$.
+    *   $|\vec{AD}| = \sqrt{1 + 0 + z_D^2} = \sqrt{1 + z_D^2}$.
+    *   $\vec{AC} \cdot \vec{AD} = 1 \cdot 1 + \sqrt{3} \cdot 0 + z_C z_D = 1 + z_C z_D$.
+    *   $\cos(\angle CAD) = \frac{1 + z_C z_D}{\sqrt{4 + z_C^2} \sqrt{1 + z_D^2}}$.
+    *   Let $z_C = 2\tan\alpha$ and $z_D = \tan\beta$.
+    *   $\cos(\angle CAD) = \frac{1 + 2\tan\alpha\tan\beta}{\sqrt{4 + 4\tan^2\alpha} \sqrt{1 + \tan^2\beta}} = \frac{1 + 2\tan\alpha\tan\beta}{2\sec\alpha \sec\beta} = \frac{1 + 2\tan\alpha\tan\beta}{2 / (\cos\alpha \cos\beta)} = \frac{1}{2} \cos\alpha \cos\beta + \tan\alpha \cos\alpha \tan\beta \cos\beta$ (Wait, that&#39;s not right).
+    *   $\cos(\angle CAD) = \frac{1 + 2\tan\alpha\tan\beta}{2 \sec\alpha \sec\beta} = \frac{1}{2} \cos\alpha \cos\beta + \sin\alpha \sin\beta$.
+    *   Wait, let&#39;s use $z_C$ and $z_D$ directly.
+    *   $\cos(\angle CAD) = \frac{1 + z_C z_D}{\sqrt{4+z_C^2}\sqrt{1+z_D^2}}$.
+    *   To find the maximum of $\cos(\angle CAD)$, we can take derivatives with respect to $z_C$ and $z_D$.
+    *   Let $f(z_C, z_D) = \frac{1 + z_C z_D}{\sqrt{4+z_C^2}\sqrt{1+z_D^2}}$.
+    *   Fix $z_D$, take the derivative with respect to $z_C$:
+        $\frac{\partial f}{\partial z_C} = \frac{z_D \sqrt{4+z_C^2}\sqrt{1+z_D^2} - (1+z_C z_D) \frac{z_C}{\sqrt{4+z_C^2}} \sqrt{1+z_D^2}}{(4+z_C^2)(1+z_D^2)} = 0$
+        $z_D(4+z_C^2) - z_C(1+z_C z_D) = 0$
+        $4z_D + z_C^2 z_D - z_C - z_C^2 z_D = 0$
+        $4z_D - z_C = 0 \implies z_C = 4z_D$.
+    *   Now substitute $z_C = 4z_D$ back into $f$:
+        $f(4z_D, z_D) = \frac{1 + 4z_D^2}{\sqrt{4+16z_D^2}\sqrt{1+z_D^2}} = \frac{1 + 4z_D^2}{2\sqrt{1+4z_D^2}\sqrt{1+z_D^2}}$.
+    *   Let $u = z_D^2 \ge 0$. Let $g(u) = \frac{1+4u}{2\sqrt{(1+4u)(1+u)}} = \frac{1}{2} \sqrt{\frac{1+4u}{1+u}} = \frac{1}{2} \sqrt{\frac{4(1+u)-3}{1+u}} = \frac{1}{2} \sqrt{4 - \frac{3}{1+u}}$.
+    *   This function $g(u)$ is increasing for $u \ge 0$.
+    *   As $u \to \infty$, $g(u) \to \frac{1}{2} \sqrt{4} = 1$.
+    *   As $u = 0$, $g(0) = \frac{1}{2} \sqrt{1} = \frac{1}{2}$.
+    *   So $1/2 \le \cos(\angle CAD) &lt; 1$.
+    *   This means $0 &lt; \angle CAD \le 60^\circ$.
+    *   Therefore, $\angle CAD \le 60^\circ$.
+    *   Statement A says $\angle CAD \ge 60^\circ$. This is generally false. It&#39;s only $60^\circ$ when $z_C = z_D = 0$.
+
+    *   Wait, let me re-check the calculation.
+        $f(z_C, z_D) = \frac{1 + z_C z_D}{\sqrt{4+z_C^2}\sqrt{1+z_D^2}}$.
+        $z_C = 0, z_D = 0 \implies f(0,0) = 1/2 \implies \angle CAD = 60^\circ$.
+        $z_C = 4, z_D = 1 \implies f(4,1) = \frac{1+4}{\sqrt{4+16}\sqrt{1+1}} = \frac{5}{\sqrt{20}\sqrt{2}} = \frac{5}{\sqrt{40}} = \frac{5}{2\sqrt{10}} = \frac{\sqrt{10}}{4} \approx \frac{3.16}{4} = 0.79$.
+        $0.79 &gt; 0.5$, so $\cos(\angle CAD)$ can be larger than $1/2$, which means $\angle CAD$ can be smaller than $60^\circ$.
+        So $\angle CAD \le 60^\circ$. A is incorrect.
+
+    *   $C = (1, \sqrt{3}, z_C)$
+    *   $D = (1, 0, z_D)$
+    *   $CD^2 = (1-1)^2 + (\sqrt{3}-0)^2 + (z_C-z_D)^2 = 3 + (z_C-z_D)^2$.
+    *   Since $(z_C-z_D)^2 \ge 0$, $CD^2 \ge 3$, so $CD \ge \sqrt{3}$.
+    *   This means statement B is correct.
+
+    *   $C = (1, \sqrt{3}, z_C)$
+    *   $D = (1, 0, z_D)$
+    *   $\vec{CD} = (1-1, 0-\sqrt{3}, z_D-z_C) = (0, -\sqrt{3}, z_D-z_C)$.
+    *   Line AB is the z-axis, so its direction vector is $\vec{v}_{AB} = (0, 0, 1)$.
+    *   $\vec{AB} \cdot \vec{CD} = (0, 0, 1) \cdot (0, -\sqrt{3}, z_D-z_C) = z_D-z_C$.
+    *   For $AB \perp CD$, we must have $z_D-z_C = 0$, so $z_D = z_C$.
+    *   Now we check if $CD \perp$ plane ABD.
+    *   Plane ABD contains the line AB (z-axis) and the point $D = (1, 0, z_D)$.
+    *   The normal to plane ABD is $\vec{n}_{ABD} = \vec{AB} \times \vec{AD} = (0, 0, 1) \times (1, 0, z_D) = (0, 1, 0)$.
+    *   Wait, let me check: $\vec{n}_{ABD} \cdot \vec{AB} = (0, 1, 0) \cdot (0, 0, 1) = 0$.
+    *   $\vec{n}_{ABD} \cdot \vec{AD} = (0, 1, 0) \cdot (1, 0, z_D) = 0$. Correct.
+    *   Now, for $CD \perp$ plane ABD, $\vec{CD}$ must be parallel to $\vec{n}_{ABD}$.
+    *   $\vec{CD} = (0, -\sqrt{3}, z_D-z_C)$.
+    *   If $z_D = z_C$, then $\vec{CD} = (0, -\sqrt{3}, 0)$.
+    *   This vector $(0, -\sqrt{3}, 0)$ is parallel to $\vec{n}_{ABD} = (0, 1, 0)$.
+    *   Therefore, if $AB \perp CD$, then $CD \perp$ plane ABD.
+    *   Statement C is correct.
+
+    *   $C = (1, \sqrt{3}, z_C)$
+    *   $D = (1, 0, z_D)$
+    *   $A = (0, 0, 0)$
+    *   Plane ACD contains A(0,0,0), C(1, $\sqrt{3}$, $z_C$), and D(1, 0, $z_D$).
+    *   The normal to plane ACD is $\vec{n}_{ACD} = \vec{AC} \times \vec{AD}$.
+    *   $\vec{AC} = (1, \sqrt{3}, z_C)$
+    *   $\vec{AD} = (1, 0, z_D)$
+    *   $\vec{n}_{ACD} = (1, \sqrt{3}, z_C) \times (1, 0, z_D) = (\sqrt{3}z_D - 0, z_C - z_D, 0 - \sqrt{3}) = (\sqrt{3}z_D, z_C-z_D, -\sqrt{3})$.
+    *   If $AB \perp$ plane ACD, then $\vec{AB} = (0, 0, 1)$ must be parallel to $\vec{n}_{ACD} = (\sqrt{3}z_D, z_C-z_D, -\sqrt{3})$.
+    *   For $(0, 0, 1)$ to be parallel to $(\sqrt{3}z_D, z_C-z_D, -\sqrt{3})$, the x and y components of $\vec{n}_{ACD}$ must be zero.
+    *   $\sqrt{3}z_D = 0 \implies z_D = 0$.
+    *   $z_C - z_D = 0 \implies z_C = z_D = 0$.
+    *   If $z_C = z_D = 0$, then $\vec{AC} = (1, \sqrt{3}, 0)$ and $\vec{AD} = (1, 0, 0)$.
+    *   Now we check if $AC \perp AD$:
+        $\vec{AC} \cdot \vec{AD} = (1, \sqrt{3}, 0) \cdot (1, 0, 0) = 1 \cdot 1 + \sqrt{3} \cdot 0 + 0 \cdot 0 = 1$.
+    *   Since $\vec{AC} \cdot \vec{AD} = 1 \ne 0$, $AC$ is not perpendicular to $AD$.
+    *   Therefore, statement D is incorrect.
+
+    *   Wait, let&#39;s re-read everything.
+    *   A: $\angle CAD \ge 60^\circ$. We found $\cos(\angle CAD) \in [1/2, 1)$, so $\angle CAD \in (0, 60^\circ]$. So $\angle CAD \le 60^\circ$. (A is incorrect)
+    *   B: $CD \ge \sqrt{3}$. We found $CD^2 = 3 + (z_C-z_D)^2 \ge 3$. (B is correct)
+    *   C: If $AB \perp CD$, then $CD \perp$ plane ABD. We found $AB \perp CD \implies z_C=z_D$, which led to $\vec{CD} = (0, -\sqrt{3}, 0)$ and $\vec{n}_{ABD} = (0, 1, 0)$. So $CD \parallel \vec{n}_{ABD}$. (C is correct)
+    *   D: If $AB \perp$ plane ACD, then $AC \perp AD$. We found $AB \perp$ plane ACD $\implies z_C=z_D=0$, then $\vec{AC} \cdot \vec{AD} = 1 \ne 0$. (D is incorrect)
+
+    *   Wait, let me double check $\vec{AC} \cdot \vec{AD}$ for $z_C = z_D = 0$.
+        $C = (1, \sqrt{3}, 0)$, $D = (1, 0, 0)$, $A = (0, 0, 0)$.
+        $\vec{AC} = (1, \sqrt{3}, 0)$, $\vec{AD} = (1, 0, 0)$.
+        $\vec{AC} \cdot \vec{AD} = 1$.
+        $\angle CAD = \arccos(1 / (\sqrt{4} \cdot \sqrt{1})) = \arccos(1/2) = 60^\circ$.
+        So $AC$ is not perpendicular to $AD$.
+
+    *   Let me re-verify statement A.
+        $\cos(\angle CAD) = \frac{1 + z_C z_D}{\sqrt{4 + z_C^2} \sqrt{1 + z_D^2}}$.
+        Is there any other case? What if $z_C$ and $z_D$ have opposite signs?
+        Let $z_C = z$ and $z_D = -z$.
+        $\cos(\angle CAD) = \frac{1 - z^2}{\sqrt{4+z^2}\sqrt{1+z^2}}$.
+        If $z$ is very large, $\cos(\angle CAD) \approx \frac{-z^2}{z \cdot z} = -1$.
+        If $\cos(\angle CAD)$ can be negative, then $\angle CAD$ can be greater than $90^\circ$.
+        Wait, let&#39;s check: if $z_C = 1$ and $z_D = -1$, then
+        $\cos(\angle CAD) = \frac{1 - 1}{\sqrt{5}\sqrt{2}} = 0 \implies \angle CAD = 90^\circ$.
+        If $z_C = 2$ and $z_D = -2$, then
+        $\cos(\angle CAD) = \frac{1 - 4}{\sqrt{8}\sqrt{5}} = \frac{-3}{\sqrt{40}} &lt; 0 \implies \angle CAD &gt; 90^\circ$.
+        So $\angle CAD$ can be $60^\circ, 90^\circ, 120^\circ, \dots$
+        Wait, the statement A is $\angle CAD \ge 60^\circ$.
+        Is it possible that $\angle CAD &lt; 60^\circ$?
+        We found $f(z_C, z_D) = \frac{1 + z_C z_D}{\sqrt{4+z_C^2}\sqrt{1+z_D^2}}$.
+        We found that the maximum value of $f(z_C, z_D)$ is 1 (as $z_C, z_D \to \infty$ with $z_C = 4z_D$).
+        If $f(z_C, z_D)$ can be greater than $1/2$, then $\angle CAD$ can be smaller than $60^\circ$.
+        $f(4, 1) = \frac{1+4}{\sqrt{20}\sqrt{2}} = \frac{5}{\sqrt{40}} = \frac{5}{2\sqrt{10}} \approx 0.79$.
+        $\cos(60^\circ) = 0.5$.
+        Since $0.79 &gt; 0.5$, $\angle CAD$ is smaller than $60^\circ$ in this case.
+        $\angle CAD = \arccos(0.79) \approx 37.8^\circ$.
+        So $\angle CAD$ can be smaller than $60^\circ$.
+        Thus, statement A is definitely incorrect.
+
+    *   Let&#39;s re-verify Statement B again.
+        $C = (1, \sqrt{3}, z_C)$
+        $D = (1, 0, z_D)$
+        $CD^2 = (1-1)^2 + (\sqrt{3}-0)^2 + (z_C-z_D)^2 = 3 + (z_C-z_D)^2 \ge 3$.
+        So $CD \ge \sqrt{3}$. This is correct.
+
+    *   Let&#39;s re-verify Statement C again.
+        $A = (0, 0, 0), B = (0, 0, d)$
+        $\vec{AB} = (0, 0, d)$
+        $C = (1, \sqrt{3}, z_C)$
+        $D = (1, 0, z_D)$
+        $\vec{CD} = (0, -\sqrt{3}, z_D-z_C)$.
+        $AB \perp CD \iff \vec{AB} \cdot \vec{CD} = d(z_D-z_C) = 0 \iff z_D = z_C$.
+        If $z_D = z_C$, $\vec{CD} = (0, -\sqrt{3}, 0)$.
+        Now let&#39;s check if $CD \perp$ plane ABD.
+        $\vec{AB} = (0, 0, d)$.
+        $\vec{AD} = (1, 0, z_D)$.
+        The normal to plane ABD is $\vec{AB} \times \vec{AD} = (0, 0, d) \times (1, 0, z_D) = (0, d, 0)$.
+        Since $\vec{CD} = (0, -\sqrt{3}, 0)$, it is parallel to $\vec{n}_{ABD} = (0, d, 0)$.
+        So $CD \perp$ plane ABD. Correct.
+
+    *   Let&#39;s re-verify Statement D again.
+        $AB \perp$ plane ACD.
+        $\vec{AB} = (0, 0, d)$.
+        The normal to plane ACD is $\vec{n}_{ACD} = \vec{AC} \times \vec{AD}$.
+        $\vec{AC} = (1, \sqrt{3}, z_C)$.
+        $\vec{AD} = (1, 0, z_D)$.
+        $\vec{n}_{ACD} = (\sqrt{3}z_D, z_C-z_D, -\sqrt{3})$.
+        $AB \perp$ plane ACD $\iff \vec{AB} \parallel \vec{n}_{ACD}$.
+        $(0, 0, d) \parallel (\sqrt{3}z_D, z_C-z_D, -\sqrt{3}) \iff \sqrt{3}z_D = 0$ and $z_C-z_D = 0$.
+        This means $z_D = 0$ and $z_C = 0$.
+        Then $\vec{AC} = (1, \sqrt{3}, 0)$ and $\vec{AD} = (1, 0, 0)$.
+        $\vec{AC} \cdot \vec{AD} = 1 \cdot 1 + \sqrt{3} \cdot 0 + 0 \cdot 0 = 1 \ne 0$.
+        So $AC$ is not perpendicular to $AD$. Correct.
+
+    *   A: Incorrect.
+    *   B: Correct.
+    *   C: Correct.
+    *   D: Incorrect.
+    *   Wait, the question says &quot;多选题&quot; (multiple-choice question), which usually means more than one answer could be correct. B and C are correct.
+
+    *   $h_C = 2$, $h_D = 1$, dihedral angle $C-AB-D = 60^\circ$.
+    *   Let line AB be the z-axis.
+    *   Point C projection $C&#39;$ on AB, $CC&#39; = 2$.
+    *   Point D projection $D&#39;$ on AB, $DD&#39; = 1$.
+    *   $\angle C&#39;CD = ?$ No, dihedral angle is the angle between planes $CAB$ and $DAB$.
+    *   The angle between these planes is the angle between the lines $C&#39;C$ and $D&#39;D$ (where $C&#39;, D&#39;$ are the projections).
+    *   Wait, the projections $C&#39;$ and $D&#39;$ are not necessarily the same point.
+    *   The lines $C&#39;C$ and $D&#39;D$ are both perpendicular to the line AB.
+    *   The dihedral angle is the angle between these two lines when they are translated to the same point on the line AB.
+    *   Let&#39;s re-draw:
+        C is at distance 2 from line AB.
+        D is at distance 1 from line AB.
+        Let line AB be the z-axis.
+        $C = (2\cos\theta, 2\sin\theta, z_C)$
+        $D = (1\cos\phi, 1\sin\phi, z_D)$
+        The dihedral angle is $|\theta - \phi| = 60^\circ$.
+        Let $\phi = 0$ and $\theta = 60^\circ$.
+        $C = (2\cos 60^\circ, 2\sin 60^\circ, z_C) = (1, \sqrt{3}, z_C)$.
+        $D = (1, 0, z_D)$.
+        This matches my coordinate setup.
+
+    *   Wait, let me double check the $\angle CAD$ part again.
+        $\vec{AC} = (1, \sqrt{3}, z_C)$
+        $\vec{AD} = (1, 0, z_D)$
+        $A = (0, 0, 0)$.
+        $\cos(\angle CAD) = \frac{1 + z_C z_D}{\sqrt{4+z_C^2}\sqrt{1+z_D^2}}$.
+        Is it possible that I should consider A as a different point?
+        Wait, A and B are *fixed points*.
+        Does that mean the distance $AB$ is fixed? Yes.
+        Does the distance $AB$ affect the result?
+        The calculations for $CD^2$, $\angle CAD$, $AB \perp CD$, $AB \perp$ plane ACD only depend on the relative positions of A, C, and D.
+        The only thing that could matter is the distance $AB$, but it&#39;s not used in any of the statements except for &quot;line AB&quot;.
+        Wait, the distance $AB$ is used to define the line AB.
+        Let&#39;s re-read. &quot;A, B are two fixed points&quot;. This means line AB is fixed.
+        Points C and D are *moving points* (&quot;动点C&quot;, &quot;动点D&quot;).
+        So $z_C$ and $z_D$ can be any real numbers.
+        Is there any constraint on $z_C$ and $z_D$ from the problem?
+        &quot;动点C到直线AB的距离为2&quot;, &quot;动点D到直线AB的距离为1&quot;.
+        This is exactly what I used ($h_C=2, h_D=1$).
+        &quot;二面角C-AB-D为60°&quot;.
+        This is exactly what I used.
+        So $z_C$ and $z_D$ are free to be any real numbers.
+
+    *   Re-checking A: $\angle CAD \ge 60^\circ$.
+        If $z_C=0, z_D=0$, $\angle CAD = 60^\circ$.
+        If $z_C=4, z_D=1$, $\cos(\angle CAD) = \frac{5}{\sqrt{20}\sqrt{2}} = \frac{5}{\sqrt{40}} \approx 0.79$.
+        Since $0.79 &gt; 0.5$, $\angle CAD &lt; 60^\circ$.
+        So A is definitely wrong.
+
+    *   Re-checking B: $CD \ge \sqrt{3}$.
+        $CD^2 = (1-1)^2 + (\sqrt{3}-0)^2 + (z_C-z_D)^2 = 3 + (z_C-z_D)^2$.
+        $CD = \sqrt{3 + (z_C-z_D)^2} \ge \sqrt{3}$.
+        So B is definitely correct.
+
+    *   Re-checking C: When $AB \perp CD$, $CD \perp$ plane ABD.
+        $AB \perp CD \iff \vec{AB} \cdot \vec{CD} = 0$.
+        $\vec{AB} = (0, 0, d)$, $\vec{CD} = (0, -\sqrt{3}, z_D-z_C)$.
+        $\vec{AB} \cdot \vec{CD} = d(z_D-z_C) = 0 \iff z_D = z_C$.
+        If $z_D = z_C$, then $\vec{CD} = (0, -\sqrt{3}, 0)$.
+        The plane ABD is formed by $A(0,0,0), B(0,0,d), D(1,0,z_D)$.
+        Normal $\vec{n}_{ABD} = \vec{AB} \times \vec{AD} = (0,0,d) \times (1,0,z_D) = (0, d, 0)$.
+        $\vec{CD} = (0, -\sqrt{3}, 0)$ is parallel to $\vec{n}_{ABD} = (0, d, 0)$.
+        So $CD \perp$ plane ABD.
+        This is definitely correct.
+
+    *   Re-checking D: When $AB \perp$ plane ACD, $AC \perp AD$.
+        $AB \perp$ plane ACD $\iff \vec{AB} \parallel \vec{n}_{ACD}$.
+        $\vec{n}_{ACD} = (\sqrt{3}z_D, z_C-z_D, -\sqrt{3})$.
+        $\vec{AB} = (0,0,d)$.
+        $\vec{AB} \parallel \vec{n}_{ACD} \iff \sqrt{3}z_D = 0$ and $z_C-z_D = 0 \iff z_C=z_D=0$.
+        If $z_C=z_D=0$, then $\vec{AC} = (1, \sqrt{3}, 0)$ and $\vec{AD} = (1, 0, 0)$.
+        $\vec{AC} \cdot \vec{AD} = 1 \ne 0$.
+        So $AC$ is not perpendicular to $AD$.
+        This is definitely incorrect.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;**\u5206\u6790\u9009\u9879 D\uff1a\u5f53 $AB \\perp$ \u5e73\u9762 $ACD$ \u65f6\uff0c$AC \\perp AD$**\n\u5e73\u9762 $ACD$ \u7684\u6cd5\u5411\u91cf $\\vec{n}_{ACD} = \\vec{AC} \\times \\vec{AD} = (1, \\sqrt{3}, z_C) \\times (1, 0, z_D) = (\\sqrt{3}z_D, z_C-z_D, -\\sqrt{3})$\u3002\n$AB \\perp$ \u5e73\u9762 $ACD \\iff \\vec{AB} \\parallel \\vec{n}_{ACD} \\iff (0, 0, d) \\parallel (\\sqrt{3}z_D, z_C-z_D, -\\sqrt{3})$\u3002\n\u8fd9\u8981\u6c42 $\\sqrt{3}z_D = 0$ \u4e14 $z_C-z_D = 0$\uff0c\u5373 $z_C = z_D = 0$\u3002\n\u6b64\u65f6 $\\vec{AC} = (1, \\sqrt{3}, 0)$\uff0c$\\vec{AD} = (1, 0, 0)$\u3002\n$\\vec{AC} \\cdot \\vec{AD} = 1 \\cdot 1 + \\sqrt{3} \\cdot 0 + 0 \\cdot 0 = 1 \\ne 0$\uff0c\u6240\u4ee5 $AC$ \u4e0d\u5782\u76f4\u4e8e $AD$\u3002\u56e0\u6b64\uff0c\u9009\u9879 D \u9519\u8bef\u3002\n\n\u7efc\u4e0a\u6240\u8ff0\uff0c\u6b63\u786e\u7b54\u6848\u4e3a B \u548c C\u3002\n\n\\boxed{BC}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_010')">
+                <td>gaokao_000_010</td>
+                <td class="correct">✓</td>
+                <td>BCD</td>
+                <td class="correct">BCD</td>
+                <td>10775</td>
+                <td>38.5</td>
+                <td>280.0</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_010" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（多选题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+11. 已知圆C_1:(x+1)^2+y^2=1，圆C_2:(x-1)^2+y^2=1，圆C_3:x^2+(y-\sqrt{3})^2=1，直线l:y=kx+b与C_1, C_2, C_3均有两个交点。记l被C_1, C_2, C_3截得的弦长分别为s_1、s_2、s_3，则（ ）
+A. k可以取任意实数
+B. 满足s_1=s_2=s_3的直线l共有3条
+C. 满足s_1+s_2+s_3=3的直线l多于3条
+D. 当b=0时，s_1+s_2+s_3的最大值为\frac{2\sqrt{21}}{3}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了解答这道数学题，我们需要逐步分析直线 $l: y = kx + b$ 与三个圆 $C_1, C_2, C_3$ 的交点及弦长。
+
+### 1. 基本参数与弦长公式
+圆的方程分别为：
+- $C_1: (x+1)^2 + y^2 = 1$，圆心 $O_1(-1, 0)$, 半径 $r_1=1$
+- $C_2: (x-1)^2 + y^2 = 1$，圆心 $O_2(1, 0)$, 半径 $r_2=1$
+- $C_3: x^2 + (y-\sqrt{3})^2 = 1$，圆心 $O_3(0, \sqrt{3})$, 半径 $r_3=1$
+
+直线 $l: kx - y + b = 0$ 到圆心的距离 $d_i$ 为：
+- $d_1 = \frac{|-k + b|}{\sqrt{k^2+1}} = \frac{|b-k|}{\sqrt{k^2+1}}$
+- $d_2 = \frac{|k + b|}{\sqrt{k^2+1}} = \frac{|b+k|}{\sqrt{k^2+1}}$
+- $d_3 = \frac{|-\sqrt{3} + b|}{\sqrt{k^2+1}} = \frac{|b-\sqrt{3}|}{\sqrt{k^2+1}}$
+
+弦长公式为 $s_i = 2\sqrt{r_i^2 - d_i^2} = 2\sqrt{1 - d_i^2}$。
+
+### 2. 选项分析
+
+**选项 A：$k$ 可以取任意实数**
+直线与三圆均有两个交点要求 $d_i &lt; 1 (i=1, 2, 3)$。
+经过计算可知，当 $|k| = \frac{1}{\sqrt{3}}$ 时，不存在 $b$ 使得 $d_1 &lt; 1, d_2 &lt; 1, d_3 &lt; 1$ 同时成立（此时 $\sqrt{3}+|k| = 2\sqrt{k^2+1}$，导致 $b$ 的取值范围为空集）。因此 A 错误。
+
+**选项 B：满足 $s_1=s_2=s_3$ 的直线 $l$ 共有 3 条**
+$s_1=s_2=s_3 \iff d_1=d_2=d_3$。
+- 若 $k=0$，则 $|b|=|b-\sqrt{3}| \implies b=\frac{\sqrt{3}}{2}$。
+- 若 $b=0$，则 $\frac{|k|}{\sqrt{k^2+1}} = \frac{\sqrt{3}}{\sqrt{k^2+1}} \implies |k|=\sqrt{3} \implies k=\pm\sqrt{3}$。
+这三条直线分别为 $y=\frac{\sqrt{3}}{2}$, $y=\sqrt{3}x$, $y=-\sqrt{3}x$。经校验均满足 $d_i &lt; 1$。因此 B 正确。
+
+**选项 C：满足 $s_1+s_2+s_3=3$ 的直线 $l$ 多于 3 条**
+已知 B 中的 3 条直线满足 $s_1=s_2=s_3=1$，故 $s_1+s_2+s_3=3$。
+考虑 $k=0$ 时，$s_1+s_2+s_3 = 4\sqrt{1-b^2} + 2\sqrt{1-(b-\sqrt{3})^2}$。
+在区间 $(\sqrt{3}-1, 1)$ 内，该函数在 $b=\frac{\sqrt{3}}{2}$ 处取得值为 3，且在该点附近并非最大值，因此在该区间内至少存在另一个 $b$ 使得和为 3。利用对称性，可得满足条件的直线多于 3 条。因此 C 正确。
+
+**选项 D：当 $b=0$ 时，$s_1+s_2+s_3$ 的最大值为 $\frac{2\sqrt{21}}{3}$**
+当 $b=0$ 时，$S = \frac{4 + 2\sqrt{k^2-2}}{\sqrt{k^2+1}}$。
+设 $v = \frac{1}{\sqrt{k^2+1}}$，则 $S = 4v + 2\sqrt{1-3v^2}$。
+求导得 $S&#39;(v) = 4 - \frac{6v}{\sqrt{1-3v^2}}$，令 $S&#39;(v)=0 \implies v = \frac{2}{\sqrt{21}}$。
+此时 $S_{max} = 4(\frac{2}{\sqrt{21}}) + 2\sqrt{1-\frac{12}{21}} = \frac{8}{\sqrt{21}} + \frac{6}{\sqrt{21}} = \frac{14}{\sqrt{21}} = \frac{2\sqrt{21}}{3}$。因此 D 正确。
+
+综合以上分析，正确选项为 B, C, D。
+
+\boxed{BCD}</pre>
+                        <b>Reasoning</b><pre>*   Circle $C_1$: $(x+1)^2 + y^2 = 1$. Center $O_1(-1, 0)$, radius $r_1=1$.
+    *   Circle $C_2$: $(x-1)^2 + y^2 = 1$. Center $O_2(1, 0)$, radius $r_2=1$.
+    *   Circle $C_3$: $x^2 + (y-\sqrt{3})^2 = 1$. Center $O_3(0, \sqrt{3})$, radius $r_3=1$.
+    *   Line $l$: $y = kx + b$, which can be rewritten as $kx - y + b = 0$.
+    *   The line $l$ must intersect each circle at two distinct points.
+    *   Chord lengths: $s_1, s_2, s_3$.
+    *   The length of a chord in a circle with radius $r$ and distance $d$ from the center to the line is $s = 2\sqrt{r^2 - d^2}$.
+    *   Since $r_1=r_2=r_3=1$, we have $s_i = 2\sqrt{1 - d_i^2}$, where $d_i$ is the distance from center $O_i$ to line $l$.
+
+    *   $d_1 = \frac{|k(-1) - 0 + b|}{\sqrt{k^2+1}} = \frac{|b-k|}{\sqrt{k^2+1}}$
+    *   $d_2 = \frac{|k(1) - 0 + b|}{\sqrt{k^2+1}} = \frac{|b+k|}{\sqrt{k^2+1}}$
+    *   $d_3 = \frac{|k(0) - \sqrt{3} + b|}{\sqrt{k^2+1}} = \frac{|b-\sqrt{3}|}{\sqrt{k^2+1}}$
+    *   The condition for $l$ to have two intersection points with each circle is $d_i &lt; 1$ for $i=1, 2, 3$.
+        - $d_1 &lt; 1 \implies (b-k)^2 &lt; k^2+1 \implies b^2 - 2bk + k^2 &lt; k^2+1 \implies b^2 - 2bk - 1 &lt; 0$
+        - $d_2 &lt; 1 \implies (b+k)^2 &lt; k^2+1 \implies b^2 + 2bk + k^2 &lt; k^2+1 \implies b^2 + 2bk - 1 &lt; 0$
+        - $d_3 &lt; 1 \implies (b-\sqrt{3})^2 &lt; k^2+1 \implies b^2 - 2\sqrt{3}b + 3 &lt; k^2+1 \implies b^2 - 2\sqrt{3}b + 2 &lt; k^2$
+
+    *   Condition for $s_1 = s_2 = s_3$:
+        - $s_1=s_2=s_3 \iff d_1=d_2=d_3$ (since $r_1=r_2=r_3=1$).
+        - $d_1 = d_2 \implies |b-k| = |b+k|$.
+            - If $b-k = b+k$, then $k=0$.
+            - If $b-k = -(b+k)$, then $b=0$.
+        - Case 1: $k=0$.
+            - $d_1 = \frac{|b|}{\sqrt{0^2+1}} = |b|$, $d_2 = \frac{|b|}{\sqrt{0^2+1}} = |b|$, $d_3 = \frac{|b-\sqrt{3}|}{\sqrt{0^2+1}} = |b-\sqrt{3}|$.
+            - $d_1 = d_3 \implies |b| = |b-\sqrt{3}|$.
+            - $b = b-\sqrt{3}$ (no solution) or $b = -(b-\sqrt{3}) = \sqrt{3}-b \implies 2b = \sqrt{3} \implies b = \frac{\sqrt{3}}{2}$.
+            - For $k=0, b=\frac{\sqrt{3}}{2}$: $d_1 = \frac{\sqrt{3}}{2} &lt; 1$, $d_2 = \frac{\sqrt{3}}{2} &lt; 1$, $d_3 = |\frac{\sqrt{3}}{2} - \sqrt{3}| = \frac{\sqrt{3}}{2} &lt; 1$. (One line: $y = \frac{\sqrt{3}}{2}$)
+        - Case 2: $b=0$.
+            - $d_1 = \frac{|-k|}{\sqrt{k^2+1}} = \frac{|k|}{\sqrt{k^2+1}}$, $d_2 = \frac{|k|}{\sqrt{k^2+1}}$, $d_3 = \frac{|-\sqrt{3}|}{\sqrt{k^2+1}} = \frac{\sqrt{3}}{\sqrt{k^2+1}}$.
+            - $d_1 = d_3 \implies \frac{|k|}{\sqrt{k^2+1}} = \frac{\sqrt{3}}{\sqrt{k^2+1}} \implies |k| = \sqrt{3} \implies k = \pm \sqrt{3}$.
+            - For $b=0, k=\pm\sqrt{3}$: $d_1 = \frac{\sqrt{3}}{\sqrt{3+1}} = \frac{\sqrt{3}}{2} &lt; 1$, $d_2 = \frac{\sqrt{3}}{2} &lt; 1$, $d_3 = \frac{\sqrt{3}}{2} &lt; 1$. (Two lines: $y = \sqrt{3}x, y = -\sqrt{3}x$)
+        - Total lines for $s_1=s_2=s_3$: $k=0, b=\frac{\sqrt{3}}{2}$ and $k=\pm\sqrt{3}, b=0$. Total is 3 lines.
+        - Therefore, B is true.
+
+    *   $s_1+s_2+s_3=3 \iff 2\sqrt{1-d_1^2} + 2\sqrt{1-d_2^2} + 2\sqrt{1-d_3^2} = 3$.
+    *   $\sqrt{1-d_1^2} + \sqrt{1-d_2^2} + \sqrt{1-d_3^2} = \frac{3}{2}$.
+    *   Let $f(k, b) = \sqrt{1-d_1^2} + \sqrt{1-d_2^2} + \sqrt{1-d_3^2}$.
+    *   We found that for $s_1=s_2=s_3$, $d_1=d_2=d_3 = \frac{\sqrt{3}}{2}$.
+    *   In that case, $\sqrt{1-d_1^2} + \sqrt{1-d_2^2} + \sqrt{1-d_3^2} = 3 \sqrt{1-\frac{3}{4}} = 3 \sqrt{\frac{1}{4}} = 3 \cdot \frac{1}{2} = \frac{3}{2}$.
+    *   So the three lines from Option B also satisfy $s_1+s_2+s_3=3$.
+    *   Are there other lines?
+    *   Let&#39;s test $b=0$:
+        - $d_1 = \frac{|k|}{\sqrt{k^2+1}}, d_2 = \frac{|k|}{\sqrt{k^2+1}}, d_3 = \frac{\sqrt{3}}{\sqrt{k^2+1}}$.
+        - $f(k, 0) = 2\sqrt{1-\frac{k^2}{k^2+1}} + \sqrt{1-\frac{3}{k^2+1}} = 2\sqrt{\frac{1}{k^2+1}} + \sqrt{\frac{k^2-2}{k^2+1}} = \frac{2 + \sqrt{k^2-2}}{\sqrt{k^2+1}}$.
+        - Let $g(k) = \frac{2 + \sqrt{k^2-2}}{\sqrt{k^2+1}}$. We want to see if $g(k) = \frac{3}{2}$ has solutions.
+        - $2 + \sqrt{k^2-2} = \frac{3}{2}\sqrt{k^2+1}$.
+        - Square both sides: $4 + (k^2-2) + 4\sqrt{k^2-2} = \frac{9}{4}(k^2+1)$.
+        - $k^2 + 2 + 4\sqrt{k^2-2} = \frac{9}{4}k^2 + \frac{9}{4}$.
+        - $4\sqrt{k^2-2} = \frac{5}{4}k^2 + \frac{1}{4} = \frac{5k^2+1}{4}$.
+        - $16(k^2-2) = (5k^2+1)^2 = 25k^4 + 10k^2 + 1$.
+        - $16k^2 - 32 = 25k^4 + 10k^2 + 1 \implies 25k^4 - 6k^2 + 33 = 0$.
+        - Let $u=k^2$. $25u^2 - 6u + 33 = 0$.
+        - Discriminant $D = 6^2 - 4(25)(33) = 36 - 3300 &lt; 0$.
+        - So for $b=0$, there are no solutions other than $k=\pm\sqrt{3}$. Wait, $k=\pm\sqrt{3}$ gave $d_1=d_2=d_3=\frac{\sqrt{3}}{2}$. Let&#39;s check $g(\sqrt{3}) = \frac{2+\sqrt{3-2}}{\sqrt{3+1}} = \frac{2+1}{2} = \frac{3}{2}$. It works.
+    *   Let&#39;s test $k=0$:
+        - $d_1 = |b|, d_2 = |b|, d_3 = |b-\sqrt{3}|$.
+        - $f(0, b) = 2\sqrt{1-b^2} + \sqrt{1-(b-\sqrt{3})^2} = \frac{3}{2}$.
+        - Let $h(b) = 2\sqrt{1-b^2} + \sqrt{1-(b-\sqrt{3})^2}$.
+        - We know $h(\frac{\sqrt{3}}{2}) = 2\sqrt{1-\frac{3}{4}} + \sqrt{1-(\frac{\sqrt{3}}{2}-\sqrt{3})^2} = 2(\frac{1}{2}) + \frac{1}{2} = \frac{3}{2}$.
+        - Let&#39;s see if $h(b) = 3/2$ has other solutions.
+        - $h(b)$ is defined for $|b| &lt; 1$ and $|b-\sqrt{3}| &lt; 1$.
+        - $|b-\sqrt{3}| &lt; 1 \implies \sqrt{3}-1 &lt; b &lt; \sqrt{3}+1$.
+        - Intersection: $\sqrt{3}-1 &lt; b &lt; 1$.
+        - $\sqrt{3}-1 \approx 1.732-1 = 0.732$. So $0.732 &lt; b &lt; 1$.
+        - Let&#39;s check the endpoints:
+            - $h(1) = 2(0) + \sqrt{1-(1-\sqrt{3})^2} = \sqrt{1-(1+3-2\sqrt{3})} = \sqrt{2\sqrt{3}-3} \approx \sqrt{3.464-3} = \sqrt{0.464} \approx 0.68$.
+            - $h(\sqrt{3}-1) = 2\sqrt{1-(\sqrt{3}-1)^2} + 0 = 2\sqrt{1-(3+1-2\sqrt{3})} = 2\sqrt{2\sqrt{3}-3} \approx 2(0.68) = 1.36$.
+        - $h(\frac{\sqrt{3}}{2}) = 1.5$.
+        - Since $h(b)$ is concave down (it&#39;s the sum of two concave functions), and the values at the endpoints are $1.36$ and $0.68$, and it reaches $1.5$ at $b=\frac{\sqrt{3}}{2}$, it should have another solution between $\sqrt{3}-1$ and $\frac{\sqrt{3}}{2}$ or between $\frac{\sqrt{3}}{2}$ and 1?
+        - Wait, $h(\sqrt{3}-1) \approx 1.36$ and $h(\frac{\sqrt{3}}{2}) = 1.5$ and $h(1) \approx 0.68$.
+        - Since $1.36 &lt; 1.5$ and $0.68 &lt; 1.5$, the function $h(b)$ increases from $1.36$ to $1.5$ and then decreases to $0.68$.
+        - So $h(b)=1.5$ might only have one solution $b=\frac{\sqrt{3}}{2}$ if the maximum is exactly $1.5$.
+        - Let&#39;s check the derivative of $h(b)$:
+            - $h&#39;(b) = 2 \cdot \frac{1}{2\sqrt{1-b^2}}(-2b) + \frac{1}{2\sqrt{1-(b-\sqrt{3})^2}}(-2(b-\sqrt{3}))$
+            - $h&#39;(b) = \frac{-2b}{\sqrt{1-b^2}} - \frac{b-\sqrt{3}}{\sqrt{1-(b-\sqrt{3})^2}}$.
+            - At $b=\frac{\sqrt{3}}{2}$:
+                - $h&#39;(\frac{\sqrt{3}}{2}) = \frac{-2(\frac{\sqrt{3}}{2})}{\sqrt{1-\frac{3}{4}}} - \frac{\frac{\sqrt{3}}{2}-\sqrt{3}}{\sqrt{1-(\frac{\sqrt{3}}{2}-\sqrt{3})^2}} = \frac{-\sqrt{3}}{1/2} - \frac{-\sqrt{3}/2}{1/2} = -2\sqrt{3} + \sqrt{3} = -\sqrt{3}$.
+                - So $b=\frac{\sqrt{3}}{2}$ is not the maximum.
+                - The maximum is where $h&#39;(b)=0$. Since $h(\sqrt{3}-1) \approx 1.36$, $h(\frac{\sqrt{3}}{2}) = 1.5$, and $h&#39;(b)$ is negative at $b=\frac{\sqrt{3}}{2}$, the maximum must be at some $b &lt; \frac{\sqrt{3}}{2}$.
+                - Thus, there must be another solution to $h(b)=1.5$ in the interval $(\sqrt{3}-1, \frac{\sqrt{3}}{2})$.
+                - So for $k=0$, we have at least two solutions: $b=\frac{\sqrt{3}}{2}$ and another $b \in (\sqrt{3}-1, \frac{\sqrt{3}}{2})$.
+    *   Wait, if there&#39;s a solution for $k=0$ and a solution for $b=0$, let&#39;s reconsider.
+    *   Let&#39;s rethink $s_1+s_2+s_3=3$. We already have 3 solutions (the lines $y = \frac{\sqrt{3}}{2}$, $y = \sqrt{3}x$, $y = -\sqrt{3}x$).
+    *   We just found that for $k=0$, there&#39;s another solution $b \in (\sqrt{3}-1, \frac{\sqrt{3}}{2})$.
+    *   Due to symmetry, there should be other solutions.
+    *   The problem asks if there are more than 3 lines. We already found one more for $k=0$.
+    *   Wait, if $k=0, b=b_0$ is a solution, then $k=0, b=b_0$ is only one line. But $k$ could be something else.
+    *   The circles $C_1, C_2, C_3$ are at the vertices of an equilateral triangle with side length 2.
+    *   The centers are $O_1(-1, 0), O_2(1, 0), O_3(0, \sqrt{3})$.
+    *   Distance $O_1O_2 = 2, O_2O_3 = \sqrt{1^2 + (\sqrt{3})^2} = 2, O_3O_1 = \sqrt{1^2 + (\sqrt{3})^2} = 2$.
+    *   This is an equilateral triangle.
+    *   The condition $s_1+s_2+s_3=3$ is $2\sum \sqrt{1-d_i^2} = 3$.
+    *   This is symmetric with respect to the equilateral triangle.
+    *   Any line that is a solution can be rotated by $120^\circ$ or $240^\circ$ around the centroid $(0, \frac{\sqrt{3}}{3})$ to get another solution.
+    *   The three lines $y = \frac{\sqrt{3}}{2}, y = \sqrt{3}x, y = -\sqrt{3}x$ are already symmetric (they are the altitudes of the triangle). No, they are not the altitudes.
+    *   Let&#39;s check:
+        - The centroid is $G(0, \frac{\sqrt{3}}{3})$.
+        - Line $l_1: y = \frac{\sqrt{3}}{2}$ is a horizontal line.
+        - Line $l_2: y = \sqrt{3}x$ passes through $(0,0)$ and $(1, \sqrt{3})$.
+        - Line $l_3: y = -\sqrt{3}x$ passes through $(0,0)$ and $(-1, \sqrt{3})$.
+        - Let&#39;s check the distance from $G$ to these lines:
+            - $d(G, l_1) = |\frac{\sqrt{3}}{2} - \frac{\sqrt{3}}{3}| = \frac{\sqrt{3}}{6}$.
+            - $d(G, l_2) = \frac{|\sqrt{3}(0) - \frac{\sqrt{3}}{3}|}{\sqrt{3+1}} = \frac{\sqrt{3}/3}{2} = \frac{\sqrt{3}}{6}$.
+            - $d(G, l_3) = \frac{|-\sqrt{3}(0) - \frac{\sqrt{3}}{3}|}{\sqrt{3+1}} = \frac{\sqrt{3}/3}{2} = \frac{\sqrt{3}}{6}$.
+        - These three lines are at the same distance from the centroid and are $120^\circ$ apart.
+        - Now, for $k=0$, we found another solution $b \in (\sqrt{3}-1, \frac{\sqrt{3}}{2})$.
+        - Let&#39;s call this line $l_4$. Rotating $l_4$ by $120^\circ$ and $240^\circ$ around $G$ will give $l_5$ and $l_6$.
+        - So there are at least $3 + 3 = 6$ lines.
+        - Thus, C is true.
+
+    *   If $b=0$, the line is $y = kx$.
+    *   $d_1 = \frac{|-k|}{\sqrt{k^2+1}}, d_2 = \frac{|k|}{\sqrt{k^2+1}}, d_3 = \frac{|-\sqrt{3}|}{\sqrt{k^2+1}}$.
+    *   $s_1 = 2\sqrt{1 - \frac{k^2}{k^2+1}} = \frac{2}{\sqrt{k^2+1}}$.
+    *   $s_2 = 2\sqrt{1 - \frac{k^2}{k^2+1}} = \frac{2}{\sqrt{k^2+1}}$.
+    *   $s_3 = 2\sqrt{1 - \frac{3}{k^2+1}} = 2\sqrt{\frac{k^2-2}{k^2+1}}$.
+    *   We want to maximize $S = s_1+s_2+s_3 = \frac{4 + 2\sqrt{k^2-2}}{\sqrt{k^2+1}}$.
+    *   For $s_3$ to be defined, we need $k^2 \ge 2$.
+    *   Also, $l$ must have two intersection points with $C_3$, so $d_3 &lt; 1 \implies \frac{\sqrt{3}}{\sqrt{k^2+1}} &lt; 1 \implies k^2+1 &gt; 3 \implies k^2 &gt; 2$.
+    *   Let $u = \sqrt{k^2+1}$. Since $k^2 &gt; 2$, $u &gt; \sqrt{3}$.
+    *   Then $k^2-2 = u^2-3$.
+    *   $S = \frac{4 + 2\sqrt{u^2-3}}{u} = \frac{4}{u} + 2\sqrt{1 - \frac{3}{u^2}}$.
+    *   Let $v = \frac{1}{u}$. Since $u &gt; \sqrt{3}$, $0 &lt; v &lt; \frac{1}{\sqrt{3}}$.
+    *   $S(v) = 4v + 2\sqrt{1-3v^2}$.
+    *   To find the maximum, take the derivative with respect to $v$:
+        - $S&#39;(v) = 4 + 2 \cdot \frac{1}{2\sqrt{1-3v^2}} \cdot (-6v) = 4 - \frac{6v}{\sqrt{1-3v^2}}$.
+        - Set $S&#39;(v) = 0 \implies 4 = \frac{6v}{\sqrt{1-3v^2}} \implies 2 = \frac{3v}{\sqrt{1-3v^2}}$.
+        - $4(1-3v^2) = 9v^2 \implies 4 - 12v^2 = 9v^2 \implies 21v^2 = 4 \implies v^2 = \frac{4}{21} \implies v = \frac{2}{\sqrt{21}}$.
+    *   Check if $v = \frac{2}{\sqrt{21}}$ is in the interval $(0, \frac{1}{\sqrt{3}})$.
+        - $\frac{2}{\sqrt{21}}$ vs $\frac{1}{\sqrt{3}} = \frac{\sqrt{7}}{\sqrt{21}}$.
+        - Since $2 &lt; \sqrt{7} \approx 2.645$, $v = \frac{2}{\sqrt{21}}$ is in the interval.
+    *   Now find the maximum value of $S$:
+        - $S_{max} = 4(\frac{2}{\sqrt{21}}) + 2\sqrt{1 - 3(\frac{4}{21})} = \frac{8}{\sqrt{21}} + 2\sqrt{1 - \frac{4}{7}} = \frac{8}{\sqrt{21}} + 2\sqrt{\frac{3}{7}} = \frac{8}{\sqrt{21}} + 2\frac{\sqrt{3}}{\sqrt{7}} = \frac{8}{\sqrt{21}} + \frac{2\sqrt{9}}{\sqrt{21}} = \frac{8 + 6}{\sqrt{21}} = \frac{14}{\sqrt{21}} = \frac{14\sqrt{21}}{21} = \frac{2\sqrt{21}}{3}$.
+    *   So D is true.
+
+    *   The line $l$ must intersect $C_1, C_2, C_3$ each at two points.
+    *   $d_1 &lt; 1, d_2 &lt; 1, d_3 &lt; 1$.
+    *   $d_1^2 = \frac{(b-k)^2}{k^2+1} &lt; 1 \implies b^2-2bk+k^2 &lt; k^2+1 \implies b^2-2bk-1 &lt; 0$.
+    *   $d_2^2 = \frac{(b+k)^2}{k^2+1} &lt; 1 \implies b^2+2bk-1 &lt; 0$.
+    *   $d_3^2 = \frac{(b-\sqrt{3})^2}{k^2+1} &lt; 1 \implies b^2-2\sqrt{3}b+3 &lt; k^2+1 \implies k^2 &gt; b^2-2\sqrt{3}b+2$.
+    *   From $b^2-2bk-1 &lt; 0$ and $b^2+2bk-1 &lt; 0$:
+        - $2bk &lt; 1-b^2$ and $-2bk &lt; 1-b^2$.
+        - This means $|2bk| &lt; 1-b^2$.
+        - For this to be possible, we must have $1-b^2 &gt; 0$, so $|b| &lt; 1$.
+        - Then $|k| &lt; \frac{1-b^2}{2|b|}$ (if $b \ne 0$).
+    *   Now we also need $k^2 &gt; b^2-2\sqrt{3}b+2$.
+    *   So for a given $b \in (-1, 1)$, we need to see if there is a $k$ such that:
+        - $b^2-2\sqrt{3}b+2 &lt; k^2 &lt; \left(\frac{1-b^2}{2b}\right)^2$.
+    *   Let&#39;s see if this is possible for any $k$.
+    *   Wait, the question is &quot;k can take any real number&quot;. This means for any $k \in \mathbb{R}$, there exists $b \in \mathbb{R}$ such that the line $l: y=kx+b$ intersects all three circles.
+    *   Wait, that&#39;s not what &quot;k can take any real number&quot; usually means. It usually means &quot;For all $k \in \mathbb{R}$, there exists $b$&quot;. But it could also mean &quot;The set of all $k$ for which there exists $b$ such that... is $\mathbb{R}$&quot;.
+    *   Let&#39;s check if for any $k$, we can find such a $b$.
+    *   We have the conditions:
+        1) $b^2-2bk-1 &lt; 0$
+        2) $b^2+2bk-1 &lt; 0$
+        3) $b^2-2\sqrt{3}b+2 &lt; k^2$
+    *   From (1) and (2), we need $b^2-1 &lt; 2bk$ and $b^2-1 &lt; -2bk$.
+    *   This means $b^2-1 &lt; -|2bk|$.
+    *   If $b=0$, we need $-1 &lt; 0$ (true) and $2 &lt; k^2$.
+        - So if $k^2 &gt; 2$, $b=0$ works.
+    *   What if $k$ is small, say $k=0$?
+        - Then we need $b^2-1 &lt; 0$ (so $|b| &lt; 1$) and $b^2-2\sqrt{3}b+2 &lt; 0$.
+        - $b^2-2\sqrt{3}b+2 = 0 \implies b = \frac{2\sqrt{3} \pm \sqrt{12-8}}{2} = \frac{2\sqrt{3} \pm 2}{2} = \sqrt{3} \pm 1$.
+        - The parabola $b^2-2\sqrt{3}b+2$ is negative between $\sqrt{3}-1$ and $\sqrt{3}+1$.
+        - So we need $b \in (\sqrt{3}-1, \sqrt{3}+1)$.
+        - Combined with $|b| &lt; 1$, we need $b \in (\sqrt{3}-1, 1)$.
+        - Since $\sqrt{3}-1 \approx 0.732 &lt; 1$, such $b$ exists for $k=0$.
+    *   What if $k$ is very large?
+        - If $k$ is large, $k^2 &gt; b^2-2\sqrt{3}b+2$ is easy to satisfy for $b \in (-1, 1)$.
+        - We just need $|2bk| &lt; 1-b^2$.
+        - If $k$ is very large, we need $b$ to be very small.
+        - As $b \to 0$, $1-b^2 \to 1$ and $2bk \to 0$.
+        - So for any $k$, we can pick $b$ small enough such that $|2bk| &lt; 1-b^2$ and $k^2 &gt; b^2-2\sqrt{3}b+2$.
+        - Let&#39;s check: if $b=0$, we need $k^2 &gt; 2$.
+        - If $k^2 \le 2$, can we find $b$ such that $|2bk| &lt; 1-b^2$ and $b^2-2\sqrt{3}b+2 &lt; k^2$?
+        - Let $k=1$.
+            - $|2b| &lt; 1-b^2 \implies b^2+2|b|-1 &lt; 0 \implies |b| &lt; \sqrt{2}-1 \approx 0.414$.
+            - $b^2-2\sqrt{3}b+2 &lt; 1 \implies b^2-2\sqrt{3}b+1 &lt; 0$.
+            - Roots: $b = \frac{2\sqrt{3} \pm \sqrt{12-4}}{2} = \sqrt{3} \pm \sqrt{2}$.
+            - $\sqrt{3}-\sqrt{2} \approx 1.732-1.414 = 0.318$.
+            - $\sqrt{3}+\sqrt{2} \approx 1.732+1.414 = 3.146$.
+            - So $b$ must be in $(0.318, 3.146)$.
+            - Combined with $|b| &lt; 0.414$, we have $b \in (0.318, 0.414)$.
+            - This interval is non-empty, so $k=1$ works.
+        - Let&#39;s check for any $k$. We need to find $b$ such that:
+            - $b^2+2|bk|-1 &lt; 0 \iff |b| &lt; \frac{-2|k| + \sqrt{4k^2+4}}{2} = \sqrt{k^2+1}-|k|$.
+            - $b^2-2\sqrt{3}b+2-k^2 &lt; 0$.
+            - The second condition requires $b$ to be between the roots of $b^2-2\sqrt{3}b+2-k^2=0$:
+                $b = \frac{2\sqrt{3} \pm \sqrt{12-4(2-k^2)}}{2} = \sqrt{3} \pm \sqrt{3-2+k^2} = \sqrt{3} \pm \sqrt{k^2+1}$.
+            - So we need $\sqrt{3} - \sqrt{k^2+1} &lt; b &lt; \sqrt{3} + \sqrt{k^2+1}$.
+            - So we need to find $b$ such that:
+                $\max(-\sqrt{k^2+1}+|k|, \sqrt{3}-\sqrt{k^2+1}) &lt; b &lt; \min(\sqrt{k^2+1}-|k|, \sqrt{3}+\sqrt{k^2+1})$.
+            - For such a $b$ to exist, we need:
+                1) $-\sqrt{k^2+1}+|k| &lt; \sqrt{k^2+1}-|k|$ (always true)
+                2) $\sqrt{3}-\sqrt{k^2+1} &lt; \sqrt{k^2+1}-|k| \implies \sqrt{3}+|k| &lt; 2\sqrt{k^2+1}$
+                3) $-\sqrt{k^2+1}+|k| &lt; \sqrt{3}+\sqrt{k^2+1} \implies |k|-2\sqrt{k^2+1} &lt; \sqrt{3}$ (always true)
+                4) $\sqrt{3}-\sqrt{k^2+1} &lt; \sqrt{3}+\sqrt{k^2+1}$ (always true)
+            - Let&#39;s check condition (2): $\sqrt{3}+|k| &lt; 2\sqrt{k^2+1}$.
+                - Square both sides: $3 + 2\sqrt{3}|k| + k^2 &lt; 4(k^2+1) = 4k^2 + 4$.
+                - $3k^2 - 2\sqrt{3}|k| + 1 &gt; 0$.
+                - Let $x = |k|$. $3x^2 - 2\sqrt{3}x + 1 = (\sqrt{3}x-1)^2$.
+                - So we need $(\sqrt{3}|k|-1)^2 &gt; 0$.
+                - This is true for all $k$ except $\sqrt{3}|k|=1 \implies |k| = \frac{1}{\sqrt{3}}$.
+            - Wait, if $|k| = \frac{1}{\sqrt{3}}$, does there exist a $b$?
+                - If $|k| = \frac{1}{\sqrt{3}}$, then $\sqrt{3}+|k| = \sqrt{3} + \frac{1}{\sqrt{3}} = \frac{3+1}{\sqrt{3}} = \frac{4}{\sqrt{3}}$.
+                - And $2\sqrt{k^2+1} = 2\sqrt{\frac{1}{3}+1} = 2\sqrt{\frac{4}{3}} = \frac{4}{\sqrt{3}}$.
+                - So $\sqrt{3}+|k| = 2\sqrt{k^2+1}$.
+                - In this case, the lower bound $\sqrt{3}-\sqrt{k^2+1}$ and the upper bound $\sqrt{k^2+1}-|k|$ are the same:
+                    - $\sqrt{3}-\sqrt{k^2+1} = \sqrt{3}-\frac{2}{\sqrt{3}} = \frac{3-2}{\sqrt{3}} = \frac{1}{\sqrt{3}}$.
+                    - $\sqrt{k^2+1}-|k| = \frac{2}{\sqrt{3}}-\frac{1}{\sqrt{3}} = \frac{1}{\sqrt{3}}$.
+                - So we need $\frac{1}{\sqrt{3}} &lt; b &lt; \frac{1}{\sqrt{3}}$, which is impossible.
+                - Thus, $k$ cannot be $\pm \frac{1}{\sqrt{3}}$.
+                - So Option A is false.
+
+    *   Symmetry: The circles are at $(-1,0), (1,0), (0, \sqrt{3})$.
+    *   These are the vertices of an equilateral triangle.
+    *   The lines $l_1: y = \frac{\sqrt{3}}{2}, l_2: y = \sqrt{3}x, l_3: y = -\sqrt{3}x$ all have $s_1=s_2=s_3 = 2\sqrt{1-(\frac{\sqrt{3}}{2})^2} = 2\sqrt{1/4} = 1$.
+    *   $s_1+s_2+s_3 = 1+1+1 = 3$.
+    *   And they have $d_1=d_2=d_3 = \frac{\sqrt{3}}{2} &lt; 1$, so they each have two intersection points.
+    *   Are there any others? $d_1=d_2=d_3$ means the line is equidistant from the three centers.
+    *   The set of points equidistant from two points is the perpendicular bisector.
+    *   The line $l$ is equidistant from $O_1, O_2, O_3$ if $d_1=d_2=d_3$.
+    *   $d_1=d_2 \implies l$ is parallel to $O_1O_2$ or $l$ passes through the midpoint of $O_1O_2$.
+        - Midpoint of $O_1O_2$ is $(0,0)$.
+        - Parallel to $O_1O_2$: $k=0$.
+        - Through $(0,0)$: $b=0$.
+    *   If $k=0$, then $d_1=|b|, d_2=|b|, d_3=|b-\sqrt{3}|$. $d_1=d_3 \implies b=\frac{\sqrt{3}}{2}$. (1 line)
+    *   If $b=0$, then $d_1=\frac{|k|}{\sqrt{k^2+1}}, d_2=\frac{|k|}{\sqrt{k^2+1}}, d_3=\frac{\sqrt{3}}{\sqrt{k^2+1}}$. $d_1=d_3 \implies |k|=\sqrt{3}$. (2 lines)
+    *   What about the cases where the line is not on the same side of the centers?
+    *   Actually, $d_1=d_2=d_3$ means the distance is the same, but the center could be on either side of the line.
+    *   $d_1=d_2 \implies |b-k|=|b+k| \implies b=0$ or $k=0$.
+    *   $d_1=d_3 \implies |b-k|=|b-\sqrt{3}| \implies b-k = b-\sqrt{3}$ (so $k=\sqrt{3}$) or $b-k = \sqrt{3}-b$ (so $2b-k=\sqrt{3}$).
+    *   Let&#39;s check $k=\sqrt{3}$. Then $d_1 = \frac{|b-\sqrt{3}|}{\sqrt{3+1}} = \frac{|b-\sqrt{3}|}{2}$, $d_2 = \frac{|b+\sqrt{3}|}{2}$, $d_3 = \frac{|b-\sqrt{3}|}{2}$.
+        - $d_1=d_2 \implies |b-\sqrt{3}| = |b+\sqrt{3}| \implies b=0$. (We already have $b=0, k=\sqrt{3}$)
+    *   Let&#39;s check $2b-k=\sqrt{3}$. Then $k=2b-\sqrt{3}$.
+        - $d_1 = \frac{|b-(2b-\sqrt{3})|}{\sqrt{(2b-\sqrt{3})^2+1}} = \frac{|-b+\sqrt{3}|}{\sqrt{(2b-\sqrt{3})^2+1}}$.
+        - $d_2 = \frac{|b+(2b-\sqrt{3})|}{\sqrt{(2b-\sqrt{3})^2+1}} = \frac{|3b-\sqrt{3}|}{\sqrt{(2b-\sqrt{3})^2+1}}$.
+        - $d_3 = \frac{|b-\sqrt{3}|}{\sqrt{(2b-\sqrt{3})^2+1}}$.
+        - $d_1=d_2 \implies |-b+\sqrt{3}| = |3b-\sqrt{3}|$.
+            - $-b+\sqrt{3} = 3b-\sqrt{3} \implies 4b=2\sqrt{3} \implies b=\frac{\sqrt{3}}{2}$.
+                - $k = 2(\frac{\sqrt{3}}{2})-\sqrt{3} = 0$. (We already have $k=0, b=\frac{\sqrt{3}}{2}$)
+            - $-b+\sqrt{3} = -(3b-\sqrt{3}) = -3b+\sqrt{3} \implies 2b=0 \implies b=0$.
+                - $k = 2(0)-\sqrt{3} = -\sqrt{3}$. (We already have $b=0, k=-\sqrt{3}$)
+    *   So only 3 lines satisfy $s_1=s_2=s_3$. Option B is true.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;\n**\u9009\u9879 D\uff1a\u5f53 $b=0$ \u65f6\uff0c$s_1+s_2+s_3$ \u7684\u6700\u5927\u503c\u4e3a $\\frac{2\\sqrt{21}}{3}$**\n\u5f53 $b=0$ \u65f6\uff0c$S = \\frac{4 + 2\\sqrt{k^2-2}}{\\sqrt{k^2+1}}$\u3002\n\u8bbe $v = \\frac{1}{\\sqrt{k^2+1}}$\uff0c\u5219 $S = 4v + 2\\sqrt{1-3v^2}$\u3002\n\u6c42\u5bfc\u5f97 $S&#39;(v) = 4 - \\frac{6v}{\\sqrt{1-3v^2}}$\uff0c\u4ee4 $S&#39;(v)=0 \\implies v = \\frac{2}{\\sqrt{21}}$\u3002\n\u6b64\u65f6 $S_{max} = 4(\\frac{2}{\\sqrt{21}}) + 2\\sqrt{1-\\frac{12}{21}} = \\frac{8}{\\sqrt{21}} + \\frac{6}{\\sqrt{21}} = \\frac{14}{\\sqrt{21}} = \\frac{2\\sqrt{21}}{3}$\u3002\u56e0\u6b64 D \u6b63\u786e\u3002\n\n\u7efc\u5408\u4ee5\u4e0a\u5206\u6790\uff0c\u6b63\u786e\u9009\u9879\u4e3a B, C, D\u3002\n\n\\boxed{BCD}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_011')">
+                <td>gaokao_000_011</td>
+                <td class="correct">✓</td>
+                <td>\frac{\sqrt{66}}{6}</td>
+                <td class="correct">\frac{\sqrt{66}}{6}</td>
+                <td>1457</td>
+                <td>47.8</td>
+                <td>30.5</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_011" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（填空题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+12. 双曲线5x^2 - 6y^2 = 1的离心率为__________.
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了求出双曲线 $5x^2 - 6y^2 = 1$ 的离心率，我们可以按照以下步骤进行：
+
+1.  **将方程化为标准形式**：
+    双曲线的标准方程形式为 $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$（横轴为实轴）或 $\frac{y^2}{a^2} - \frac{x^2}{b^2} = 1$（纵轴为实轴）。
+    给定方程为 $5x^2 - 6y^2 = 1$，可以写成：
+    $$\frac{x^2}{\frac{1}{5}} - \frac{y^2}{\frac{1}{6}} = 1$$
+    由此可知，这是一个焦点在 $x$ 轴上的双曲线，其中：
+    $$a^2 = \frac{1}{5}, \quad b^2 = \frac{1}{6}$$
+
+2.  **计算 $c^2$**：
+    对于双曲线，焦距 $c$ 与实半轴 $a$ 和虚半轴 $b$ 的关系为 $c^2 = a^2 + b^2$。
+    $$c^2 = \frac{1}{5} + \frac{1}{6} = \frac{6 + 5}{30} = \frac{11}{30}$$
+
+3.  **计算离心率 $e$**：
+    离心率的定义公式为 $e = \frac{c}{a}$。
+    我们可以先计算 $e^2$：
+    $$e^2 = \frac{c^2}{a^2} = \frac{\frac{11}{30}}{\frac{1}{5}} = \frac{11}{30} \times 5 = \frac{11}{6}$$
+    因此，离心率 $e$ 为：
+    $$e = \sqrt{\frac{11}{6}} = \frac{\sqrt{11}}{\sqrt{6}} = \frac{\sqrt{66}}{6}$$
+
+最终答案为 $\frac{\sqrt{66}}{6}$ 或 $\sqrt{\frac{11}{6}}$。通常习惯写成最简根式形式。
+
+\boxed{\frac{\sqrt{66}}{6}}</pre>
+                        <b>Reasoning</b><pre>The problem asks for the eccentricity of the hyperbola given by the equation $5x^2 - 6y^2 = 1$.
+
+    The standard forms of a hyperbola centered at the origin are:
+    *   Horizontal transverse axis: $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$
+    *   Vertical transverse axis: $\frac{y^2}{a^2} - \frac{x^2}{b^2} = 1$
+
+    The given equation is $5x^2 - 6y^2 = 1$.
+    This can be rewritten as:
+    $\frac{x^2}{1/5} - \frac{y^2}{1/6} = 1$
+
+    Comparing $\frac{x^2}{1/5} - \frac{y^2}{1/6} = 1$ with $\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1$:
+    *   $a^2 = 1/5$
+    *   $b^2 = 1/6$
+
+    For a hyperbola, the relationship between $a, b,$ and $c$ (where $c$ is the distance from the center to a focus) is:
+    $c^2 = a^2 + b^2$
+
+    Substituting the values:
+    $c^2 = \frac{1}{5} + \frac{1}{6}$
+    $c^2 = \frac{6 + 5}{30} = \frac{11}{30}$
+
+    The formula for the eccentricity $e$ of a hyperbola is:
+    $e = \frac{c}{a}$
+
+    Wait, first let&#39;s calculate $c$:
+    $c = \sqrt{\frac{11}{30}}$
+    And $a = \sqrt{\frac{1}{5}}$.
+
+    Now calculate $e$:
+    $e = \frac{\sqrt{11/30}}{\sqrt{1/5}} = \sqrt{\frac{11/30}{1/5}} = \sqrt{\frac{11}{30} \cdot 5} = \sqrt{\frac{11}{6}}$
+
+    Alternatively, $e^2 = \frac{c^2}{a^2} = \frac{a^2 + b^2}{a^2} = 1 + \frac{b^2}{a^2}$.
+    $e^2 = 1 + \frac{1/6}{1/5} = 1 + \frac{5}{6} = \frac{6+5}{6} = \frac{11}{6}$.
+    $e = \sqrt{\frac{11}{6}}$.
+
+    $e = \sqrt{\frac{11}{6}} = \frac{\sqrt{11}}{\sqrt{6}} = \frac{\sqrt{11} \cdot \sqrt{6}}{6} = \frac{\sqrt{66}}{6}$.
+
+    *   Equation: $5x^2 - 6y^2 = 1$.
+    *   Standard form: $\frac{x^2}{1/5} - \frac{y^2}{1/6} = 1$. Correct.
+    *   $a^2 = 1/5$, $b^2 = 1/6$. Correct.
+    *   $c^2 = a^2 + b^2 = 1/5 + 1/6 = 11/30$. Correct.
+    *   $e = c/a = \sqrt{(11/30) / (1/5)} = \sqrt{11/6}$. Correct.
+    *   Simplification: $\sqrt{11/6} = \frac{\sqrt{66}}{6}$. Correct.
+
+    The answer can be expressed as $\sqrt{\frac{11}{6}}$ or $\frac{\sqrt{66}}{6}$. Usually, simplified radicals are preferred. Let&#39;s check if there are any other possible interpretations of the question. No, it&#39;s straightforward.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;3.  **\u8ba1\u7b97\u79bb\u5fc3\u7387 $e$**\uff1a\n    \u79bb\u5fc3\u7387\u7684\u5b9a\u4e49\u516c\u5f0f\u4e3a $e = \\frac{c}{a}$\u3002\n    \u6211\u4eec\u53ef\u4ee5\u5148\u8ba1\u7b97 $e^2$\uff1a\n    $$e^2 = \\frac{c^2}{a^2} = \\frac{\\frac{11}{30}}{\\frac{1}{5}} = \\frac{11}{30} \\times 5 = \\frac{11}{6}$$\n    \u56e0\u6b64\uff0c\u79bb\u5fc3\u7387 $e$ \u4e3a\uff1a\n    $$e = \\sqrt{\\frac{11}{6}} = \\frac{\\sqrt{11}}{\\sqrt{6}} = \\frac{\\sqrt{66}}{6}$$\n\n\u6700\u7ec8\u7b54\u6848\u4e3a $\\frac{\\sqrt{66}}{6}$ \u6216 $\\sqrt{\\frac{11}{6}}$\u3002\u901a\u5e38\u4e60\u60ef\u5199\u6210\u6700\u7b80\u6839\u5f0f\u5f62\u5f0f\u3002\n\n\\boxed{\\frac{\\sqrt{66}}{6}}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_012')">
+                <td>gaokao_000_012</td>
+                <td class="incorrect">✗</td>
+                <td>\frac{3\pi}{2}, 1</td>
+                <td class="incorrect">\theta = \frac{3\pi}{2}, f(\frac{2\pi}{3}) = 1</td>
+                <td>7886</td>
+                <td>39.2</td>
+                <td>201.0</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_012" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（填空题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+13. 已知f(x)=2sin(ax+\theta) (a \in Z, 0 \le \theta &lt; 2\pi)是偶函数，f(x)在区间(0, \frac{\pi}{2})单调递增。则\theta =__________，f(\frac{2\pi}{3}) =__________.
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了求得$\theta$和$f(\frac{2\pi}{3})$，我们根据题目给出的条件逐步推理。
+
+### 1. 利用偶函数的性质确定$\theta$
+已知 $f(x) = 2\sin(ax + \theta)$ 是偶函数，则对于任意 $x$，都有 $f(x) = f(-x)$。
+$$2\sin(ax + \theta) = 2\sin(-ax + \theta)$$
+利用正弦函数的展开公式 $\sin(A+B) = \sin A \cos B + \cos A \sin B$：
+$$\sin(ax)\cos\theta + \cos(ax)\sin\theta = \sin(-ax)\cos\theta + \cos(-ax)\sin\theta$$
+由于 $\sin(-ax) = -\sin(ax)$ 且 $\cos(-ax) = \cos(ax)$，上述等式变为：
+$$\sin(ax)\cos\theta + \cos(ax)\sin\theta = -\sin(ax)\cos\theta + \cos(ax)\sin\theta$$
+$$2\sin(ax)\cos\theta = 0$$
+要使该等式对所有 $x$ 成立，必须有 $\cos\theta = 0$（因为 $a \in \mathbb{Z}$ 且若 $a=0$，函数为常数，不符合单调递增的常规理解，且无法唯一确定 $\theta$）。
+在区间 $0 \le \theta &lt; 2\pi$ 内，$\cos\theta = 0$ 的解为：
+$$\theta = \frac{\pi}{2} \quad \text{或} \quad \theta = \frac{3\pi}{2}$$
+
+### 2. 利用单调递增条件确定$\theta$和$a$
+*   **情况1：$\theta = \frac{\pi}{2}$**
+    $f(x) = 2\sin(ax + \frac{\pi}{2}) = 2\cos(ax)$
+    其导数为 $f&#39;(x) = -2a\sin(ax)$。
+    若 $f(x)$ 在 $(0, \frac{\pi}{2})$ 上单调递增，则 $f&#39;(x) \ge 0$，即 $a\sin(ax) \le 0$。
+    - 若 $a &gt; 0$，则 $\sin(ax) \le 0$。对于 $x \in (0, \frac{\pi}{2})$， $ax \in (0, \frac{a\pi}{2})$。正弦函数在 $(0, \pi)$ 上为正，无法满足 $\sin(ax) \le 0$。
+    - 若 $a &lt; 0$，令 $a = -m$ ($m &gt; 0$)，则 $f&#39;(x) = 2m\sin(-mx) = -2m\sin(mx)$。同理，$\sin(mx) \le 0$ 在 $(0, \frac{m\pi}{2})$ 上无法成立。
+    因此 $\theta = \frac{\pi}{2}$ 不成立。
+
+*   **情况2：$\theta = \frac{3\pi}{2}$**
+    $f(x) = 2\sin(ax + \frac{3\pi}{2}) = -2\cos(ax)$
+    其导数为 $f&#39;(x) = 2a\sin(ax)$。
+    若 $f(x)$ 在 $(0, \frac{\pi}{2})$ 上单调递增，则 $f&#39;(x) \ge 0$，即 $a\sin(ax) \ge 0$。
+    - 若 $a &gt; 0$，则 $\sin(ax) \ge 0$。对于 $x \in (0, \frac{\pi}{2})$，$ax \in (0, \frac{a\pi}{2})$。要使 $\sin(ax) \ge 0$，需 $\frac{a\pi}{2} \le \pi \implies a \le 2$。由于 $a \in \mathbb{Z}^+$，则 $a = 1$ 或 $a = 2$。
+    - 若 $a &lt; 0$，令 $a = -m$ ($m &gt; 0$)，则 $f&#39;(x) = -2m\sin(-mx) = 2m\sin(mx)$。要使 $f&#39;(x) \ge 0$，需 $\sin(mx) \ge 0 \implies \frac{m\pi}{2} \le \pi \implies m \le 2$。则 $a = -1$ 或 $a = -2$。
+
+综上所述，$\theta = \frac{3\pi}{2}$，且 $a \in \{1, 2, -1, -2\}$。
+
+### 3. 计算 $f(\frac{2\pi}{3})$
+已知 $f(x) = -2\cos(ax)$，代入 $x = \frac{2\pi}{3}$：
+- 若 $a = \pm 1$，$f(\frac{2\pi}{3}) = -2\cos(\pm \frac{2\pi}{3}) = -2(-\frac{1}{2}) = 1$。
+- 若 $a = \pm 2$，$f(\frac{2\pi}{3}) = -2\cos(\pm \frac{4\pi}{3}) = -2(-\frac{1}{2}) = 1$。
+无论 $a$ 取上述哪个值，结果均为 1。
+
+\boxed{\theta = \frac{3\pi}{2}, f(\frac{2\pi}{3}) = 1}</pre>
+                        <b>Reasoning</b><pre>*   $f(x) = 2\sin(ax + \theta)$
+    *   $a \in \mathbb{Z}$ (a is an integer)
+    *   $0 \le \theta &lt; 2\pi$
+    *   $f(x)$ is an even function.
+    *   $f(x)$ is monotonically increasing on the interval $(0, \frac{\pi}{2})$.
+    *   Find $\theta$ and $f(\frac{2\pi}{3})$.
+
+    *   An even function satisfies $f(-x) = f(x)$ for all $x$.
+    *   $f(-x) = 2\sin(-ax + \theta)$
+    *   $f(x) = 2\sin(ax + \theta)$
+    *   So, $\sin(-ax + \theta) = \sin(ax + \theta)$ for all $x$.
+    *   Using the identity $\sin A = \sin B$, we have:
+        1) $-ax + \theta = ax + \theta + 2k\pi \implies -2ax = 2k\pi \implies ax = -k\pi$. (This cannot be true for all $x$ unless $a=0$, but $a=0$ makes $f(x)$ a constant, and the problem says it&#39;s monotonically increasing on $(0, \frac{\pi}{2})$, so $a \neq 0$).
+        2) $-ax + \theta = \pi - (ax + \theta) + 2k\pi \implies -ax + \theta = \pi - ax - \theta + 2k\pi \implies 2\theta = \pi + 2k\pi \implies \theta = \frac{\pi}{2} + k\pi$.
+
+    *   Since $0 \le \theta &lt; 2\pi$, $\theta$ can be $\frac{\pi}{2}$ or $\frac{3\pi}{2}$.
+
+    *   Case 1: $\theta = \frac{\pi}{2}$
+        $f(x) = 2\sin(ax + \frac{\pi}{2}) = 2\cos(ax)$.
+    *   Case 2: $\theta = \frac{3\pi}{2}$
+        $f(x) = 2\sin(ax + \frac{3\pi}{2}) = -2\cos(ax)$.
+
+    *   $f(x)$ is monotonically increasing on $(0, \frac{\pi}{2})$.
+
+    *   Subcase 1: $\theta = \frac{\pi}{2}$
+        $f(x) = 2\cos(ax)$.
+        For $f(x) = 2\cos(ax)$ to be increasing on $(0, \frac{\pi}{2})$, the argument $ax$ must be in a range where the cosine function is decreasing (because of the coefficient 2) - wait, that&#39;s not right.
+        $\cos(u)$ is decreasing on $(0, \pi)$, $(2\pi, 3\pi)$, etc.
+        Wait, $f&#39;(x) = -2a\sin(ax)$.
+        For $f(x)$ to be increasing on $(0, \frac{\pi}{2})$, $f&#39;(x) &gt; 0$ for $x \in (0, \frac{\pi}{2})$.
+        $-2a\sin(ax) &gt; 0 \implies a\sin(ax) &lt; 0$.
+
+        *   If $a &gt; 0$, then $\sin(ax) &lt; 0$ for $x \in (0, \frac{\pi}{2})$.
+            This means $ax$ must be in $(\pi + 2k\pi, 2\pi + 2k\pi)$.
+            For $x \in (0, \frac{\pi}{2})$, $ax \in (0, \frac{a\pi}{2})$.
+            Is it possible for $(0, \frac{a\pi}{2})$ to be a subset of $(\pi + 2k\pi, 2\pi + 2k\pi)$?
+            No, because $0 &lt; \pi + 2k\pi$ for $k \ge 0$, and for $k &lt; 0$, the interval would be negative. $ax$ starts from 0.
+        *   If $a &lt; 0$, let $a = -m$ where $m &gt; 0$.
+            $f(x) = 2\cos(-mx) = 2\cos(mx)$.
+            $f&#39;(x) = -2m\sin(mx)$.
+            For $f&#39;(x) &gt; 0$, $\sin(mx) &lt; 0$.
+            Similar to above, $mx$ must be in $(\pi + 2k\pi, 2\pi + 2k\pi)$.
+            For $x \in (0, \frac{\pi}{2})$, $mx \in (0, \frac{m\pi}{2})$.
+            This again doesn&#39;t work.
+
+    Wait, let me re-examine the increasing condition.
+    $f(x)$ is monotonically increasing on $(0, \frac{\pi}{2})$.
+    If $\theta = \frac{\pi}{2}$, $f(x) = 2\cos(ax)$.
+    If $\theta = \frac{3\pi}{2}$, $f(x) = -2\cos(ax)$.
+
+    Let&#39;s check $\theta = \frac{3\pi}{2}$:
+    $f(x) = -2\cos(ax)$.
+    $f&#39;(x) = 2a\sin(ax)$.
+    For $f(x)$ to be increasing on $(0, \frac{\pi}{2})$, $f&#39;(x) &gt; 0$ for $x \in (0, \frac{\pi}{2})$.
+    $2a\sin(ax) &gt; 0 \implies a\sin(ax) &gt; 0$.
+
+    *   If $a &gt; 0$, then $\sin(ax) &gt; 0$ for $x \in (0, \frac{\pi}{2})$.
+        This means $ax \in (2k\pi, \pi + 2k\pi)$.
+        For $x \in (0, \frac{\pi}{2})$, $ax \in (0, \frac{a\pi}{2})$.
+        So we need $(0, \frac{a\pi}{2}) \subseteq (0, \pi)$ (for $k=0$).
+        $\frac{a\pi}{2} \le \pi \implies a \le 2$.
+        Since $a$ is an integer and $a &gt; 0$, $a$ can be 1 or 2.
+
+    *   If $a &lt; 0$, let $a = -m$ ($m &gt; 0$).
+        $f(x) = -2\cos(-mx) = -2\cos(mx)$.
+        $f&#39;(x) = 2m\sin(mx)$. (Actually, $f&#39;(x) = -2(-m)(-\sin(-mx)) = 2m(-\sin(mx)) = -2m\sin(mx)$ is wrong).
+        Wait, $f(x) = -2\cos(ax)$.
+        $f&#39;(x) = -2(-\sin(ax) \cdot a) = 2a\sin(ax)$.
+        If $a &lt; 0$, let $a = -m$.
+        $f&#39;(x) = -2m\sin(-mx) = 2m\sin(mx)$.
+        For $f&#39;(x) &gt; 0$, $\sin(mx) &gt; 0$ for $x \in (0, \frac{\pi}{2})$.
+        $mx \in (0, \pi)$ (for $k=0$).
+        $x \in (0, \frac{\pi}{m})$.
+        Since we need $(0, \frac{\pi}{2}) \subseteq (0, \frac{\pi}{m})$, we need $\frac{\pi}{m} \ge \frac{\pi}{2} \implies m \le 2$.
+        Since $m &gt; 0$ is an integer, $m$ can be 1 or 2.
+        This means $a$ can be -1 or -2.
+
+    Wait, the problem says $a \in \mathbb{Z}$. Let&#39;s re-read. Is there anything I missed?
+    $f(x) = 2\sin(ax+\theta)$ is an even function.
+    $f(x) = f(-x) \implies 2\sin(ax+\theta) = 2\sin(-ax+\theta)$.
+    $\sin(ax+\theta) - \sin(-ax+\theta) = 0$.
+    $2\cos(\frac{ax+\theta-ax+\theta}{2})\sin(\frac{ax+\theta+ax-\theta}{2}) = 0$.
+    $2\cos(\theta)\sin(ax) = 0$ for all $x$.
+    This means $\cos\theta = 0$.
+    Since $0 \le \theta &lt; 2\pi$, $\theta = \frac{\pi}{2}$ or $\theta = \frac{3\pi}{2}$.
+    This confirms my previous finding.
+
+    Now let&#39;s re-evaluate the &quot;monotonically increasing on $(0, \frac{\pi}{2})$&quot; part.
+    If $\theta = \frac{\pi}{2}$, $f(x) = 2\cos(ax)$.
+    $f&#39;(x) = -2a\sin(ax)$.
+    For $f&#39;(x) &gt; 0$ on $(0, \frac{\pi}{2})$:
+    If $a=1, f&#39;(x) = -2\sin(x)$, which is negative on $(0, \frac{\pi}{2})$.
+    If $a=2, f&#39;(x) = -4\sin(2x)$, which is negative on $(0, \frac{\pi}{2})$.
+    If $a=-1, f&#39;(x) = 2\sin(-x) = -2\sin(x)$, which is negative on $(0, \frac{\pi}{2})$.
+    If $a=-2, f&#39;(x) = 4\sin(-2x) = -4\sin(2x)$, which is negative on $(0, \frac{\pi}{2})$.
+    If $a=3, f&#39;(x) = -6\sin(3x)$, which is negative on $(0, \frac{\pi}{3})$ and positive on $(\frac{\pi}{3}, \frac{\pi}{2})$. Not monotonic.
+    Wait, what if $a$ is something else?
+    If $a\sin(ax) &lt; 0$ for $x \in (0, \frac{\pi}{2})$.
+    If $a &gt; 0$, $\sin(ax) &lt; 0$ for $x \in (0, \frac{\pi}{2})$.
+    This means $ax \in (\pi + 2k\pi, 2\pi + 2k\pi)$.
+    But $x$ starts from 0, so $ax$ starts from 0.
+    This can&#39;t be true for $x \in (0, \frac{\pi}{2})$ because the interval $(0, \frac{a\pi}{2})$ must be a subset of $(\pi + 2k\pi, 2\pi + 2k\pi)$.
+    This is impossible since $0$ is not in $(\pi + 2k\pi, 2\pi + 2k\pi)$.
+
+    Wait, let me re-read: &quot;单调递增&quot; (monotonically increasing).
+    $f&#39;(x) \ge 0$ on $(0, \frac{\pi}{2})$.
+    $f(x) = 2\cos(ax)$ (for $\theta = \frac{\pi}{2}$)
+    $f&#39;(x) = -2a\sin(ax)$.
+    For $f&#39;(x) \ge 0$ on $(0, \frac{\pi}{2})$, we need $a\sin(ax) \le 0$ for all $x \in (0, \frac{\pi}{2})$.
+    If $a &gt; 0$, $\sin(ax) \le 0$ for $x \in (0, \frac{\pi}{2})$. This means $ax \in [\pi + 2k\pi, 2\pi + 2k\pi]$.
+    This means $0 \ge \pi + 2k\pi$, so $k$ must be negative.
+    If $k = -1$, $ax \in [-\pi, 0]$. But $a&gt;0$ and $x&gt;0$, so $ax&gt;0$.
+    This is impossible.
+    If $a &lt; 0$, let $a = -m$ ($m &gt; 0$).
+    $f&#39;(x) = 2m\sin(-mx) = -2m\sin(mx)$.
+    For $f&#39;(x) \ge 0$, $\sin(mx) \le 0$ for $x \in (0, \frac{\pi}{2})$.
+    This means $mx \in [\pi + 2k\pi, 2\pi + 2k\pi]$.
+    Again, this is impossible since $mx$ starts from 0.
+    Wait, what if $a = 0$?
+    If $a = 0$, $f(x) = 2\sin(\theta)$, which is a constant.
+    A constant function is monotonically increasing (and decreasing).
+    But usually, &quot;monotonically increasing&quot; in these problems means $f&#39;(x) &gt; 0$ or at least not constant.
+    Let&#39;s re-check $\theta = \frac{3\pi}{2}$.
+
+    If $\theta = \frac{3\pi}{2}$, $f(x) = -2\cos(ax)$.
+    $f&#39;(x) = 2a\sin(ax)$.
+    For $f&#39;(x) \ge 0$ on $(0, \frac{\pi}{2})$, we need $a\sin(ax) \ge 0$ for all $x \in (0, \frac{\pi}{2})$.
+    If $a &gt; 0$:
+    $\sin(ax) \ge 0$ for $x \in (0, \frac{\pi}{2})$.
+    This means $ax \in [2k\pi, \pi + 2k\pi]$.
+    For $k=0$, $ax \in [0, \pi]$.
+    Since $x \in (0, \frac{\pi}{2})$, $ax \in (0, \frac{a\pi}{2})$.
+    So we need $(0, \frac{a\pi}{2}) \subseteq [0, \pi]$.
+    $\frac{a\pi}{2} \le \pi \implies a \le 2$.
+    Since $a \in \mathbb{Z}$ and $a &gt; 0$, $a$ can be 1 or 2.
+
+    If $a &lt; 0$:
+    Let $a = -m$ ($m &gt; 0$).
+    $f&#39;(x) = -2m\sin(-mx) = 2m\sin(mx)$.
+    For $f&#39;(x) \ge 0$, $\sin(mx) \ge 0$ for $x \in (0, \frac{\pi}{2})$.
+    This means $mx \in [2k\pi, \pi + 2k\pi]$.
+    For $k=0$, $mx \in [0, \pi]$.
+    Since $x \in (0, \frac{\pi}{2})$, $mx \in (0, \frac{m\pi}{2})$.
+    So we need $\frac{m\pi}{2} \le \pi \implies m \le 2$.
+    Since $m \in \mathbb{Z}$ and $m &gt; 0$, $m$ can be 1 or 2.
+    $a$ can be -1 or -2.
+
+    Now we have several possibilities for $a$: $a \in \{1, 2, -1, -2\}$ and $\theta = \frac{3\pi}{2}$.
+    Is there any other information?
+    The question asks for $\theta$ and $f(\frac{2\pi}{3})$.
+    If $a$ can be 1, 2, -1, or -2, then $f(\frac{2\pi}{3})$ would have different values.
+    Let&#39;s re-read. &quot;f(x)=2sin(ax+\theta)&quot;
+    Wait, maybe $a$ is given or implied? No.
+    Let me re-check the $f(\frac{2\pi}{3})$ calculation for different $a$:
+    If $\theta = \frac{3\pi}{2}$, $f(x) = -2\cos(ax)$.
+    If $a=1$, $f(\frac{2\pi}{3}) = -2\cos(\frac{2\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    If $a=2$, $f(\frac{2\pi}{3}) = -2\cos(\frac{4\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    If $a=-1$, $f(\frac{2\pi}{3}) = -2\cos(-\frac{2\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    If $a=-2$, $f(\frac{2\pi}{3}) = -2\cos(-\frac{4\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    All these values of $a$ give the same $f(\frac{2\pi}{3})$!
+    This is great. Now I just need to make sure $a$ cannot be something else.
+
+    Wait, what if $k \neq 0$?
+    For $a &gt; 0$, we needed $(0, \frac{a\pi}{2}) \subseteq [2k\pi, \pi + 2k\pi]$.
+    If $k=1$, $[2\pi, 3\pi]$. But the interval $(0, \frac{a\pi}{2})$ starts from 0, so it can&#39;t be a subset of $[2\pi, 3\pi]$.
+    Same for any $k &gt; 0$.
+    If $k &lt; 0$, say $k=-1$, $[-2\pi, -\pi]$. Also impossible.
+    So $k$ must be 0.
+    Thus $a \in \{1, 2, -1, -2\}$ are the only possibilities for $a \neq 0$.
+    If $a=0$, $f(x) = 2\sin\theta$.
+    Since $f(x)$ is even, this is always true.
+    Since $f(x)$ is monotonically increasing on $(0, \frac{\pi}{2})$, a constant function is technically monotonically increasing.
+    But if $a=0$, $f(\frac{2\pi}{3}) = 2\sin\theta$.
+    And $\theta$ would be anything? No, the question asks for $\theta$ as a specific value.
+    This suggests $a \neq 0$.
+
+    Let&#39;s double-check the $\theta$ part.
+    Is it possible for $\theta = \frac{\pi}{2}$?
+    $f(x) = 2\cos(ax)$.
+    $f&#39;(x) = -2a\sin(ax)$.
+    For $f&#39;(x) \ge 0$ on $(0, \frac{\pi}{2})$, $a\sin(ax) \le 0$.
+    If $a &gt; 0$, $\sin(ax) \le 0$.
+    $ax \in [\pi + 2k\pi, 2\pi + 2k\pi]$.
+    As before, this is impossible since $ax$ starts from 0.
+    If $a &lt; 0$, let $a = -m$ ($m &gt; 0$).
+    $f&#39;(x) = 2m\sin(-mx) = -2m\sin(mx)$.
+    For $f&#39;(x) \ge 0$, $\sin(mx) \le 0$.
+    Again, impossible.
+    So $\theta$ must be $\frac{3\pi}{2}$.
+
+    Is there any other possibility for $\theta$?
+    We had $2\theta = \pi + 2k\pi$, so $\theta = \frac{\pi}{2} + k\pi$.
+    For $0 \le \theta &lt; 2\pi$, $\theta$ is $\frac{\pi}{2}$ or $\frac{3\pi}{2}$.
+    We&#39;ve ruled out $\frac{\pi}{2}$.
+    So $\theta = \frac{3\pi}{2}$ is the only solution.
+
+    Let&#39;s check if $a$ could be something like $a=3$.
+    If $a=3$ and $\theta = \frac{3\pi}{2}$, $f(x) = -2\cos(3x)$.
+    $f&#39;(x) = 6\sin(3x)$.
+    For $x \in (0, \frac{\pi}{2})$, $3x \in (0, \frac{3\pi}{2})$.
+    $\sin(3x)$ is positive on $(0, \pi)$ and negative on $(\pi, \frac{3\pi}{2})$.
+    So $f(x)$ is increasing on $(0, \frac{\pi}{3})$ and decreasing on $(\frac{\pi}{3}, \frac{\pi}{2})$.
+    Not monotonically increasing on $(0, \frac{\pi}{2})$.
+    So $a$ cannot be 3.
+    What if $a=0$?
+    $f(x) = 2\sin\theta$.
+    $f&#39;(x) = 0$.
+    This is monotonically increasing.
+    But then $\theta$ could be anything.
+    The question asks for $\theta$, implying it&#39;s a unique value.
+    Also, $f(x)$ is often assumed to be non-constant in these problems.
+
+    Wait, let&#39;s re-read &quot;a is an integer&quot;. $a \in \mathbb{Z}$.
+    If $a=1, \theta = \frac{3\pi}{2} \implies f(x) = -2\cos(x)$.
+    $f&#39;(x) = 2\sin(x)$.
+    On $(0, \frac{\pi}{2})$, $f&#39;(x) &gt; 0$. Correct.
+    $f(\frac{2\pi}{3}) = -2\cos(\frac{2\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    If $a=2, \theta = \frac{3\pi}{2} \implies f(x) = -2\cos(2x)$.
+    $f&#39;(x) = 4\sin(2x)$.
+    On $(0, \frac{\pi}{2})$, $2x \in (0, \pi)$, so $\sin(2x) &gt; 0$. Correct.
+    $f(\frac{2\pi}{3}) = -2\cos(\frac{4\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    If $a=-1, \theta = \frac{3\pi}{2} \implies f(x) = -2\cos(-x) = -2\cos(x)$.
+    Same as $a=1$.
+    If $a=-2, \theta = \frac{3\pi}{2} \implies f(x) = -2\cos(-2x) = -2\cos(2x)$.
+    Same as $a=2$.
+
+    What if $a &gt; 2$?
+    $f&#39;(x) = 2a\sin(ax)$.
+    For this to be $\ge 0$ on $(0, \frac{\pi}{2})$, we need $\sin(ax) \ge 0$ for all $x \in (0, \frac{\pi}{2})$.
+    This means $ax$ must be in $[0, \pi]$ (since $ax$ starts at 0).
+    So $\frac{a\pi}{2} \le \pi \implies a \le 2$.
+    What if $a &lt; -2$?
+    Let $a = -m$ where $m &gt; 2$.
+    $f&#39;(x) = -2m\sin(-mx) = 2m\sin(mx)$.
+    For this to be $\ge 0$ on $(0, \frac{\pi}{2})$, $\sin(mx) \ge 0$ for $x \in (0, \frac{\pi}{2})$.
+    This means $mx \le \pi \implies \frac{m\pi}{2} \le \pi \implies m \le 2$.
+    Contradiction since $m &gt; 2$.
+    So $a$ must be $1, 2, -1, -2$ (or 0, but we already discussed that).
+
+    Is there any other $\theta$ that works?
+    Wait, $f(x) = 2\sin(ax + \theta)$ is an even function.
+    I used $\cos\theta = 0$. Let&#39;s re-verify that.
+    $f(x) = 2\sin(ax + \theta)$
+    $f(-x) = 2\sin(-ax + \theta)$
+    $f(x) = f(-x) \implies \sin(ax + \theta) = \sin(-ax + \theta)$
+    $\sin(ax)\cos\theta + \cos(ax)\sin\theta = -\sin(ax)\cos\theta + \cos(ax)\sin\theta$
+    $2\sin(ax)\cos\theta = 0$ for all $x$.
+    This means $\cos\theta = 0$ because $\sin(ax)$ is not always 0 (unless $a=0$).
+    If $\cos\theta = 0$ and $0 \le \theta &lt; 2\pi$, then $\theta = \frac{\pi}{2}$ or $\theta = \frac{3\pi}{2}$.
+    This part is definitely correct.
+
+    Now, double check the $f(\frac{2\pi}{3})$ for $\theta = \frac{3\pi}{2}$ again.
+    $f(x) = 2\sin(ax + \frac{3\pi}{2}) = -2\cos(ax)$.
+    $f(\frac{2\pi}{3}) = -2\cos(\frac{2a\pi}{3})$.
+    If $a=1, f(\frac{2\pi}{3}) = -2\cos(\frac{2\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    If $a=2, f(\frac{2\pi}{3}) = -2\cos(\frac{4\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    If $a=-1, f(\frac{2\pi}{3}) = -2\cos(-\frac{2\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    If $a=-2, f(\frac{2\pi}{3}) = -2\cos(-\frac{4\pi}{3}) = -2(-\frac{1}{2}) = 1$.
+    All cases lead to $f(\frac{2\pi}{3}) = 1$.
+
+    Final check:
+    $\theta = \frac{3\pi}{2}$.
+    $f(x) = -2\cos(ax)$.
+    If $a=1, f(x) = -2\cos(x)$. $f&#39;(x) = 2\sin(x) &gt; 0$ on $(0, \frac{\pi}{2})$.
+    If $a=2, f(x) = -2\cos(2x)$. $f&#39;(x) = 4\sin(2x) &gt; 0$ on $(0, \frac{\pi}{2})$.
+    $f(\frac{2\pi}{3}) = -2\cos(a \frac{2\pi}{3})$.
+    If $a=1$, $-2(-1/2) = 1$.
+    If $a=2$, $-2(-1/2) = 1$.
+    Wait, what if $a=0$?
+    Then $f(x) = 2\sin\theta$.
+    Since it&#39;s an even function, any constant is even.
+    Since it&#39;s monotonically increasing, any constant is monotonically increasing.
+    But then $\theta$ can be anything and $f(\frac{2\pi}{3}) = 2\sin\theta$.
+    This is not possible for a填空题 (fill-in-the-blank question) unless the answer depends on $\theta$.
+    But the question asks for $\theta$ first.
+    So $a$ cannot be 0.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;\n\u7efc\u4e0a\u6240\u8ff0\uff0c$\\theta = \\frac{3\\pi}{2}$\uff0c\u4e14 $a \\in \\{1, 2, -1, -2\\}$\u3002\n\n### 3. \u8ba1\u7b97 $f(\\frac{2\\pi}{3})$\n\u5df2\u77e5 $f(x) = -2\\cos(ax)$\uff0c\u4ee3\u5165 $x = \\frac{2\\pi}{3}$\uff1a\n- \u82e5 $a = \\pm 1$\uff0c$f(\\frac{2\\pi}{3}) = -2\\cos(\\pm \\frac{2\\pi}{3}) = -2(-\\frac{1}{2}) = 1$\u3002\n- \u82e5 $a = \\pm 2$\uff0c$f(\\frac{2\\pi}{3}) = -2\\cos(\\pm \\frac{4\\pi}{3}) = -2(-\\frac{1}{2}) = 1$\u3002\n\u65e0\u8bba $a$ \u53d6\u4e0a\u8ff0\u54ea\u4e2a\u503c\uff0c\u7ed3\u679c\u5747\u4e3a 1\u3002\n\n\\boxed{\\theta = \\frac{3\\pi}{2}, f(\\frac{2\\pi}{3}) = 1}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_013')">
+                <td>gaokao_000_013</td>
+                <td class="correct">✓</td>
+                <td>\sqrt[3]{\frac{3}{2}}</td>
+                <td class="correct">\sqrt[3]{\frac{3}{2}}</td>
+                <td>9070</td>
+                <td>39.5</td>
+                <td>229.9</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_013" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题（填空题）。逐步推理，将最终答案放在 \boxed{} 中。
+
+14. 设实数q满足：存在数列{a_n}，使得对于任意n \in N^*，均有a_1 + a_2 + \cdots + a_{3n} = n^2 + n，且{a_n}中有某连续9项a_k, a_{k+1}, \cdots, a_{k+8}是公比为q的等比数列。则q的最大值为__________.
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>为了求实数 $q$ 的最大值，我们首先分析数列 $\{a_n\}$ 满足的条件。
+已知对于任意 $n \in \mathbb{N}^*$，有 $S_{3n} = a_1 + a_2 + \cdots + a_{3n} = n^2 + n$。
+由此可得，每三个连续项的和为：
+$a_{3n-2} + a_{3n-1} + a_{3n} = S_{3n} - S_{3n-3} = (n^2 + n) - ((n-1)^2 + (n-1)) = 2n$ （对于 $n \ge 2$）。
+当 $n=1$ 时，$a_1 + a_2 + a_3 = S_3 = 1^2 + 1 = 2$。
+因此，对于所有 $n \in \mathbb{N}^*$，都有 $a_{3n-2} + a_{3n-1} + a_{3n} = 2n$。
+
+现设 $\{a_n\}$ 中有连续 9 项 $a_k, a_{k+1}, \cdots, a_{k+8}$ 构成公比为 $q$ 的等比数列。设 $a_k = a$，则这些项为 $a, aq, aq^2, \cdots, aq^8$。
+根据 $k$ 对 3 取模的结果，分为三种情况讨论：
+
+1. 当 $k = 3m-2$ 时：
+这 9 项正好分布在三个完整的块中：
+$\{a_{3m-2}, a_{3m-1}, a_{3m}\} \implies a(1+q+q^2) = 2m$
+$\{a_{3m+1}, a_{3m+2}, a_{3m+3}\} \implies aq^3(1+q+q^2) = 2(m+1)$
+$\{a_{3m+4}, a_{3m+5}, a_{3m+6}\} \implies aq^6(1+q+q^2) = 2(m+2)$
+由前两式得 $q^3 = \frac{m+1}{m}$，由后两式得 $q^3 = \frac{m+2}{m+1}$。
+这意味着 $\frac{m+1}{m} = \frac{m+2}{m+1} \implies (m+1)^2 = m(m+2) \implies m^2+2m+1 = m^2+2m$，即 $1=0$，矛盾。因此此情况不成立。
+
+2. 当 $k = 3m-1$ 时：
+这 9 项分布在四个块中，其中中间两个块完整：
+$\{a_{3m+1}, a_{3m+2}, a_{3m+3}\} \implies aq^2(1+q+q^2) = 2(m+1)$
+$\{a_{3m+4}, a_{3m+5}, a_{3m+6}\} \implies aq^5(1+q+q^2) = 2(m+2)$
+两式相除得 $q^3 = \frac{2(m+2)}{2(m+1)} = \frac{m+2}{m+1} = 1 + \frac{1}{m+1}$。
+由于 $m \in \mathbb{N}^*$，当 $m=1$ 时，$q^3$ 取最大值 $\frac{3}{2}$，此时 $q = \sqrt[3]{\frac{3}{2}}$。
+
+3. 当 $k = 3m$ 时：
+同样，中间两个块完整：
+$\{a_{3m+1}, a_{3m+2}, a_{3m+3}\} \implies aq(1+q+q^2) = 2(m+1)$
+$\{a_{3m+4}, a_{3m+5}, a_{3m+6}\} \implies aq^4(1+q+q^2) = 2(m+2)$
+两式相除得 $q^3 = \frac{2(m+2)}{2(m+1)} = \frac{m+2}{m+1} = 1 + \frac{1}{m+1}$。
+同样，当 $m=1$ 时，$q^3$ 的最大值为 $\frac{3}{2}$，此时 $q = \sqrt[3]{\frac{3}{2}}$。
+
+综上所述，$q$ 的最大值为 $\sqrt[3]{\frac{3}{2}}$。
+
+\boxed{\sqrt[3]{\frac{3}{2}}}</pre>
+                        <b>Reasoning</b><pre>Let $S_m = \sum_{i=1}^m a_i$.
+The given condition is $S_{3n} = n^2 + n$ for all $n \in \mathbb{N}^*$.
+We are looking for the maximum value of the common ratio $q$ of a geometric progression formed by 9 consecutive terms $a_k, a_{k+1}, \dots, a_{k+8}$ of the sequence $\{a_n\}$.
+
+Let&#39;s first find the values of $a_m$ where possible.
+$S_3 = 1^2 + 1 = 2$.
+$S_6 = 2^2 + 2 = 6$.
+$S_9 = 3^2 + 3 = 12$.
+$S_{3n} = n^2 + n$.
+$S_{3(n-1)} = (n-1)^2 + (n-1) = n^2 - 2n + 1 + n - 1 = n^2 - n$.
+Then $a_{3n-2} + a_{3n-1} + a_{3n} = S_{3n} - S_{3n-3} = (n^2 + n) - (n^2 - n) = 2n$ for $n \ge 2$.
+For $n=1$, $a_1 + a_2 + a_3 = 2$.
+So for any $n \ge 1$, $a_{3n-2} + a_{3n-1} + a_{3n} = 2n$.
+
+We are given that $a_k, a_{k+1}, \dots, a_{k+8}$ is a geometric progression with common ratio $q$.
+Let these terms be $a, aq, aq^2, \dots, aq^8$.
+The indices are $k, k+1, \dots, k+8$.
+There are 9 terms in total.
+These 9 terms span 3 groups of 3 consecutive terms.
+Let&#39;s see the groups:
+Group 1: $a_{3m-2}, a_{3m-1}, a_{3m}$
+Group 2: $a_{3m+1}, a_{3m+2}, a_{3m+3}$
+Group 3: $a_{3m+4}, a_{3m+5}, a_{3m+6}$
+
+The 9 consecutive terms can start at index $k$.
+Depending on $k \pmod 3$, there are 3 cases for the positions of the terms in the groups:
+
+Case 1: $k = 3m-2$
+The terms are:
+Group 1: $a_{3m-2}, a_{3m-1}, a_{3m}$ which are $a, aq, aq^2$
+Group 2: $a_{3m+1}, a_{3m+2}, a_{3m+3}$ which are $aq^3, aq^4, aq^5$
+Group 3: $a_{3m+4}, a_{3m+5}, a_{3m+6}$ which are $aq^6, aq^7, aq^8$
+The sums of these groups are:
+$a(1 + q + q^2) = 2m$
+$aq^3(1 + q + q^2) = 2(m+1)$
+$aq^6(1 + q + q^2) = 2(m+2)$
+Dividing the second equation by the first:
+$q^3 = \frac{2(m+1)}{2m} = \frac{m+1}{m} = 1 + \frac{1}{m}$
+Dividing the third equation by the second:
+$q^3 = \frac{2(m+2)}{2(m+1)} = \frac{m+2}{m+1} = 1 + \frac{1}{m+1}$
+This means $1 + \frac{1}{m} = 1 + \frac{1}{m+1}$, which implies $m = m+1$, a contradiction.
+So Case 1 is impossible.
+
+Wait, the problem says &quot;exist a sequence $\{a_n\}$&quot;.
+This means $a_n$ can be anything as long as $a_{3n-2} + a_{3n-1} + a_{3n} = 2n$.
+But the geometric progression must hold for $a_k, \dots, a_{k+8}$.
+The sums of the blocks of 3 terms are fixed.
+Let&#39;s re-examine Case 1.
+The terms $a_k, \dots, a_{k+8}$ are $a, aq, \dots, aq^8$.
+The blocks are:
+$\{a_k, a_{k+1}, a_{k+2}\}$, $\{a_{k+3}, a_{k+4}, a_{k+5}\}$, $\{a_{k+6}, a_{k+7}, a_{k+8}\}$.
+Wait, if $k = 3m-2$, then these blocks are exactly the blocks $\{a_{3m-2}, a_{3m-1}, a_{3m}\}$, $\{a_{3m+1}, a_{3m+2}, a_{3m+3}\}$, $\{a_{3m+4}, a_{3m+5}, a_{3m+6}\}$.
+And their sums are $2m, 2(m+1), 2(m+2)$.
+This led to $q^3 = \frac{m+1}{m}$ and $q^3 = \frac{m+2}{m+1}$, which is impossible.
+
+Case 2: $k = 3m-1$
+The terms are $a, aq, \dots, aq^8$.
+The blocks are:
+$\{a_{3m-2}, a_{3m-1}, a_{3m}\}$: $a_{3m-2}$ is not in the GP. $a_{3m-1} = a, a_{3m} = aq$.
+So $a_{3m-2} + a + aq = 2m \implies a_{3m-2} = 2m - a(1+q)$.
+$\{a_{3m+1}, a_{3m+2}, a_{3m+3}\}$: $a_{3m+1} = aq^2, a_{3m+2} = aq^3, a_{3m+3} = aq^4$.
+Sum: $aq^2(1 + q + q^2) = 2(m+1)$.
+$\{a_{3m+4}, a_{3m+5}, a_{3m+6}\}$: $a_{3m+4} = aq^5, a_{3m+5} = aq^6, a_{3m+6} = aq^7$.
+Sum: $aq^5(1 + q + q^2) = 2(m+2)$.
+$\{a_{3m+7}, a_{3m+8}, a_{3m+9}\}$: $a_{3m+7} = aq^8, a_{3m+8}$ is not in the GP.
+Wait, the GP is only 9 terms: $a_k, \dots, a_{k+8}$.
+$k=3m-1$, so the terms are $a_{3m-1}, a_{3m}, a_{3m+1}, a_{3m+2}, a_{3m+3}, a_{3m+4}, a_{3m+5}, a_{3m+6}, a_{3m+7}$.
+Let&#39;s list them:
+$a_{3m-1} = a$
+$a_{3m} = aq$
+$a_{3m+1} = aq^2$
+$a_{3m+2} = aq^3$
+$a_{3m+3} = aq^4$
+$a_{3m+4} = aq^5$
+$a_{3m+5} = aq^6$
+$a_{3m+6} = aq^7$
+$a_{3m+7} = aq^8$
+Now look at the sums of blocks of 3:
+Block 1: $a_{3m-2}, a_{3m-1}, a_{3m}$. Sum is $a_{3m-2} + a + aq = 2m$.
+Block 2: $a_{3m+1}, a_{3m+2}, a_{3m+3}$. Sum is $aq^2 + aq^3 + aq^4 = aq^2(1 + q + q^2) = 2(m+1)$.
+Block 3: $a_{3m+4}, a_{3m+5}, a_{3m+6}$. Sum is $aq^5 + aq^6 + aq^7 = aq^5(1 + q + q^2) = 2(m+2)$.
+Block 4: $a_{3m+7}, a_{3m+8}, a_{3m+9}$. Sum is $aq^8 + a_{3m+8} + a_{3m+9} = 2(m+3)$.
+From Block 2 and Block 3:
+$\frac{aq^5(1 + q + q^2)}{aq^2(1 + q + q^2)} = \frac{2(m+2)}{2(m+1)} \implies q^3 = \frac{m+2}{m+1} = 1 + \frac{1}{m+1}$.
+Since $m$ can be any positive integer $m \ge 1$, the possible values for $q^3$ are $1 + \frac{1}{m+1}$.
+For $m=1$, $q^3 = 1 + 1/2 = 3/2$.
+As $m \to \infty$, $q^3 \to 1$.
+So $q^3 \in (1, 3/2]$.
+Wait, we need to make sure $a$ can be chosen such that the other conditions are satisfied.
+$a = \frac{2(m+1)}{q^2(1+q+q^2)}$.
+$a_{3m-2} = 2m - a(1+q)$. This is always possible for any $a$.
+$a_{3m+8} + a_{3m+9} = 2(m+3) - aq^8$. This is always possible for any $a$.
+So for any $m \ge 1$, $q = \sqrt[3]{1 + \frac{1}{m+1}}$ is possible.
+The maximum value in this case is $q = \sqrt[3]{3/2}$ when $m=1$.
+
+Case 3: $k = 3m$
+The terms are $a_{3m}, a_{3m+1}, \dots, a_{3m+8}$.
+$a_{3m} = a$
+$a_{3m+1} = aq$
+$a_{3m+2} = aq^2$
+$a_{3m+3} = aq^3$
+$a_{3m+4} = aq^4$
+$a_{3m+5} = aq^5$
+$a_{3m+6} = aq^6$
+$a_{3m+7} = aq^7$
+$a_{3m+8} = aq^8$
+Blocks:
+Block 1: $a_{3m-2}, a_{3m-1}, a_{3m}$. Sum: $a_{3m-2} + a_{3m-1} + a = 2m$.
+Block 2: $a_{3m+1}, a_{3m+2}, a_{3m+3}$. Sum: $aq + aq^2 + aq^3 = aq(1+q+q^2) = 2(m+1)$.
+Block 3: $a_{3m+4}, a_{3m+5}, a_{3m+6}$. Sum: $aq^4 + aq^5 + aq^6 = aq^4(1+q+q^2) = 2(m+2)$.
+Block 4: $a_{3m+7}, a_{3m+8}, a_{3m+9}$. Sum: $aq^7 + aq^8 + a_{3m+9} = 2(m+3)$.
+From Block 2 and Block 3:
+$\frac{aq^4(1+q+q^2)}{aq(1+q+q^2)} = \frac{2(m+2)}{2(m+1)} \implies q^3 = \frac{m+2}{m+1} = 1 + \frac{1}{m+1}$.
+This is the same as Case 2.
+The maximum value is $q = \sqrt[3]{3/2}$.
+
+Wait, let me re-read. &quot;Maximum value of q&quot;.
+Could $q$ be negative?
+If $q$ is negative, then $q^3$ would be negative.
+In Case 2 and 3, $q^3 = \frac{m+2}{m+1}$, which is always positive.
+Wait, the condition $aq^2(1+q+q^2) = 2(m+1)$ allows $1+q+q^2 = 0$, but $1+q+q^2$ is always positive for real $q$.
+What if $a=0$?
+If $a=0$, then $a_k = a_{k+1} = \dots = a_{k+8} = 0$.
+Then in Case 2: $0 = 2(m+1)$, which is impossible.
+So $a \ne 0$ and $1+q+q^2 \ne 0$.
+
+Let me re-examine Case 1 more carefully.
+Case 1: $k = 3m-2$.
+$a_{3m-2} = a, a_{3m-1} = aq, a_{3m} = aq^2$
+$a_{3m+1} = aq^3, a_{3m+2} = aq^4, a_{3m+3} = aq^5$
+$a_{3m+4} = aq^6, a_{3m+5} = aq^7, a_{3m+6} = aq^8$
+Sums:
+$a(1+q+q^2) = 2m$
+$aq^3(1+q+q^2) = 2(m+1)$
+$aq^6(1+q+q^2) = 2(m+2)$
+As I found before, $q^3 = \frac{m+1}{m}$ and $q^3 = \frac{m+2}{m+1}$, which is impossible.
+
+Are there any other possibilities for $k$?
+The index $k$ can be any positive integer.
+We have checked $k = 3m-2, 3m-1, 3m$.
+These cover all possible values of $k$.
+
+Let me double check the calculations.
+For $k=3m-1$:
+$a_{3m-1}, a_{3m}, a_{3m+1}, a_{3m+2}, a_{3m+3}, a_{3m+4}, a_{3m+5}, a_{3m+6}, a_{3m+7}$ are $a, aq, \dots, aq^8$.
+Blocks are:
+$\{a_{3m-2}, a_{3m-1}, a_{3m}\} \implies a_{3m-2} + a + aq = 2m$
+$\{a_{3m+1}, a_{3m+2}, a_{3m+3}\} \implies aq^2 + aq^3 + aq^4 = 2(m+1)$
+$\{a_{3m+4}, a_{3m+5}, a_{3m+6}\} \implies aq^5 + aq^6 + aq^7 = 2(m+2)$
+$\{a_{3m+7}, a_{3m+8}, a_{3m+9}\} \implies aq^8 + a_{3m+8} + a_{3m+9} = 2(m+3)$
+$aq^2(1+q+q^2) = 2(m+1)$
+$aq^5(1+q+q^2) = 2(m+2)$
+$q^3 = \frac{m+2}{m+1}$.
+Since $m \in \mathbb{N}^*$, $m \ge 1$.
+$q^3 = \frac{m+2}{m+1}$.
+The function $f(m) = \frac{m+2}{m+1} = 1 + \frac{1}{m+1}$ is a decreasing function of $m$.
+The maximum value is at $m=1$, $q^3 = 3/2$.
+So $q = \sqrt[3]{3/2}$.
+
+Is it possible that $q$ is very large?
+Wait, what if $1+q+q^2 = 0$? But $q$ is a real number, so $1+q+q^2$ is never 0.
+What if $a=0$? Then $2(m+1)=0$, impossible.
+What if the geometric progression is constant, i.e., $q=1$?
+Then $q^3 = 1$. This is the limit as $m \to \infty$.
+$\frac{m+2}{m+1}$ is always $&gt;1$, so $q &gt; 1$.
+
+Wait, what if the geometric progression is $a, aq, aq^2, \dots, aq^8$ with $a=0$?
+Then $a_k = a_{k+1} = \dots = a_{k+8} = 0$.
+Case 1: $0 = 2m$, $0 = 2(m+1)$, $0 = 2(m+2)$. Impossible.
+Case 2: $a_{3m-2} = 2m$, $0 = 2(m+1)$, $0 = 2(m+2)$, $a_{3m+8} + a_{3m+9} = 2(m+3)$. Impossible.
+Case 3: $a_{3m-2} + a_{3m-1} = 2m$, $0 = 2(m+1)$, $0 = 2(m+2)$, $a_{3m+9} = 2(m+3)$. Impossible.
+
+So $a$ cannot be 0.
+Could $q$ be negative?
+If $q^3 = \frac{m+2}{m+1}$, then $q$ must be positive because $\frac{m+2}{m+1} &gt; 0$.
+What if the geometric progression has common ratio $q$ but the terms are not all non-zero?
+If any term is zero, then all subsequent terms must be zero.
+If $a_k = 0$, then $a_{k+1} = 0, \dots, a_{k+8} = 0$. This is the $a=0$ case we just checked.
+If $q=0$, then $a_{k+1} = a_{k+2} = \dots = a_{k+8} = 0$.
+Let&#39;s check $q=0$ for each case:
+Case 1: $k=3m-2$.
+$a_{3m-2} = a, a_{3m-1} = 0, a_{3m} = 0$. Sum $a = 2m$.
+$a_{3m+1} = 0, a_{3m+2} = 0, a_{3m+3} = 0$. Sum $0 = 2(m+1)$. Impossible.
+Case 2: $k=3m-1$.
+$a_{3m-1} = a, a_{3m} = 0, a_{3m+1} = 0, \dots, a_{3m+7} = 0$.
+Block 2: $a_{3m+1} + a_{3m+2} + a_{3m+3} = 0 + 0 + 0 = 2(m+1)$. Impossible.
+Case 3: $k=3m$.
+$a_{3m} = a, a_{3m+1} = 0, \dots, a_{3m+8} = 0$.
+Block 2: $a_{3m+1} + a_{3m+2} + a_{3m+3} = 0 + 0 + 0 = 2(m+1)$. Impossible.
+
+So $q \ne 0$.
+
+Let&#39;s re-read: &quot;a_k, a_{k+1}, \dots, a_{k+8} is a geometric progression with common ratio q&quot;.
+Does this mean $a_{k+1} = a_k q, a_{k+2} = a_{k+1} q, \dots, a_{k+8} = a_{k+7} q$?
+Yes, that&#39;s the definition.
+Is it possible $a_k = 0$?
+If $a_k = 0$, then $a_{k+1} = 0, a_{k+2} = 0, \dots, a_{k+8} = 0$.
+This is what I called the $a=0$ case.
+
+Wait, is there any other possible case for $k$?
+I have covered $k=3m-2, 3m-1, 3m$.
+Wait, $n$ is in $N^*$.
+$S_{3n} = n^2+n$.
+For $n=1, S_3 = 2$.
+For $n=2, S_6 = 6$.
+For $n=3, S_9 = 12$.
+$a_1+a_2+a_3 = 2$
+$a_4+a_5+a_6 = 4$
+$a_7+a_8+a_9 = 6$
+$a_{10}+a_{11}+a_{12} = 8$
+$a_{3n-2}+a_{3n-1}+a_{3n} = 2n$.
+This is exactly what I used.
+
+Let me re-verify the $k=3m-1$ and $k=3m$ cases.
+Case 2: $k=3m-1$.
+The terms are $a_{3m-1}, a_{3m}, a_{3m+1}, a_{3m+2}, a_{3m+3}, a_{3m+4}, a_{3m+5}, a_{3m+6}, a_{3m+7}$.
+The blocks of 3 are:
+$\{a_{3m-2}, a_{3m-1}, a_{3m}\}$, $\{a_{3m+1}, a_{3m+2}, a_{3m+3}\}$, $\{a_{3m+4}, a_{3m+5}, a_{3m+6}\}$, $\{a_{3m+7}, a_{3m+8}, a_{3m+9}\}$.
+The GP terms are $a, aq, aq^2, aq^3, aq^4, aq^5, aq^6, aq^7, aq^8$.
+So $a_{3m-1}=a, a_{3m}=aq, a_{3m+1}=aq^2, a_{3m+2}=aq^3, a_{3m+3}=aq^4, a_{3m+4}=aq^5, a_{3m+5}=aq^6, a_{3m+6}=aq^7, a_{3m+7}=aq^8$.
+Sums of blocks:
+$a_{3m-2} + a + aq = 2m$
+$aq^2 + aq^3 + aq^4 = 2(m+1)$
+$aq^5 + aq^6 + aq^7 = 2(m+2)$
+$aq^8 + a_{3m+8} + a_{3m+9} = 2(m+3)$
+The second and third equations give $q^3 = \frac{m+2}{m+1}$.
+Is there any constraint on $a$?
+$a = \frac{2(m+1)}{q^2(1+q+q^2)}$.
+Since $q^3 = \frac{m+2}{m+1}$, then $q &gt; 1$.
+Then $1+q+q^2 &gt; 0$, so $a$ is well-defined and $a \ne 0$.
+Then $a_{3m-2} = 2m - a(1+q)$ and $a_{3m+8} + a_{3m+9} = 2(m+3) - aq^8$.
+These can always be satisfied by choosing $a_{3m-2}$ and $a_{3m+8}, a_{3m+9}$ appropriately.
+So any $q = \sqrt[3]{\frac{m+2}{m+1}}$ for $m \in \{1, 2, 3, \dots\}$ is possible.
+Max value is $q = \sqrt[3]{3/2}$ at $m=1$.
+
+Case 3: $k=3m$.
+The terms are $a_{3m}, a_{3m+1}, \dots, a_{3m+8}$.
+The blocks of 3 are:
+$\{a_{3m-2}, a_{3m-1}, a_{3m}\}$, $\{a_{3m+1}, a_{3m+2}, a_{3m+3}\}$, $\{a_{3m+4}, a_{3m+5}, a_{3m+6}\}$, $\{a_{3m+7}, a_{3m+8}, a_{3m+9}\}$.
+GP terms are $a, aq, \dots, aq^8$.
+$a_{3m} = a$
+$a_{3m+1} = aq$
+$a_{3m+2} = aq^2$
+$a_{3m+3} = aq^3$
+$a_{3m+4} = aq^4$
+$a_{3m+5} = aq^5$
+$a_{3m+6} = aq^6$
+$a_{3m+7} = aq^7$
+$a_{3m+8} = aq^8$
+Sums of blocks:
+$a_{3m-2} + a_{3m-1} + a = 2m$
+$aq + aq^2 + aq^3 = 2(m+1)$
+$aq^4 + aq^5 + aq^6 = 2(m+2)$
+$aq^7 + aq^8 + a_{3m+9} = 2(m+3)$
+The second and third equations give $q^3 = \frac{m+2}{m+1}$.
+Again, $q = \sqrt[3]{\frac{m+2}{m+1}}$.
+Max value is $q = \sqrt[3]{3/2}$.
+
+Is there any other possibility?
+Could $k$ be very large? $m$ can be any positive integer, so $k$ can be anything.
+Could $q$ be larger than $\sqrt[3]{1.5}$?
+Let&#39;s re-check Case 1 again.
+$a_{3m-2} = a, a_{3m-1} = aq, a_{3m} = aq^2 \implies a(1+q+q^2) = 2m$.
+$a_{3m+1} = aq^3, a_{3m+2} = aq^4, a_{3m+3} = aq^5 \implies aq^3(1+q+q^2) = 2(m+1)$.
+$a_{3m+4} = aq^6, a_{3m+5} = aq^7, a_{3m+6} = aq^8 \implies aq^6(1+q+q^2) = 2(m+2)$.
+These three imply $q^3 = \frac{m+1}{m}$ and $q^3 = \frac{m+2}{m+1}$, which means $m+1 = \frac{m(m+2)}{m+1}$, so $(m+1)^2 = m^2+2m$, so $m^2+2m+1 = m^2+2m$, so $1=0$, impossible.
+
+Wait, let me double check if I missed any other possibility.
+The 9 terms are $a_k, a_{k+1}, \dots, a_{k+8}$.
+They form a GP with ratio $q$.
+The sum of any three consecutive terms $a_{3n-2} + a_{3n-1} + a_{3n} = 2n$.
+Let $b_n = a_{3n-2} + a_{3n-1} + a_{3n} = 2n$.
+The 9 terms $a_k, \dots, a_{k+8}$ span some part of these $b_n$.
+If $k=3m-2$, they are exactly $b_m, b_{m+1}, b_{m+2}$.
+$b_m = a_k + a_{k+1} + a_{k+2} = a(1+q+q^2)$
+$b_{m+1} = a_{k+3} + a_{k+4} + a_{k+5} = aq^3(1+q+q^2)$
+$b_{m+2} = a_{k+6} + a_{k+7} + a_{k+8} = aq^6(1+q+q^2)$
+This is what I called Case 1.
+$b_m = 2m, b_{m+1} = 2(m+1), b_{m+2} = 2(m+2)$.
+$q^3 = \frac{2m+2}{2m} = \frac{m+1}{m}$
+$q^6 = \frac{2m+4}{2m} = \frac{m+2}{m}$
+Then $(q^3)^2 = q^6 \implies (\frac{m+1}{m})^2 = \frac{m+2}{m} \implies \frac{m^2+2m+1}{m^2} = \frac{m+2}{m} \implies m^2+2m+1 = m^2+2m$, which is $1=0$.
+
+If $k=3m-1$, they are $a_{3m-1}, a_{3m}, a_{3m+1}, a_{3m+2}, a_{3m+3}, a_{3m+4}, a_{3m+5}, a_{3m+6}, a_{3m+7}$.
+The blocks are:
+$B_m = a_{3m-2} + a_{3m-1} + a_{3m} = a_{3m-2} + a + aq = 2m$
+$B_{m+1} = a_{3m+1} + a_{3m+2} + a_{3m+3} = aq^2 + aq^3 + aq^4 = aq^2(1+q+q^2) = 2(m+1)$
+$B_{m+2} = a_{3m+4} + a_{3m+5} + a_{3m+6} = aq^5 + aq^6 + aq^7 = aq^5(1+q+q^2) = 2(m+2)$
+$B_{m+3} = a_{3m+7} + a_{3m+8} + a_{3m+9} = aq^8 + a_{3m+8} + a_{3m+9} = 2(m+3)$
+This is Case 2. $q^3 = \frac{m+2}{m+1}$.
+
+If $k=3m$, they are $a_{3m}, a_{3m+1}, a_{3m+2}, a_{3m+3}, a_{3m+4}, a_{3m+5}, a_{3m+6}, a_{3m+7}, a_{3m+8}$.
+The blocks are:
+$B_m = a_{3m-2} + a_{3m-1} + a_{3m} = a_{3m-2} + a_{3m-1} + a = 2m$
+$B_{m+1} = a_{3m+1} + a_{3m+2} + a_{3m+3} = aq + aq^2 + aq^3 = aq(1+q+q^2) = 2(m+1)$
+$B_{m+2} = a_{3m+4} + a_{3m+5} + a_{3m+6} = aq^4 + aq^5 + aq^6 = aq^4(1+q+q^2) = 2(m+2)$
+$B_{m+3} = a_{3m+7} + a_{3m+8} + a_{3m+9} = aq^7 + aq^8 + a_{3m+9} = 2(m+3)$
+This is Case 3. $q^3 = \frac{m+2}{m+1}$.
+
+Wait, let me re-check if I could have $q$ being something else.
+What if $1+q+q^2 = 0$? I already said $q$ is real, so this is impossible.
+What if $a=0$? I already said this is impossible.
+What if $q=1$? Then $q^3=1$, but $\frac{m+2}{m+1} &gt; 1$.
+Wait, let me re-read. &quot;q is a real number&quot;.
+Could $q$ be negative?
+If $q$ is negative, $q^3$ is negative.
+But $\frac{m+2}{m+1}$ is always positive for $m \ge 1$.
+What if $a$ is negative?
+If $a$ is negative, then $aq^2(1+q+q^2) = 2(m+1)$ would mean $a(1+q+q^2)$ is positive, since $q^2 &gt; 0$ and $1+q+q^2 &gt; 0$.
+But if $a$ is negative, $a(1+q+q^2)$ is negative.
+So $a$ must be positive.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;3. \u5f53 $k = 3m$ \u65f6\uff1a\n\u540c\u6837\uff0c\u4e2d\u95f4\u4e24\u4e2a\u5757\u5b8c\u6574\uff1a\n$\\{a_{3m+1}, a_{3m+2}, a_{3m+3}\\} \\implies aq(1+q+q^2) = 2(m+1)$\n$\\{a_{3m+4}, a_{3m+5}, a_{3m+6}\\} \\implies aq^4(1+q+q^2) = 2(m+2)$\n\u4e24\u5f0f\u76f8\u9664\u5f97 $q^3 = \\frac{2(m+2)}{2(m+1)} = \\frac{m+2}{m+1} = 1 + \\frac{1}{m+1}$\u3002\n\u540c\u6837\uff0c\u5f53 $m=1$ \u65f6\uff0c$q^3$ \u7684\u6700\u5927\u503c\u4e3a $\\frac{3}{2}$\uff0c\u6b64\u65f6 $q = \\sqrt[3]{\\frac{3}{2}}$\u3002\n\n\u7efc\u4e0a\u6240\u8ff0\uff0c$q$ \u7684\u6700\u5927\u503c\u4e3a $\\sqrt[3]{\\frac{3}{2}}$\u3002\n\n\\boxed{\\sqrt[3]{\\frac{3}{2}}}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="tab-summary" class="tab-content">
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Problem</th>
+                    <th>Runs</th>
+                    <th>Correct</th>
+                    <th colspan="3">Tokens</th>
+                    <th colspan="3">T/s</th>
+                    <th colspan="3">Gen s</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>min</th><th>avg</th><th>max</th>
+                    <th>min</th><th>avg</th><th>max</th>
+                    <th>min</th><th>avg</th><th>max</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="summary-row">
+                    <td>000</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>577</td><td>577</td><td>577</td>
+                    <td>54.3</td><td>54.3</td><td>54.3</td>
+                    <td>10.6</td><td>10.6</td><td>10.6</td>
+                </tr>
+<tr class="summary-row">
+                    <td>001</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>1281</td><td>1281</td><td>1281</td>
+                    <td>45.6</td><td>45.6</td><td>45.6</td>
+                    <td>28.1</td><td>28.1</td><td>28.1</td>
+                </tr>
+<tr class="summary-row">
+                    <td>002</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>1398</td><td>1398</td><td>1398</td>
+                    <td>48.9</td><td>48.9</td><td>48.9</td>
+                    <td>28.6</td><td>28.6</td><td>28.6</td>
+                </tr>
+<tr class="summary-row">
+                    <td>003</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>1012</td><td>1012</td><td>1012</td>
+                    <td>49.0</td><td>49.0</td><td>49.0</td>
+                    <td>20.7</td><td>20.7</td><td>20.7</td>
+                </tr>
+<tr class="summary-row">
+                    <td>004</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>1853</td><td>1853</td><td>1853</td>
+                    <td>46.2</td><td>46.2</td><td>46.2</td>
+                    <td>40.1</td><td>40.1</td><td>40.1</td>
+                </tr>
+<tr class="summary-row">
+                    <td>005</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>5464</td><td>5464</td><td>5464</td>
+                    <td>40.1</td><td>40.1</td><td>40.1</td>
+                    <td>136.1</td><td>136.1</td><td>136.1</td>
+                </tr>
+<tr class="summary-row">
+                    <td>006</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>6095</td><td>6095</td><td>6095</td>
+                    <td>39.5</td><td>39.5</td><td>39.5</td>
+                    <td>154.2</td><td>154.2</td><td>154.2</td>
+                </tr>
+<tr class="summary-row">
+                    <td>007</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>2516</td><td>2516</td><td>2516</td>
+                    <td>42.3</td><td>42.3</td><td>42.3</td>
+                    <td>59.5</td><td>59.5</td><td>59.5</td>
+                </tr>
+<tr class="summary-row">
+                    <td>008</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>1580</td><td>1580</td><td>1580</td>
+                    <td>47.6</td><td>47.6</td><td>47.6</td>
+                    <td>33.2</td><td>33.2</td><td>33.2</td>
+                </tr>
+<tr class="summary-row">
+                    <td>009</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>8703</td><td>8703</td><td>8703</td>
+                    <td>39.0</td><td>39.0</td><td>39.0</td>
+                    <td>223.1</td><td>223.1</td><td>223.1</td>
+                </tr>
+<tr class="summary-row">
+                    <td>010</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>10775</td><td>10775</td><td>10775</td>
+                    <td>38.5</td><td>38.5</td><td>38.5</td>
+                    <td>280.0</td><td>280.0</td><td>280.0</td>
+                </tr>
+<tr class="summary-row">
+                    <td>011</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>1457</td><td>1457</td><td>1457</td>
+                    <td>47.8</td><td>47.8</td><td>47.8</td>
+                    <td>30.5</td><td>30.5</td><td>30.5</td>
+                </tr>
+<tr class="summary-row">
+                    <td>012</td>
+                    <td>1</td>
+                    <td>0/1</td>
+                    <td>7886</td><td>7886</td><td>7886</td>
+                    <td>39.2</td><td>39.2</td><td>39.2</td>
+                    <td>201.0</td><td>201.0</td><td>201.0</td>
+                </tr>
+<tr class="summary-row">
+                    <td>013</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>9070</td><td>9070</td><td>9070</td>
+                    <td>39.5</td><td>39.5</td><td>39.5</td>
+                    <td>229.9</td><td>229.9</td><td>229.9</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function toggleDetails(id) { document.getElementById('details-'+id).classList.toggle('open'); }
+        function switchTab(btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+        }
+    </script>
+</body>
+</html>
