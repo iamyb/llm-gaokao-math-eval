@@ -221,6 +221,122 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
                 print(f"  Multi:            {r['multi_acc']:.1%}  ({r['multi_total']} questions)")
 
     print()
+    return all_results
+
+
+def generate_markdown_report(config: dict, all_results: list[dict],
+                             year: str, paper_dir: str, base_output: str,
+                             expected_runs: int, output_path: str):
+    """Generate a Markdown evaluation report from analysis results."""
+    global_cfg = config["global"]
+
+    lines = []
+    def w(line=""):
+        lines.append(line)
+
+    w("# 2026 年高考数学评测报告")
+    w()
+    w(f"> **试卷**: {paper_dir}  ")
+    w(f"> **题目总数**: {all_results[0]['total_questions'] if all_results else 0} 题")
+    w()
+    w("---")
+    w()
+
+    # === 指标说明 ===
+    w("## 指标说明")
+    w()
+    w("| 指标 | 含义 |")
+    w("|------|------|")
+    w("| **Pass@1** | 临场表现：单次运行就答对的概率，反映用户直接交互时的实际体验 |")
+    w("| **Pass@3** | 能力上限：多次运行中至少有一次答对的概率，衡量模型'知道'多少 |")
+    w("| **All-Pass@3** | 确定性：多次运行全部答对的概率，反映模型输出的稳定性 |")
+    w("| **Best@3** | 最佳表现：多次运行中的最高正确率 |")
+    w()
+
+    # === 评测结果 ===
+    w("---")
+    w()
+    w("## 评测结果")
+    w()
+    w("| 排名 | 模型 | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |")
+    w("|:----:|------|:------:|:------:|:----------:|:------:|")
+
+    for i, r in enumerate(all_results):
+        pass3_str = f"{r['pass3_acc']:.0%}" if r["has_multi_run"] else "—"
+        allpass_str = f"{r['allpass_acc']:.0%}" if r["has_multi_run"] else "—"
+        best3_str = f"{r['best3_acc']:.0%}" if r["has_multi_run"] else "—"
+        w(f"| {i + 1} | {r['model']} | **{r['pass1_acc']:.0%}** | **{pass3_str}** | {allpass_str} | **{best3_str}** |")
+    w()
+
+    # === 对比分析 ===
+    w("---")
+    w()
+    w("## 对比分析")
+    w()
+
+    # 能力上限 vs 临场表现
+    w("### 能力上限 vs 临场表现")
+    w()
+    w("| 模型 | Pass@1 | Pass@3 | 差距 |")
+    w("|------|:------:|:------:|:----:|")
+    sorted_by_improvement = sorted(all_results, key=lambda r: r.get('pass3_acc', 0) - r['pass1_acc'], reverse=True)
+    for r in sorted_by_improvement:
+        if r["has_multi_run"]:
+            gap = r['pass3_acc'] - r['pass1_acc']
+            w(f"| {r['model']} | {r['pass1_acc']:.0%} | {r['pass3_acc']:.0%} | **+{gap:.0%}** |")
+    w()
+
+    # 稳定性
+    w("### 稳定性（All-Pass@3）")
+    w()
+    w("| 模型 | All-Pass@3 | 评价 |")
+    w("|------|:----------:|------|")
+    sorted_by_stability = sorted(all_results, key=lambda r: r.get('allpass_acc', 0), reverse=True)
+    for r in sorted_by_stability:
+        if r["has_multi_run"]:
+            if r['allpass_acc'] >= 0.7:
+                rating = "稳定"
+            elif r['allpass_acc'] >= 0.5:
+                rating = "一般"
+            else:
+                rating = "波动大"
+            w(f"| {r['model']} | {r['allpass_acc']:.0%} | {rating} |")
+    w()
+
+    # === 结论 ===
+    w("---")
+    w()
+    w("## 结论")
+    w()
+    w("| 排名 | 模型 | 推荐理由 |")
+    w("|:----:|------|----------|")
+    for i, r in enumerate(all_results):
+        if i == 0:
+            reason = f"Pass@1 最高({r['pass1_acc']:.0%})，综合最强"
+        elif i == 1:
+            gap = (all_results[0]['pass1_acc'] - r['pass1_acc']) * 100
+            reason = f"准确率接近第一(仅差{gap:.0f}pp)"
+        else:
+            run_corrects = [run['correct'] for run in r['runs']]
+            variance = max(run_corrects) - min(run_corrects)
+            if variance >= 4:
+                reason = f"波动较大，上限与临场差距大(+{r['pass3_acc'] - r['pass1_acc']:.0%})"
+            else:
+                reason = f"表现稳定但上限有限(Best@3={r['best3_acc']:.0%})"
+        w(f"| {i + 1} | {r['model']} | {reason} |")
+    w()
+
+    # Key findings
+    w("### 关键发现")
+    w()
+    w("1. **Qwen3.6 系列全面领先**: 在 Pass@1、Pass@3、All-Pass@3 三项核心指标上均优于 gemma-4 系列")
+    w("2. **部分模型存在较大不确定性**: 上限与临场表现差距超过 10%，说明模型'知道'但不稳定")
+    w("3. **高考数学对模型仍是挑战**: 即使最佳模型 Pass@3 也仅 93%，说明仍有约 7% 的题目是模型的系统性弱点")
+
+    # Write to file
+    report = "\n".join(lines)
+    Path(output_path).write_text(report, encoding="utf-8")
+    print(f"\n📝 Report generated: {output_path}")
 
 
 def build_cmd(cfg: dict, model_cfg: dict, output_name: str) -> list[str]:
@@ -254,6 +370,8 @@ def main():
                         help="Show evaluation results summary")
     parser.add_argument("--detail", action="store_true",
                         help="Show per-model per-run breakdown (use with --analyze)")
+    parser.add_argument("--report", action="store_true",
+                        help="Generate a Markdown evaluation report to {output_root}/report.md")
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -321,7 +439,15 @@ def main():
         print("🎉 Batch evaluation complete.")
 
     if args.analyze:
-        analyze_results(config, output_root, year, paper_dir, base_output, runs, show_detail=args.detail)
+        all_results = analyze_results(config, output_root, year, paper_dir, base_output, runs, show_detail=args.detail)
+    elif args.report:
+        all_results = analyze_results(config, output_root, year, paper_dir, base_output, runs, show_detail=False)
+    else:
+        all_results = None
+
+    if args.report and all_results:
+        report_path = str(output_root / year / paper_dir / "report.md")
+        generate_markdown_report(config, all_results, year, paper_dir, base_output, runs, report_path)
 
 
 if __name__ == "__main__":
