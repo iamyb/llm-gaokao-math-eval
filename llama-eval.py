@@ -1106,6 +1106,9 @@ class JsonlDataset(BaseDataset):
                         "source_file": str(path),
                         "dataset_type": self.dataset_type,
                     }
+                    # 保留 question_type 字段（如果存在）
+                    if "question_type" in row:
+                        question["question_type"] = row["question_type"]
                     self.questions.append(question)
         print(f"JSONL dataset loaded: {len(self.questions)} questions")
 
@@ -1119,9 +1122,22 @@ class JsonlDataset(BaseDataset):
         return str(question.get("answer", ""))
 
     def get_prompt(self, question: Dict) -> str:
-        return TEMPLATE_REGISTRY[self.dataset_type].format(
-            question=self.get_question_text(question),
-        )
+        template = TEMPLATE_REGISTRY[self.dataset_type]
+        question_text = self.get_question_text(question)
+        
+        # 如果有 question_type 字段，在 prompt 中加入类型提示
+        question_type = question.get("question_type")
+        if question_type:
+            # 兼容 gaokao 模板 ("请解答以下数学题。") 和 jsonl 模板 ("请解答以下题目。")
+            template = template.replace(
+                "请解答以下数学题。",
+                f"请解答以下数学题（{question_type}）。",
+            ).replace(
+                "请解答以下题目。",
+                f"请解答以下题目（{question_type}）。",
+            )
+        
+        return template.format(question=question_text)
 
 
 class Grader:
