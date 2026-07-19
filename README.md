@@ -4,6 +4,39 @@
 
 从数学 PDF 试卷中提取客观题（选择题、填空题），构建数据集并评估本地大模型能力。
 
+---
+
+## 📊 最新评测结果
+
+> **试卷**: 2026 全国1（山东、广东、湖南等 10 省） · **14 题** · 每模型 3 次运行
+
+### 标注题目类型后
+
+| 排名 | 模型 | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |
+|:----:|------|:------:|:------:|:----------:|:------:|
+| 1 | Qwen3.6-27b-UD-Q6_K_XL-MTP | **98%** | **100%** | 93% | **100%** |
+| 2 | Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP | **98%** | **100%** | 93% | **100%** |
+| 3 | gemma-4-31B-it-UD-Q6_K_XL | **98%** | **100%** | 93% | **100%** |
+| 4 | gemma-4-26B-A4B-it-UD-Q6_K_XL | **95%** | **100%** | 86% | **100%** |
+
+### 未标注题目类型（对比）
+
+| 排名 | 模型 | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |
+|:----:|------|:------:|:------:|:----------:|:------:|
+| 1 | Qwen3.6-27b-UD-Q6_K_XL-MTP | **83%** | **93%** | 71% | **86%** |
+| 2 | Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP | **81%** | **86%** | 71% | **86%** |
+| 3 | gemma-4-31B-it-UD-Q6_K_XL | **79%** | **86%** | 71% | **79%** |
+| 4 | gemma-4-26B-A4B-it-UD-Q6_K_XL | **69%** | **79%** | 50% | **79%** |
+
+### 关键发现
+
+- **标注题目类型显著提升效果**: Pass@1 从 69%~83% 提升至 95%~98%，Pass@3 从 79%~93% 提升至 100%
+- **Qwen3.6 系列综合领先**: 27b 和 35b 版本表现接近，27b 在稳定性上略占优势
+- **gemma-4 系列差距缩小**: 标注类型后 Pass@3 也达到 100%，但 Pass@1 仍有差距
+- **完整报告**: [默认配置](eval/results/eval_results/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [带类型标注](eval/results/eval_results_with_type/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md)
+
+---
+
 ## 目录结构
 
 ```
@@ -35,21 +68,6 @@ python build_data.py
 
 # 只处理 2026 年
 python build_data.py --year 2026
-
-# 只处理特定试卷
-python build_data.py --pdf "全国1"
-
-# 跳过转图片（仅重新提取题目）
-python build_data.py --skip-images
-
-# 跳过提取（仅转图片）
-python build_data.py --skip-extract
-
-# 跳过生成 HTML 预览
-python build_data.py --skip-view
-
-# 自定义合并页面（默认合并第1、2页）
-python build_data.py --merge-pages 1 2 3
 ```
 
 ### 2. 校验管理
@@ -58,20 +76,11 @@ python build_data.py --merge-pages 1 2 3
 # 查看所有文件及状态
 python scripts/validate_data.py --list
 
-# 查看统计信息
-python scripts/validate_data.py --status
-
 # 校验通过，复制到 final_data
 python scripts/validate_data.py --approve "上海"
 
 # 批量复制全部
 python scripts/validate_data.py --approve-all
-
-# 覆盖已存在的文件
-python scripts/validate_data.py --approve "上海" --force
-
-# 从 final_data 移除（重新校验）
-python scripts/validate_data.py --remove "上海"
 ```
 
 ### 2.5 添加题目类型（可选）
@@ -88,39 +97,14 @@ python scripts/add_question_type.py "data/final_data/2026/2026上海/questions.j
 使用 `run_eval.py` 进行批量评测，基于 YAML 配置文件驱动，支持多模型、多次运行、自动报告生成。
 
 ```bash
-# 运行评测（读取 eval/configs/default.yaml）
+# 运行评测
 python run_eval.py --config eval/configs/default.yaml
 
 # 查看评测结果汇总
-python run_eval.py --config eval/configs/default.yaml --analyze
-
-# 查看详细结果（每模型每轮）
-python run_eval.py --config eval/configs/default.yaml --analyze --detail
+python run_eval.py --config eval/configs/default.yaml --postprocess
 
 # 生成 Markdown 评测报告
 python run_eval.py --config eval/configs/default.yaml --analyze --report
-
-# 仅查看缺少的运行（不执行）
-python run_eval.py --config eval/configs/default.yaml --dry-run
-
-# 修正已有结果文件的答案判定（不重新评测）
-python run_eval.py --config eval/configs/default.yaml --postprocess
-```
-
-评测结果保存到 `eval/results/eval_results/`，按 `年份 / 卷子 / 模型` 分层：
-
-```text
-eval/results/eval_results/
-    2026/
-        2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/
-            report.md
-            Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP/
-                2026_gaokao_math_quanguo1.json
-                2026_gaokao_math_quanguo1.json.html
-                2026_gaokao_math_quanguo1_1.json
-                2026_gaokao_math_quanguo1_1.json.html
-                2026_gaokao_math_quanguo1_2.json
-                2026_gaokao_math_quanguo1_2.json.html
 ```
 
 ### 3.1 YAML 配置
@@ -163,10 +147,10 @@ models:
 
 | 指标 | 含义 |
 |------|------|
-| **Pass@1** | 临场表现：单次运行就答对的概率 |
-| **Pass@3** | 能力上限：多次运行中至少有一次答对的概率 |
-| **All-Pass@3** | 确定性：多次运行全部答对的概率 |
-| **Best@3** | 最佳表现：多次运行中的最高正确率 |
+| **Pass@1** | 单次准确率（均值）：多次运行准确率的平均值 |
+| **Pass@3** | 多次通过率：多次运行中至少有一次答对的题目占比 |
+| **All-Pass@3** | 全通过率：多次运行全部答对的题目占比 |
+| **Best@3** | 最佳准确率：多次运行中的最高准确率 |
 
 ## 工作流程
 

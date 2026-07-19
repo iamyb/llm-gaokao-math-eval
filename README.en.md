@@ -4,6 +4,39 @@
 
 Extracts objective questions (multiple-choice, fill-in-the-blank) from math PDF exam papers to build datasets for evaluating local LLM capabilities.
 
+---
+
+## 📊 Latest Evaluation Results
+
+> **Paper**: 2026 National 1 (Shandong, Guangdong, Hunan, etc. — 10 provinces) · **14 Questions** · 3 Runs per Model
+
+### With Question Type Labels
+
+| Rank | Model | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |
+|:----:|------|:------:|:------:|:----------:|:------:|
+| 1 | Qwen3.6-27b-UD-Q6_K_XL-MTP | **98%** | **100%** | 93% | **100%** |
+| 2 | Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP | **98%** | **100%** | 93% | **100%** |
+| 3 | gemma-4-31B-it-UD-Q6_K_XL | **98%** | **100%** | 93% | **100%** |
+| 4 | gemma-4-26B-A4B-it-UD-Q6_K_XL | **95%** | **100%** | 86% | **100%** |
+
+### Without Question Type Labels (Baseline)
+
+| Rank | Model | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |
+|:----:|------|:------:|:------:|:----------:|:------:|
+| 1 | Qwen3.6-27b-UD-Q6_K_XL-MTP | **83%** | **93%** | 71% | **86%** |
+| 2 | Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP | **81%** | **86%** | 71% | **86%** |
+| 3 | gemma-4-31B-it-UD-Q6_K_XL | **79%** | **86%** | 71% | **79%** |
+| 4 | gemma-4-26B-A4B-it-UD-Q6_K_XL | **69%** | **79%** | 50% | **79%** |
+
+### Key Findings
+
+- **Question type labels significantly improve results**: Pass@1 jumps from 69%~83% to 95%~98%, Pass@3 from 79%~93% to 100%
+- **Qwen3.6 series leads overall**: 27b and 35b versions are close, with 27b slightly ahead in stability
+- **gemma-4 series closes the gap**: Pass@3 reaches 100% with labels, but Pass@1 still lags
+- **Full reports**: [Default Config](eval/results/eval_results/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [With Type Labels](eval/results/eval_results_with_type/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md)
+
+---
+
 ## Directory Structure
 
 ```
@@ -35,21 +68,6 @@ python build_data.py
 
 # Process only the 2026 directory
 python build_data.py --year 2026
-
-# Process only a specific paper
-python build_data.py --pdf "全国1"
-
-# Skip image conversion (re-run extraction only)
-python build_data.py --skip-images
-
-# Skip extraction (image conversion only)
-python build_data.py --skip-extract
-
-# Skip HTML preview generation
-python build_data.py --skip-view
-
-# Custom page merging (default: merge pages 1 and 2)
-python build_data.py --merge-pages 1 2 3
 ```
 
 ### 2. Validation management
@@ -58,20 +76,11 @@ python build_data.py --merge-pages 1 2 3
 # List all pending files and their status
 python scripts/validate_data.py --list
 
-# Show summary statistics
-python scripts/validate_data.py --status
-
 # Approve and copy into final_data
 python scripts/validate_data.py --approve "上海"
 
 # Batch-approve everything
 python scripts/validate_data.py --approve-all
-
-# Overwrite an existing file
-python scripts/validate_data.py --approve "上海" --force
-
-# Remove from final_data (send back for re-review)
-python scripts/validate_data.py --remove "上海"
 ```
 
 ### 2.5 Add question types (optional)
@@ -88,39 +97,14 @@ python scripts/add_question_type.py "data/final_data/2026/2026上海/questions.j
 Use `run_eval.py` for batch evaluation, driven by YAML configuration files, supporting multiple models, multiple runs, and automatic report generation.
 
 ```bash
-# Run evaluation (reads eval/configs/default.yaml)
+# Run evaluation
 python run_eval.py --config eval/configs/default.yaml
 
 # Show evaluation results summary
-python run_eval.py --config eval/configs/default.yaml --analyze
-
-# Show detailed per-model per-run breakdown
-python run_eval.py --config eval/configs/default.yaml --analyze --detail
+python run_eval.py --config eval/configs/default.yaml --postprocess
 
 # Generate Markdown evaluation report
 python run_eval.py --config eval/configs/default.yaml --analyze --report
-
-# Dry run — show missing runs without executing
-python run_eval.py --config eval/configs/default.yaml --dry-run
-
-# Fix answer judgments in existing result files (without re-running)
-python run_eval.py --config eval/configs/default.yaml --postprocess
-```
-
-Results are saved under `eval/results/eval_results/`, organized as `year / paper / model`:
-
-```text
-eval/results/eval_results/
-    2026/
-        2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/
-            report.md
-            Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP/
-                2026_gaokao_math_quanguo1.json
-                2026_gaokao_math_quanguo1.json.html
-                2026_gaokao_math_quanguo1_1.json
-                2026_gaokao_math_quanguo1_1.json.html
-                2026_gaokao_math_quanguo1_2.json
-                2026_gaokao_math_quanguo1_2.json.html
 ```
 
 ### 3.1 YAML Configuration
@@ -163,10 +147,10 @@ Parameter priority: `global` → `preset` → model-level overrides (server, tem
 
 | Metric | Description |
 |--------|-------------|
-| **Pass@1** | Single-run accuracy: probability of getting it right on the first try |
-| **Pass@3** | Capability ceiling: probability of getting it right in at least one of multiple runs |
-| **All-Pass@3** | Determinism: probability of getting it right in all runs |
-| **Best@3** | Best performance: highest accuracy among all runs |
+| **Pass@1** | Mean single-run accuracy: average accuracy across all runs |
+| **Pass@3** | Multi-run pass rate: fraction of questions answered correctly in at least one run |
+| **All-Pass@3** | All-run pass rate: fraction of questions answered correctly in all runs |
+| **Best@3** | Best accuracy: highest accuracy among all runs |
 
 ## Workflow
 
