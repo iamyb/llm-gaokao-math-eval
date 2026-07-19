@@ -1,6 +1,6 @@
 [简体中文](README.md) | English
 
-# Gaokao Math Exam Dataset Builder
+# Gaokao Math Exam Dataset Construction and Evaluation
 
 Extracts objective questions (multiple-choice, fill-in-the-blank) from math PDF exam papers to build datasets for evaluating local LLM capabilities.
 
@@ -9,6 +9,8 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from math PDF 
 ## 📊 Latest Evaluation Results
 
 > **Paper**: 2026 National 1 (Shandong, Guangdong, Hunan, etc. — 10 provinces) · **14 Questions** · 3 Runs per Model
+>
+> **Note**: This exam was administered after the release of Qwen3.6 and Gemma4, so the models' training data does not include this paper.
 
 ### With Question Type Labels
 
