@@ -178,8 +178,8 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
             "has_multi_run": len(run_files) > 1,
         })
 
-    # Sort by best accuracy descending
-    all_results.sort(key=lambda r: r["best"]["accuracy"], reverse=True)
+    # Sort by comprehensive score: Pass@1 (primary) + All-Pass@3 (secondary) + Pass@3 (tertiary)
+    all_results.sort(key=lambda r: (r["pass1_acc"], r["allpass_acc"], r["pass3_acc"]), reverse=True)
 
     header = "=" * 80
     sep = "-" * 80
@@ -312,10 +312,10 @@ def generate_markdown_report(config: dict, all_results: list[dict],
     w("|:----:|------|----------|")
     for i, r in enumerate(all_results):
         if i == 0:
-            reason = f"Pass@1 最高({r['pass1_acc']:.0%})，综合最强"
+            reason = f"综合评分第一 (Pass@1={r['pass1_acc']:.0%}, All-Pass@3={r['allpass_acc']:.0%})"
         elif i == 1:
             gap = (all_results[0]['pass1_acc'] - r['pass1_acc']) * 100
-            reason = f"准确率接近第一(仅差{gap:.0f}pp)"
+            reason = f"Pass@1 落后第一 {gap:.0f}pp"
         else:
             run_corrects = [run['correct'] for run in r['runs']]
             variance = max(run_corrects) - min(run_corrects)
