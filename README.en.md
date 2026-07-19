@@ -76,10 +76,10 @@ python scripts/validate_data.py --remove "上海"
 
 ### 4. Run evaluation
 
-`data/final_data/` holds the human-reviewed data; `llama-eval.py` runs evaluations against it. Results are saved under `data/eval_results/`, organized as `year / paper / model`.
+`data/final_data/` holds the human-reviewed data; `scripts/llama-eval.py` runs evaluations against it. Results are saved under `data/eval_results/`, organized as `year / paper / model`.
 
 ```powershell
-python llama-eval.py --model Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP --server http://<YOUR_SERVER_IP>:9292 --grader-type llm --grader-model qwen3.6-35b-a3b --grader-server http://localhost:10001 --dataset gaokao --dataset-path "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl" --temperature 1.0 --top-k 20 --top-p 0.95 --min-p 0.00 --output 2026_gaokao_math_quanguo1.json --output-root data/eval_results --seed 1234 --threads 1
+python scripts/llama-eval.py --model Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP --server http://<YOUR_SERVER_IP>:9292 --grader-type llm --grader-model qwen3.6-35b-a3b --grader-server http://localhost:10001 --dataset gaokao --dataset-path "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl" --temperature 1.0 --top-k 20 --top-p 0.95 --min-p 0.00 --output 2026_gaokao_math_quanguo1.json --output-root data/eval_results --seed 1234 --threads 1
 ```
 
 This produces a directory structure like:

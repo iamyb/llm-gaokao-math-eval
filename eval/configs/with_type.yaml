@@ -2,9 +2,7 @@ global:
   output_root: "eval/results/eval_results_with_type"
   dataset_path: "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions_with_type.jsonl"
   grader_type: "llm"
-  grader_model: "qwen3.6-35b-a3b"
-  grader_server: "http://localhost:10001"
-  server: "http://192.168.0.41:9292"
+  # grader_model, grader_server, server 优先从 .env 读取
   seed: 1234
   runs_per_model: 3
   base_output: "2026_gaokao_math_quanguo1.json"

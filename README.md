@@ -69,10 +69,10 @@ python scripts/validate_data.py --remove "上海"
 
 ### 3. 运行评测
 
-`data/final_data/` 是已经人工校验过的数据，`llama-eval.py` 会基于它生成评测结果。结果统一保存到 `data/eval_results/` 下，并按 `年份 / 卷子 / 模型` 分层保存。
+`data/final_data/` 是已经人工校验过的数据，`scripts/llama-eval.py` 会基于它生成评测结果。结果统一保存到 `data/eval_results/` 下，并按 `年份 / 卷子 / 模型` 分层保存。
 
 ```powershell
-python llama-eval.py --model Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP --server http://<YOUR_SERVER_IP>:9292 --grader-type llm --grader-model qwen3.6-35b-a3b --grader-server http://localhost:10001 --dataset gaokao --dataset-path "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl" --temperature 1.0 --top-k 20 --top-p 0.95 --min-p 0.00 --output 2026_gaokao_math_quanguo1.json --output-root data/eval_results --seed 1234 --threads 1
+python scripts/llama-eval.py --model Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP --server http://<YOUR_SERVER_IP>:9292 --grader-type llm --grader-model qwen3.6-35b-a3b --grader-server http://localhost:10001 --dataset gaokao --dataset-path "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl" --temperature 1.0 --top-k 20 --top-p 0.95 --min-p 0.00 --output 2026_gaokao_math_quanguo1.json --output-root data/eval_results --seed 1234 --threads 1
 ```
 
 运行后会自动生成类似下面的目录：

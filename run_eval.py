@@ -4,11 +4,12 @@ Batch evaluation runner — YAML config driven, idempotent.
 Supports: global → presets → model three-level parameter override.
 
 Usage:
-    python run_eval_batch.py [--config eval_config.yaml]
+    python run_eval.py [--config eval_config.yaml]
 """
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -16,7 +17,24 @@ import time
 from pathlib import Path
 from math import sqrt
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv not installed, skip
+
 import yaml
+
+
+def _env_or(cfg: dict, key: str, env_var: str, default: str = "") -> str:
+    """Read from env var first, fall back to YAML config value, then default."""
+    val = os.environ.get(env_var)
+    if val:
+        return val
+    val = cfg.get(key)
+    if val:
+        return str(val)
+    return default
 
 
 def load_config(config_path: str) -> dict:
@@ -691,15 +709,20 @@ def generate_markdown_report(config: dict, all_results: list[dict],
 
 
 def build_cmd(cfg: dict, model_cfg: dict, output_name: str) -> list[str]:
+    # Resolve sensitive values from env vars (env > YAML)
+    server = _env_or(cfg, "server", "EVAL_SERVER")
+    grader_server = _env_or(cfg, "grader_server", "EVAL_GRADER_SERVER")
+    grader_model = _env_or(cfg, "grader_model", "EVAL_GRADER_MODEL")
+
     cmd = [
-        sys.executable, "llama-eval.py",
+        sys.executable, "scripts/llama-eval.py",
         "--model", model_cfg["name"],
-        "--server", cfg["server"],
+        "--server", server,
         "--dataset", "gaokao",
         "--dataset-path", cfg["dataset_path"],
         "--grader-type", cfg["grader_type"],
-        "--grader-model", cfg["grader_model"],
-        "--grader-server", cfg["grader_server"],
+        "--grader-model", grader_model,
+        "--grader-server", grader_server,
         "--temperature", str(cfg["temperature"]),
         "--top-k", str(cfg["top_k"]),
         "--top-p", str(cfg["top_p"]),
