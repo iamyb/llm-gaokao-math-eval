@@ -9,10 +9,12 @@ Usage:
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import time
 from pathlib import Path
+from math import sqrt
 
 import yaml
 
@@ -53,6 +55,355 @@ def compute_missing_runs(model_dir: Path, base_output: str, runs: int) -> list[s
 def load_run(filepath: Path) -> dict:
     with open(filepath, "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def wilson_interval(correct: int, total: int, z: float = 1.96) -> tuple[float, float]:
+    if total == 0:
+        return (0.0, 1.0)
+    p = correct / total
+    z2 = z * z / total
+    center = (p + z2 / 2) / (1 + z2)
+    margin = z * sqrt((p * (1 - p) + z2 / 4) / total) / (1 + z2)
+    return (center - margin, center + margin)
+
+
+def _strip_wrappers(text: str) -> str:
+    value = str(text or "").strip()
+    if not value:
+        return ""
+
+    value = value.replace("，", ",").replace("；", ";").replace("、", ",")
+    value = re.sub(r"^\$+|\$+$", "", value).strip()
+
+    while True:
+        unboxed = re.sub(r"^\\boxed\{(.*)\}$", r"\1", value)
+        if unboxed == value:
+            break
+        value = unboxed.strip()
+
+    return value
+
+
+def _normalize_piece(text: str) -> str:
+    value = _strip_wrappers(text)
+    value = re.sub(r"^\s*(?:\\?[A-Za-z]+(?:\([^)]*\))?)\s*=\s*", "", value)
+    value = re.sub(r"\s+", "", value)
+    return value
+
+
+def _split_pieces(text: str) -> list[str]:
+    value = _strip_wrappers(text)
+    pieces = [piece.strip() for piece in re.split(r"[,，;；、\n]+", value) if piece.strip()]
+    return [_normalize_piece(piece) for piece in pieces] if pieces else []
+
+
+def _answers_equivalent(expected: str, candidate: str) -> tuple[bool, str]:
+    expected_pieces = _split_pieces(expected)
+    candidate_pieces = _split_pieces(candidate)
+    if not expected_pieces or not candidate_pieces:
+        return False, ""
+    if len(expected_pieces) == len(candidate_pieces) and len(expected_pieces) > 1:
+        return all(e == c for e, c in zip(expected_pieces, candidate_pieces)), ", ".join(candidate_pieces)
+    return "".join(expected_pieces) == "".join(candidate_pieces), ", ".join(candidate_pieces)
+
+
+def _escape_html(s: str) -> str:
+    """HTML-escape string (same logic as llama-eval.py)."""
+    return (s.replace("&", "&amp;")
+             .replace("<", "&lt;")
+             .replace(">", "&gt;")
+             .replace('"', "&quot;")
+             .replace("'", "&#39;"))
+
+
+def _regenerate_html(data: dict, json_path: Path) -> str:
+    """
+    Regenerate HTML report with the same format as llama-eval.py dump_html.
+    Takes the JSON data dict and produces a full HTML report.
+    """
+    task_states = data.get("task_states", {})
+    cases = task_states.get("cases", {})
+    model_name = data.get("model_name", "N/A")
+    dataset_type = data.get("id", "gaokao")
+    sampling_config = data.get("sampling_config", {})
+    total_time = task_states.get("total_time", 0.0)
+
+    # Build tasks_to_save from cases keys (ordered)
+    tasks_to_save = [(i, tid) for i, tid in enumerate(sorted(cases.keys()))]
+
+    completed = {tid: c for tid, c in cases.items() if c.get("status") == "ok"}
+    n_correct = sum(1 for c in completed.values() if c.get("correct", False))
+    n_incorrect = len(completed) - n_correct
+    n_pending = len(tasks_to_save) - len(completed)
+    accuracy = n_correct / len(completed) * 100 if completed else 0.0
+    ci_lower, ci_upper = wilson_interval(n_correct, len(completed)) if completed else (0.0, 1.0)
+
+    sampling_parts = []
+    for k, v in sampling_config.items():
+        if v is not None:
+            sampling_parts.append(f"{k}={v}")
+    sampling_str = ", ".join(sampling_parts) if sampling_parts else "default"
+
+    # Build detail rows
+    rows = []
+    for i, task_id in tasks_to_save:
+        case = cases.get(task_id, {})
+        status = case.get("status", "pending")
+        expected = case.get("expected", "")
+        answer = case.get("answer") or "" if status == "ok" else ""
+        is_correct = case.get("correct", False) if status == "ok" else False
+        response = case.get("response", "") or ""
+        prompt = case.get("prompt", "") or ""
+        grader_log = case.get("grader_log", {})
+
+        if status == "ok":
+            status_class = "correct" if is_correct else "incorrect"
+            status_text = "\u2713" if is_correct else "\u2717"
+        elif status == "pending":
+            status_class = "pending"
+            status_text = "\u2013"
+        else:
+            status_class = "error"
+            status_text = "!"
+
+        tokens = case.get("tokens")
+        tokens_str = str(tokens) if tokens is not None else ""
+        tps_gen = case.get("tps_gen")
+        tps_str = f"{tps_gen:.1f}" if tps_gen is not None else ""
+        t_gen_ms = case.get("t_gen_ms")
+        t_gen_str = f"{t_gen_ms/1000:.1f}" if t_gen_ms is not None else ""
+        reasoning_content = case.get("reasoning_content", "") or ""
+        server_name = case.get("server_name", "") or ""
+
+        escaped_response = _escape_html(response)
+        escaped_prompt = _escape_html(prompt)
+        escaped_reasoning = _escape_html(reasoning_content)
+        grader_log_str = _escape_html(json.dumps(grader_log, indent=2))
+        escaped_server = _escape_html(server_name)
+
+        answer_class = status_class if status == "ok" else ""
+        rows.append(f"""<tr class="task-row" onclick="toggleDetails('{task_id}')">
+                <td>{task_id}</td>
+                <td class="{status_class}">{status_text}</td>
+                <td>{_escape_html(expected)}</td>
+                <td class="{answer_class}">{_escape_html(answer)}</td>
+                <td>{tokens_str}</td>
+                <td>{tps_str}</td>
+                <td>{t_gen_str}</td>
+                <td>{escaped_server}</td>
+            </tr>
+            <tr id="details-{task_id}" class="details-row">
+                <td colspan="8">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>{escaped_prompt}</pre>
+                        <b>Response</b><pre>{escaped_response}</pre>
+                        {f'<b>Reasoning</b><pre>{escaped_reasoning}</pre>' if escaped_reasoning else ''}
+                        <b>Grader</b><pre>{grader_log_str}</pre>
+                    </div>
+                </td>
+            </tr>""")
+
+    rows_html = "\n".join(rows)
+
+    # ---- per-problem summary table ----
+    problem_groups: dict[int, list[dict]] = {}
+    for _tid, _case in cases.items():
+        if _case.get("status") != "ok":
+            continue
+        _pidx = _case.get("problem_idx")
+        if _pidx is None:
+            _p_parts = _tid.rsplit("_", 2)
+            _pidx = int(_p_parts[-1]) if len(_p_parts) >= 3 else 0
+        problem_groups.setdefault(_pidx, []).append(_case)
+
+    summary_rows_html = ""
+    if problem_groups:
+        def _stat(v, fmt=".1f", avg_fmt=None):
+            if not v:
+                return ("\u2013", "\u2013", "\u2013")
+            af = fmt if avg_fmt is None else avg_fmt
+            return (f"{min(v):{fmt}}", f"{sum(v)/len(v):{af}}", f"{max(v):{fmt}}")
+
+        summary_data = []
+        for pidx, g in problem_groups.items():
+            runs = len(g)
+            n_ok = sum(1 for c in g if c.get("correct", False))
+            toks = [c["tokens"] for c in g if c.get("tokens") is not None]
+            tps = [c["tps_gen"] for c in g if c.get("tps_gen") is not None]
+            tg = [c["t_gen_ms"] / 1000 for c in g if c.get("t_gen_ms") is not None]
+            summary_data.append((
+                pidx, runs, n_ok,
+                _stat(toks, "d", ".0f"),
+                _stat(tps),
+                _stat(tg),
+            ))
+
+        summary_data.sort(key=lambda r: r[0])
+
+        summary_rows_html = "\n".join(
+            f"""<tr class="summary-row">
+                    <td>{p:03d}</td>
+                    <td>{r}</td>
+                    <td>{n}/{r}</td>
+                    <td>{tk[0]}</td><td>{tk[1]}</td><td>{tk[2]}</td>
+                    <td>{tp[0]}</td><td>{tp[1]}</td><td>{tp[2]}</td>
+                    <td>{tg[0]}</td><td>{tg[1]}</td><td>{tg[2]}</td>
+                </tr>"""
+            for p, r, n, tk, tp, tg in summary_data
+        )
+
+    html_content = f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{dataset_type.upper()} Eval</title>
+<style>
+        body {{ font-family: system-ui, sans-serif; margin: 0; padding: 16px; background: #fff; color: #222; }}
+        .bar {{ padding: 8px 0; font-size: 13px; color: #555; font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 2px 12px; align-items: baseline; }}
+        .bar .label {{ color: #888; }}
+        .bar .value {{ color: #222; }}
+        table {{ width: 100%; border-collapse: collapse; font-size: 13px; font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; }}
+        th {{ text-align: left; padding: 6px 8px; border-bottom: 2px solid #ccc; font-weight: 600; }}
+        td {{ padding: 4px 8px; border-bottom: 1px solid #eee; vertical-align: top; }}
+        .task-row {{ cursor: pointer; }}
+        .task-row:hover {{ background: #f5f5f5; }}
+        .correct {{ color: #1a7f37; }}
+        .incorrect {{ color: #cf222e; }}
+        .pending {{ color: #888; }}
+        .error {{ color: #9a6700; }}
+        .details-row {{ display: none; }}
+        .details-row.open {{ display: table-row; }}
+        .details-content {{ padding: 8px 16px; background: #f6f8fa; font-size: 12px; }}
+        .details-content b {{ color: #555; }}
+        .details-content pre {{ background: #fff; border: 1px solid #e1e4e8; padding: 8px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; margin: 4px 0 8px; }}
+        .summary-table {{ margin-bottom: 16px; font-size: 13px; width: 100%; }}
+        .summary-row {{ background: #fafbfc; }}
+        .summary-row:hover {{ background: #f5f5f5; }}
+        .summary-table th {{ text-align: right; font-weight: 600; }}
+        .summary-table th:first-child {{ text-align: left; }}
+        .summary-table th[colspan] {{ text-align: center; }}
+        .summary-table td {{ text-align: right; }}
+        .summary-table td:first-child {{ text-align: left; }}
+        .tabs {{ display: flex; border-bottom: 2px solid #ddd; margin: 12px 0 0; }}
+        .tab-btn {{ padding: 6px 16px; border: none; background: none; font-size: 13px; cursor: pointer; color: #555; border-bottom: 2px solid transparent; margin-bottom: -2px; font-weight: 500; }}
+        .tab-btn:hover {{ color: #222; }}
+        .tab-btn.active {{ color: #222; border-bottom-color: #222; font-weight: 600; }}
+        .tab-content {{ display: none; }}
+        .tab-content.active {{ display: block; }}
+</style>
+</head>
+<body>
+    <div class="bar">
+        <div class="label">Dataset</div><div class="value"><b>{dataset_type.upper()}</b></div>
+        <div class="label">Model</div><div class="value"><b>{model_name}</b></div>
+        <div class="label">Accuracy</div><div class="value"><b>{accuracy:.1f}%</b> [{ci_lower*100:.1f}%, {ci_upper*100:.1f}%]</div>
+        <div class="label">Correct</div><div class="value"><span class="correct">{n_correct}</span> / {len(completed)}</div>
+        <div class="label">Pending</div><div class="value">{n_pending}</div>
+        <div class="label">Time</div><div class="value">{total_time:.1f}s</div>
+        <div class="label">Sampling</div><div class="value">{sampling_str}</div>
+    </div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="detailed" onclick="switchTab(this)">Detailed</button>
+        <button class="tab-btn" data-tab="summary" onclick="switchTab(this)">Summary</button>
+    </div>
+    <div id="tab-detailed" class="tab-content active">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th></th>
+                    <th>Gold</th>
+                    <th>Answer</th>
+                    <th>Tokens</th>
+                    <th>T/s</th>
+                    <th>Gen s</th>
+                    <th>Server</th>
+                </tr>
+            </thead>
+            <tbody>
+                {rows_html}
+            </tbody>
+        </table>
+    </div>
+    <div id="tab-summary" class="tab-content">
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Problem</th>
+                    <th>Runs</th>
+                    <th>Correct</th>
+                    <th colspan="3">Tokens</th>
+                    <th colspan="3">T/s</th>
+                    <th colspan="3">Gen s</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>min</th><th>avg</th><th>max</th>
+                    <th>min</th><th>avg</th><th>max</th>
+                    <th>min</th><th>avg</th><th>max</th>
+                </tr>
+            </thead>
+            <tbody>
+                {summary_rows_html}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function toggleDetails(id) {{ document.getElementById('details-'+id).classList.toggle('open'); }}
+        function switchTab(btn) {{
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+        }}
+    </script>
+</body>
+</html>"""
+    return html_content
+
+
+def correct_existing_result_file(json_path: Path) -> int:
+    data = load_run(json_path)
+    task_states = data.get("task_states", {})
+    cases = task_states.get("cases", {})
+
+    corrected_cases = 0
+    for case in cases.values():
+        if case.get("status") != "ok":
+            continue
+        if case.get("correct", False):
+            continue
+        expected = str(case.get("expected", "") or "").strip()
+        candidate = str(case.get("answer") or case.get("response") or "").strip()
+        if not expected or not candidate:
+            continue
+
+        matched, normalized_candidate = _answers_equivalent(expected, candidate)
+        if not matched:
+            continue
+
+        case["correct"] = True
+        if normalized_candidate and case.get("answer") != normalized_candidate:
+            case["answer"] = normalized_candidate
+        corrected_cases += 1
+
+    if not corrected_cases:
+        return 0
+
+    task_states["correct"] = sum(1 for case in cases.values() if case.get("correct", False))
+    total_completed = sum(1 for case in cases.values() if case.get("status") == "ok")
+    if total_completed:
+        task_states["ci_lower"], task_states["ci_upper"] = wilson_interval(task_states["correct"], total_completed)
+    else:
+        task_states["ci_lower"], task_states["ci_upper"] = (0.0, 1.0)
+    data["task_states"] = task_states
+
+    json_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    html_path = Path(str(json_path) + ".html")
+    html_path.write_text(_regenerate_html(data, json_path), encoding="utf-8")
+    return corrected_cases
 
 
 def find_run_files(model_dir: Path, base_output: str, runs: int) -> list[tuple[str, Path]]:
@@ -372,6 +723,8 @@ def main():
                         help="Show per-model per-run breakdown (use with --analyze)")
     parser.add_argument("--report", action="store_true",
                         help="Generate a Markdown evaluation report to {output_root}/report.md")
+    parser.add_argument("--postprocess", action="store_true",
+                        help="Correct existing result JSON/HTML files in output_root without rerunning evaluation")
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -390,6 +743,19 @@ def main():
     print(f"📂 Output root: {output_root}/{year}/{paper_dir}/")
     print(f"🔄 Runs per model: {runs}")
     print()
+
+    if args.postprocess:
+        files_changed = 0
+        cases_corrected = 0
+        paper_root = output_root / year / paper_dir
+        if paper_root.exists():
+            for json_path in sorted(p for p in paper_root.rglob("*.json") if p.is_file()):
+                corrected = correct_existing_result_file(json_path)
+                if corrected:
+                    files_changed += 1
+                    cases_corrected += corrected
+        print(f"🛠️  Post-process complete: {files_changed} file(s) updated, {cases_corrected} case(s) corrected.")
+        print()
 
     dry_run = args.dry_run
 
