@@ -1,17 +1,21 @@
 简体中文 | [English](README.en.md)
 
-# 数学试卷数据集构建与评估工具
+# 高考数学试卷数据集构建与评估工具
 
 从数学 PDF 试卷中提取客观题（选择题、填空题），构建数据集并评估本地大模型能力。
 
 ## 目录结构
 
 ```
-scripts/                       # 核心脚本（config.py、提取/转图/校验/预览）
+scripts/                       # 核心脚本（config.py、提取/转图/校验/预览等）
+eval/                          # 评测配置与结果
+    configs/                   # YAML 评测配置
+    results/                   # 评测结果（自动生成）
 data/input/2026/                # PDF 输入目录
 data/output/2026/                # 提取结果（待校验区，含 HTML 预览）
 data/final_data/2026/            # 最终数据（已校验区）
-data/eval_results/               # 评测结果（自动生成，已加入 .gitignore）
+build_data.py                  # 数据集构建入口
+run_eval.py                    # 批量评测入口（YAML 配置驱动）
 ```
 
 ## 环境准备
@@ -43,6 +47,9 @@ python build_data.py --skip-extract
 
 # 跳过生成 HTML 预览
 python build_data.py --skip-view
+
+# 自定义合并页面（默认合并第1、2页）
+python build_data.py --merge-pages 1 2 3
 ```
 
 ### 2. 校验管理
@@ -67,26 +74,99 @@ python scripts/validate_data.py --approve "上海" --force
 python scripts/validate_data.py --remove "上海"
 ```
 
+### 2.5 添加题目类型（可选）
+
+为题目自动标注类型（单选题、多选题、填空题），生成 `questions_with_type.jsonl`：
+
+```bash
+python scripts/add_question_type.py "data/output/2026/2026上海/questions.jsonl"
+python scripts/add_question_type.py "data/final_data/2026/2026上海/questions.jsonl"
+```
+
 ### 3. 运行评测
 
-`data/final_data/` 是已经人工校验过的数据，`scripts/llama-eval.py` 会基于它生成评测结果。结果统一保存到 `data/eval_results/` 下，并按 `年份 / 卷子 / 模型` 分层保存。
+使用 `run_eval.py` 进行批量评测，基于 YAML 配置文件驱动，支持多模型、多次运行、自动报告生成。
 
-```powershell
-python scripts/llama-eval.py --model Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP --server http://<YOUR_SERVER_IP>:9292 --grader-type llm --grader-model qwen3.6-35b-a3b --grader-server http://localhost:10001 --dataset gaokao --dataset-path "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl" --temperature 1.0 --top-k 20 --top-p 0.95 --min-p 0.00 --output 2026_gaokao_math_quanguo1.json --output-root data/eval_results --seed 1234 --threads 1
+```bash
+# 运行评测（读取 eval/configs/default.yaml）
+python run_eval.py --config eval/configs/default.yaml
+
+# 查看评测结果汇总
+python run_eval.py --config eval/configs/default.yaml --analyze
+
+# 查看详细结果（每模型每轮）
+python run_eval.py --config eval/configs/default.yaml --analyze --detail
+
+# 生成 Markdown 评测报告
+python run_eval.py --config eval/configs/default.yaml --analyze --report
+
+# 仅查看缺少的运行（不执行）
+python run_eval.py --config eval/configs/default.yaml --dry-run
+
+# 修正已有结果文件的答案判定（不重新评测）
+python run_eval.py --config eval/configs/default.yaml --postprocess
 ```
 
-运行后会自动生成类似下面的目录：
+评测结果保存到 `eval/results/eval_results/`，按 `年份 / 卷子 / 模型` 分层：
 
 ```text
-data/eval_results/
-	2026/
-		2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/
-			Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP/
-				2026_gaokao_math_quanguo1.json
-				2026_gaokao_math_quanguo1.json.html
+eval/results/eval_results/
+    2026/
+        2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/
+            report.md
+            Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP/
+                2026_gaokao_math_quanguo1.json
+                2026_gaokao_math_quanguo1.json.html
+                2026_gaokao_math_quanguo1_1.json
+                2026_gaokao_math_quanguo1_1.json.html
+                2026_gaokao_math_quanguo1_2.json
+                2026_gaokao_math_quanguo1_2.json.html
 ```
 
-如果同一模型多次运行，结果会写到同一个模型目录下；要避免覆盖，可以手动改 `--output` 文件名。
+### 3.1 YAML 配置
+
+编辑 `eval/configs/default.yaml` 配置评测参数：
+
+```yaml
+global:
+  output_root: "eval/results/eval_results"
+  dataset_path: "data/final_data/2026/.../questions.jsonl"
+  grader_type: "llm"
+  seed: 1234
+  runs_per_model: 3          # 每模型运行次数
+  base_output: "2026_gaokao_math_quanguo1.json"
+
+presets:
+  qwen:
+    temperature: 1.0
+    top_k: 20
+    top_p: 0.95
+    min_p: 0.0
+    threads: 2
+  gemma:
+    temperature: 1.0
+    top_k: 64
+    top_p: 0.95
+    min_p: 0.0
+    threads: 1
+
+models:
+  - name: "Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP"
+    preset: "qwen"
+  - name: "gemma-4-31B-it-UD-Q6_K_XL"
+    preset: "gemma"
+```
+
+参数优先级：`global` → `preset` → 模型级别覆盖（server、temperature、top_k 等）。
+
+### 3.2 评测指标
+
+| 指标 | 含义 |
+|------|------|
+| **Pass@1** | 临场表现：单次运行就答对的概率 |
+| **Pass@3** | 能力上限：多次运行中至少有一次答对的概率 |
+| **All-Pass@3** | 确定性：多次运行全部答对的概率 |
+| **Best@3** | 最佳表现：多次运行中的最高正确率 |
 
 ## 工作流程
 
@@ -95,6 +175,9 @@ data/eval_results/
 3. **人工校验** → 在浏览器中打开 `data/output/2026/<试卷名>/questions.html`
 4. **确认通过** → `python scripts/validate_data.py --approve "关键词"`
 5. **最终数据** → `data/final_data/` 目录
+6. **（可选）标注题目类型** → `python scripts/add_question_type.py`
+7. **运行评测** → `python run_eval.py --config eval/configs/default.yaml`
+8. **查看报告** → `python run_eval.py --config eval/configs/default.yaml --analyze --report`
 
 ## 配置
 
@@ -102,8 +185,13 @@ data/eval_results/
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `OPENAI_BASE_URL` | `http://localhost:8080/v1` | API 地址（.env 配置） |
-| `MODEL_NAME` | `your-model-name` | 模型名称（.env 配置） |
-| `MAX_RETRIES` | `3` | 最大重试次数 |
-| `PROCESS_DELAY` | `1` | 图片处理间隔（秒） |
+| `OPENAI_BASE_URL` | `http://localhost:8080/v1` | 题目提取 API 地址（.env 配置） |
+| `OPENAI_API_KEY` | `none` | API 密钥（.env 配置） |
+| `MODEL_NAME` | `your-model-name` | 题目提取模型名称（.env 配置） |
+| `EVAL_SERVER` | - | 评测模型服务器地址（.env 配置） |
+| `EVAL_GRADER_SERVER` | `http://localhost:10001` | 评分器服务器地址（.env 配置） |
+| `EVAL_GRADER_MODEL` | - | 评分器模型名称（.env 配置） |
+| `PDF_ZOOM` | `2` | PDF 转图片缩放倍数（config.py） |
+| `MAX_RETRIES` | `3` | 最大重试次数（config.py） |
+| `PROCESS_DELAY` | `1` | 图片处理间隔秒数（config.py） |
 
