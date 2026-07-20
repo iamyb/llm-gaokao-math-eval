@@ -1,0 +1,30 @@
+global:
+  output_root: "eval/results/2026_gaokao_math_ng1_type_qwen_36_27b_quant"
+  dataset_path: "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions_with_type.jsonl"
+  grader_type: "llm"
+  # grader_model, grader_server, server 优先从 .env 读取
+  seed: 1234
+  runs_per_model: 3
+  base_output: "2026_gaokao_math_quanguo1.json"
+
+presets:
+  qwen:
+    temperature: 1.0
+    top_k: 20
+    top_p: 0.95
+    min_p: 0.0
+    threads: 2
+  gemma:
+    temperature: 1.0
+    top_k: 64
+    top_p: 0.95
+    min_p: 0.0
+    threads: 1
+
+models:
+  - name: "Qwen3.6-27b-UD-Q3_K_XL-MTP"
+    preset: "qwen"
+  # - name: "Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP"
+  #   preset: "qwen"
+  - name: "Qwen3.6-27b-UD-Q8_K_XL-MTP"
+    preset: "qwen"

@@ -802,13 +802,16 @@ def main():
 
         for output_name in missing:
             cmd = build_cmd(cfg, model_cfg, output_name)
-            print(f"  → {model_name} @ {cfg['server']}  "
+            server = _env_or(cfg, "server", "EVAL_SERVER")
+            print(f"  → {model_name} @ {server}  "
                   f"top_k={cfg['top_k']} threads={cfg['threads']}  output={output_name}")
 
             if dry_run:
                 continue
 
-            result = subprocess.run(cmd, check=False)
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(Path(__file__).resolve().parent) + os.pathsep + env.get("PYTHONPATH", "")
+            result = subprocess.run(cmd, check=False, env=env)
             if result.returncode != 0:
                 print(f"  ❌ FAILED (exit code {result.returncode})")
             else:
