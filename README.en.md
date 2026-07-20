@@ -35,7 +35,7 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from math PDF 
 - **Question type labels significantly improve results**: Pass@1 jumps from 69%~83% to 95%~98%, Pass@3 from 79%~93% to 100%
 - **Qwen3.6 series leads overall**: 27b and 35b versions are close, with 27b slightly ahead in stability
 - **gemma-4 series closes the gap**: Pass@3 reaches 100% with labels, but Pass@1 still lags
-- **Full reports**: [Default Config](eval/results/eval_results/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [With Type Labels](eval/results/eval_results_with_type/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md)
+- **Full reports**: [Default Config](eval/results/2026_gaokao_math_ng1_qwen_vs_gemma/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [With Type Labels](eval/results/2026_gaokao_math_ng1_type_qwen_vs_gemma/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md)
 
 ---
 
@@ -100,22 +100,22 @@ Use `run_eval.py` for batch evaluation, driven by YAML configuration files, supp
 
 ```bash
 # Run evaluation
-python run_eval.py --config eval/configs/default.yaml
+python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml
 
 # Show evaluation results summary
-python run_eval.py --config eval/configs/default.yaml --postprocess
+python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --postprocess
 
 # Generate Markdown evaluation report
-python run_eval.py --config eval/configs/default.yaml --analyze --report
+python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report
 ```
 
 ### 3.1 YAML Configuration
 
-Edit `eval/configs/default.yaml` to configure evaluation parameters:
+Edit `eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml` to configure evaluation parameters:
 
 ```yaml
 global:
-  output_root: "eval/results/eval_results"
+  output_root: "eval/results/2026_gaokao_math_ng1_qwen_vs_gemma"
   dataset_path: "data/final_data/2026/.../questions.jsonl"
   grader_type: "llm"
   seed: 1234
@@ -162,8 +162,8 @@ Parameter priority: `global` → `preset` → model-level overrides (server, tem
 4. **Approve** → `python scripts/validate_data.py --approve "keyword"`
 5. **Final data** → lands in `data/final_data/`
 6. **(Optional) Label question types** → `python scripts/add_question_type.py`
-7. **Run evaluation** → `python run_eval.py --config eval/configs/default.yaml`
-8. **View report** → `python run_eval.py --config eval/configs/default.yaml --analyze --report`
+7. **Run evaluation** → `python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml`
+8. **View report** → `python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report`
 
 ## Configuration
 

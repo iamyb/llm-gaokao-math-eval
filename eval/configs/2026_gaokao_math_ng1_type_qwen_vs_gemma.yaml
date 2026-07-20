@@ -1,5 +1,5 @@
 global:
-  output_root: "eval/results/eval_results_with_type"
+  output_root: "eval/results/2026_gaokao_math_ng1_type_qwen_vs_gemma"
   dataset_path: "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions_with_type.jsonl"
   grader_type: "llm"
   # grader_model, grader_server, server 优先从 .env 读取

@@ -35,7 +35,7 @@
 - **标注题目类型显著提升效果**: Pass@1 从 69%~83% 提升至 95%~98%，Pass@3 从 79%~93% 提升至 100%
 - **Qwen3.6 系列综合领先**: 27b 和 35b 版本表现接近，27b 在稳定性上略占优势
 - **gemma-4 系列差距缩小**: 标注类型后 Pass@3 也达到 100%，但 Pass@1 仍有差距
-- **完整报告**: [默认配置](eval/results/eval_results/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [带类型标注](eval/results/eval_results_with_type/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md)
+- **完整报告**: [默认配置](eval/results/2026_gaokao_math_ng1_qwen_vs_gemma/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [带类型标注](eval/results/2026_gaokao_math_ng1_type_qwen_vs_gemma/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md)
 
 ---
 
@@ -100,22 +100,22 @@ python scripts/add_question_type.py "data/final_data/2026/2026上海/questions.j
 
 ```bash
 # 运行评测
-python run_eval.py --config eval/configs/default.yaml
+python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml
 
 # 查看评测结果汇总
-python run_eval.py --config eval/configs/default.yaml --postprocess
+python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --postprocess
 
 # 生成 Markdown 评测报告
-python run_eval.py --config eval/configs/default.yaml --analyze --report
+python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report
 ```
 
 ### 3.1 YAML 配置
 
-编辑 `eval/configs/default.yaml` 配置评测参数：
+编辑 `eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml` 配置评测参数：
 
 ```yaml
 global:
-  output_root: "eval/results/eval_results"
+  output_root: "eval/results/2026_gaokao_math_ng1_qwen_vs_gemma"
   dataset_path: "data/final_data/2026/.../questions.jsonl"
   grader_type: "llm"
   seed: 1234
@@ -162,8 +162,8 @@ models:
 4. **确认通过** → `python scripts/validate_data.py --approve "关键词"`
 5. **最终数据** → `data/final_data/` 目录
 6. **（可选）标注题目类型** → `python scripts/add_question_type.py`
-7. **运行评测** → `python run_eval.py --config eval/configs/default.yaml`
-8. **查看报告** → `python run_eval.py --config eval/configs/default.yaml --analyze --report`
+7. **运行评测** → `python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml`
+8. **查看报告** → `python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report`
 
 ## 配置
 
