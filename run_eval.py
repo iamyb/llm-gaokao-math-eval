@@ -817,13 +817,10 @@ def main():
             else:
                 print(f"  ✅ DONE")
 
-        print()
-
-        # GPU cooldown (only during actual runs)
-        if not dry_run and missing:
-            print("⏸️  Waiting 5 minutes for GPU cooldown...")
-            time.sleep(300)
-            print("▶️  Continuing to next model\n")
+            # GPU cooldown after each run
+            print("⏸️  Waiting 2 minutes for GPU cooldown...")
+            time.sleep(120)
+            print("▶️  Continuing\n")
 
     if dry_run:
         print("🔍 Dry run complete. Remove --dry-run to execute.")
