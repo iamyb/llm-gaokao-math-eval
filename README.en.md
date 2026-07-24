@@ -2,7 +2,7 @@
 
 # Gaokao Math Exam Dataset Construction and Evaluation
 
-Extracts objective questions (multiple-choice, fill-in-the-blank) from math PDF exam papers to build datasets for evaluating local LLM capabilities.
+Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (China's national college entrance examination) math PDF exam papers to build datasets for evaluating local LLM capabilities, including cross-model capability comparisons and performance analysis of the same model across different quantization levels.
 
 ---
 
