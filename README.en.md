@@ -17,8 +17,8 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (C
 > Excerpt from the 2026 National 1 Math Exam Paper
 
 <table><tr>
-<td align="center"><img src="data/output/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/images/page_001.png" width="95%"></td>
-<td align="center"><img src="data/output/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/images/page_002.png" width="95%"></td>
+<td align="center"><img src="docs/images/page_001.png" width="95%"></td>
+<td align="center"><img src="docs/images/page_002.png" width="95%"></td>
 </tr></table>
 
 ### Methodology
@@ -82,145 +82,33 @@ Adding the question type label costs only a few extra characters in the prompt, 
 - **gemma-4 series closes the gap**: Pass@3 reaches 100% with labels, but Pass@1 still lags
 - **Q8/Q6 quantization is nearly lossless**: With type labels, Q8 and Q6 are identical across all metrics (Pass@1=98%, Pass@3=100%), making Q6 the best value choice with smaller model size
 - **Q3 quantization shows noticeable degradation**: Without labels, Pass@1 drops to 74% (9pp behind Q6/Q8); with labels, Pass@1 is 95% (3pp behind), and All-Pass@3 is the lowest
-- **Full reports**: [Model Comparison](eval/results/2026_gaokao_math_ng1_qwen_vs_gemma/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [Model Comparison (With Types)](eval/results/2026_gaokao_math_ng1_type_qwen_vs_gemma/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [Quantization Comparison](eval/results/2026_gaokao_math_ng1_qwen_36_27b_quant/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md) · [Quantization Comparison (With Types)](eval/results/2026_gaokao_math_ng1_type_qwen_36_27b_quant/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/report.md)
+- **Full reports**: After running evaluation, reports are generated under `eval/results/<config-name>/` with detailed per-question records and scoring analysis
 
 ---
 
-## Directory Structure
+## Usage Documentation
 
-```
-scripts/                          # Core scripts (config.py, extract/convert/validate/preview, etc.)
-eval/                             # Evaluation configuration and results
-    configs/                      # YAML evaluation configs
-    results/                      # Evaluation results (auto-generated)
-data/input/2026/                  # PDF input directory
-data/output/2026/                 # Extraction results (pending review, with HTML preview)
-data/final_data/2026/             # Final data (reviewed & approved)
-build_data.py                     # Dataset build entry point
-run_eval.py                       # Batch evaluation entry point (YAML config driven)
-```
+For detailed usage instructions, see [docs/usage.en.md](docs/usage.en.md) (中文 [docs/usage.md](docs/usage.md)), including:
 
-## Setup
+- Directory structure & system requirements
+- Setup & quick start
+- Batch PDF processing, data validation, question type labeling
+- Evaluation configuration (YAML), running evaluations & viewing reports
+- Environment variables & data format
+
+### Quick Start
 
 ```bash
+# 1. Setup
 pip install -r requirements.txt
-cp .env.example .env   # edit EXTRACT_API_URL / EXTRACT_API_KEY / EXTRACT_MODEL as needed
-```
+cp .env.example .env
 
-## Quick Start
-
-### 1. Batch process PDFs
-
-```bash
-# Process all PDFs (convert to images → extract questions → generate HTML preview)
-python build_data.py
-
-# Process only the 2026 directory
+# 2. Batch process PDFs (convert to images → extract questions → generate HTML preview)
 python build_data.py --year 2026
-```
 
-### 2. Validation management
+# 3. Approve & copy after review
+python scripts/validate_data.py --approve "全国1"
 
-```bash
-# List all pending files and their status
-python scripts/validate_data.py --list
-
-# Approve and copy into final_data
-python scripts/validate_data.py --approve "上海"
-
-# Batch-approve everything
-python scripts/validate_data.py --approve-all
-```
-
-### 2.5 Add question types (optional)
-
-Automatically label question types (single-choice, multi-choice, fill-in-the-blank), generating `questions_with_type.jsonl`:
-
-```bash
-python scripts/add_question_type.py "data/output/2026/2026上海/questions.jsonl"
-python scripts/add_question_type.py "data/final_data/2026/2026上海/questions.jsonl"
-```
-
-### 3. Run evaluation
-
-Use `run_eval.py` for batch evaluation, driven by YAML configuration files, supporting multiple models, multiple runs, and automatic report generation.
-
-```bash
-# Run evaluation
+# 4. Run evaluation
 python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml
-
-# Show evaluation results summary
-python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --postprocess
-
-# Generate Markdown evaluation report
-python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report
 ```
-
-### 3.1 YAML Configuration
-
-Edit `eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml` to configure evaluation parameters:
-
-```yaml
-global:
-  output_root: "eval/results/2026_gaokao_math_ng1_qwen_vs_gemma"
-  dataset_path: "data/final_data/2026/.../questions.jsonl"
-  grader_type: "llm"
-  seed: 1234
-  runs_per_model: 3          # number of runs per model
-  base_output: "2026_gaokao_math_quanguo1.json"
-
-presets:
-  qwen:
-    temperature: 1.0
-    top_k: 20
-    top_p: 0.95
-    min_p: 0.0
-    threads: 2
-  gemma:
-    temperature: 1.0
-    top_k: 64
-    top_p: 0.95
-    min_p: 0.0
-    threads: 1
-
-models:
-  - name: "Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP"
-    preset: "qwen"
-  - name: "gemma-4-31B-it-UD-Q6_K_XL"
-    preset: "gemma"
-```
-
-Parameter priority: `global` → `preset` → model-level overrides (server, temperature, top_k, etc.).
-
-### 3.2 Evaluation Metrics
-
-| Metric | Description |
-|--------|-------------|
-| **Pass@1** | Mean single-run accuracy: average accuracy across all runs |
-| **Pass@3** | Multi-run pass rate: fraction of questions answered correctly in at least one run |
-| **All-Pass@3** | All-run pass rate: fraction of questions answered correctly in all runs |
-| **Best@3** | Best accuracy: highest accuracy among all runs |
-
-## Workflow
-
-1. **Drop PDFs** into `data/input/2026/`
-2. **Batch process** → `python build_data.py --year 2026` (convert images, extract questions, generate HTML preview)
-3. **Manual review** → open `data/output/2026/<paper>/questions.html` in a browser
-4. **Approve** → `python scripts/validate_data.py --approve "keyword"`
-5. **Final data** → lands in `data/final_data/`
-6. **(Optional) Label question types** → `python scripts/add_question_type.py`
-7. **Run evaluation** → `python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml`
-8. **View report** → `python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report`
-
-## Configuration
-
-Copy `.env.example` to `.env` and edit it (or set environment variables directly). Other parameters can be edited in `scripts/config.py`:
-
-| Parameter | Default | Description |
-|-----------|---------|--------------|
-| `EXTRACT_API_URL` | `http://localhost:8080/v1` | Question extraction API endpoint (via `.env`) |
-| `EXTRACT_API_KEY` | `none` | API key (via `.env`) |
-| `EXTRACT_MODEL` | `your-model-name` | Question extraction model name (via `.env`) |
-| `EVAL_SERVER` | - | Evaluation model server address (via `.env`) |
-| `EVAL_GRADER_SERVER` | `http://localhost:10001` | Grader server address (via `.env`) |
-| `EVAL_GRADER_MODEL` | - | Grader model name (via `.env`) |
