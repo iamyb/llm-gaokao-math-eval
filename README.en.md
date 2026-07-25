@@ -104,7 +104,7 @@ run_eval.py                       # Batch evaluation entry point (YAML config dr
 
 ```bash
 pip install -r requirements.txt
-cp .env.example .env   # edit OPENAI_BASE_URL / OPENAI_API_KEY / MODEL_NAME as needed
+cp .env.example .env   # edit EXTRACT_API_URL / EXTRACT_API_KEY / EXTRACT_MODEL as needed
 ```
 
 ## Quick Start
@@ -218,12 +218,9 @@ Copy `.env.example` to `.env` and edit it (or set environment variables directly
 
 | Parameter | Default | Description |
 |-----------|---------|--------------|
-| `OPENAI_BASE_URL` | `http://localhost:8080/v1` | Question extraction API endpoint (via `.env`) |
-| `OPENAI_API_KEY` | `none` | API key (via `.env`) |
-| `MODEL_NAME` | `your-model-name` | Question extraction model name (via `.env`) |
+| `EXTRACT_API_URL` | `http://localhost:8080/v1` | Question extraction API endpoint (via `.env`) |
+| `EXTRACT_API_KEY` | `none` | API key (via `.env`) |
+| `EXTRACT_MODEL` | `your-model-name` | Question extraction model name (via `.env`) |
 | `EVAL_SERVER` | - | Evaluation model server address (via `.env`) |
 | `EVAL_GRADER_SERVER` | `http://localhost:10001` | Grader server address (via `.env`) |
 | `EVAL_GRADER_MODEL` | - | Grader model name (via `.env`) |
-| `PDF_ZOOM` | `2` | PDF-to-image zoom factor (config.py) |
-| `MAX_RETRIES` | `3` | Max retry attempts (config.py) |
-| `PROCESS_DELAY` | `1` | Delay between images in seconds (config.py) |

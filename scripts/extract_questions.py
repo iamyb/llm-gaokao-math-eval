@@ -15,13 +15,13 @@ from pydantic_ai.messages import BinaryImage
 
 # ==================== 从 config.py 导入配置 ====================
 from config import (
-    BASE_DIR, OPENAI_BASE_URL, OPENAI_API_KEY, MODEL_NAME,
+    BASE_DIR, EXTRACT_API_URL, EXTRACT_API_KEY, EXTRACT_MODEL,
     MAX_RETRIES, RETRY_DELAY, MODEL_MAX_TOKENS, PROCESS_DELAY
 )
 
 # 在导入 pydantic_ai 之前设置环境变量
-os.environ["OPENAI_BASE_URL"] = OPENAI_BASE_URL
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+os.environ["OPENAI_BASE_URL"] = EXTRACT_API_URL
+os.environ["OPENAI_API_KEY"] = EXTRACT_API_KEY
 
 # 默认路径（可通过命令行参数覆盖）
 DEFAULT_IMAGE_DIR = os.path.join(BASE_DIR, "output_images")
@@ -65,7 +65,7 @@ SYSTEM_PROMPT = """你是一个题目提取助手。请仔细分析图片，只�
 5. 如果图片中没有选择题或填空题，返回空列表"""
 
 agent = Agent(
-    model=f"openai-chat:{MODEL_NAME}",
+    model=f"openai-chat:{EXTRACT_MODEL}",
     output_type=QuestionsResult,
     instructions=SYSTEM_PROMPT,
     model_settings={"max_tokens": MODEL_MAX_TOKENS},

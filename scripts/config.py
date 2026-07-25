@@ -16,11 +16,11 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "data", "output")              # 输出根�
 FINAL_DATA_DIR = os.path.join(BASE_DIR, "data", "final_data")      # 最终数据（已校验区）
 EVAL_OUTPUT_ROOT = os.path.join(BASE_DIR, "data", "eval_results")  # 评测结果根目录
 
-# ==================== 模型配置 ====================
+# ==================== 题目提取模型配置 ====================
 # 可通过项目根目录下的 .env 文件覆盖（参考 .env.example）
-OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", "http://localhost:8080/v1")
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "none")
-MODEL_NAME = os.environ.get("MODEL_NAME", "your-model-name")
+EXTRACT_API_URL = os.environ.get("EXTRACT_API_URL", "http://localhost:8080/v1")
+EXTRACT_API_KEY = os.environ.get("EXTRACT_API_KEY", "none")
+EXTRACT_MODEL = os.environ.get("EXTRACT_MODEL", "your-model-name")
 
 # ==================== 处理参数 ====================
 PDF_ZOOM = 2                  # PDF 转图片的缩放倍数

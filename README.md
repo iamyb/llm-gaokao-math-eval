@@ -104,7 +104,7 @@ run_eval.py                    # 批量评测入口（YAML 配置驱动）
 
 ```bash
 pip install -r requirements.txt
-cp .env.example .env   # 按需修改 OPENAI_BASE_URL / OPENAI_API_KEY / MODEL_NAME
+cp .env.example .env   # 按需修改 EXTRACT_API_URL / EXTRACT_API_KEY / EXTRACT_MODEL
 ```
 
 ## 快速开始
@@ -218,13 +218,10 @@ models:
 
 | 参数 | 默认值 | 说明 |
 |------|--------|------|
-| `OPENAI_BASE_URL` | `http://localhost:8080/v1` | 题目提取 API 地址（.env 配置） |
-| `OPENAI_API_KEY` | `none` | API 密钥（.env 配置） |
-| `MODEL_NAME` | `your-model-name` | 题目提取模型名称（.env 配置） |
+| `EXTRACT_API_URL` | `http://localhost:8080/v1` | 题目提取 API 地址（.env 配置） |
+| `EXTRACT_API_KEY` | `none` | API 密钥（.env 配置） |
+| `EXTRACT_MODEL` | `your-model-name` | 题目提取模型名称（.env 配置） |
 | `EVAL_SERVER` | - | 评测模型服务器地址（.env 配置） |
 | `EVAL_GRADER_SERVER` | `http://localhost:10001` | 评分器服务器地址（.env 配置） |
 | `EVAL_GRADER_MODEL` | - | 评分器模型名称（.env 配置） |
-| `PDF_ZOOM` | `2` | PDF 转图片缩放倍数（config.py） |
-| `MAX_RETRIES` | `3` | 最大重试次数（config.py） |
-| `PROCESS_DELAY` | `1` | 图片处理间隔秒数（config.py） |
 
