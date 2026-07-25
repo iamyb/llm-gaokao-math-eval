@@ -43,7 +43,7 @@ Adding the question type label costs only a few extra characters in the prompt, 
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
-<th style="width: 8%;">Rank</th><th style="width: 42%;">Model</th><th style="width: 13%;">Pass@1</th><th style="width: 13%;">Pass@3</th><th style="width: 12%;">All-Pass@3</th><th style="width: 12%;">Best@3</th>
+<th width="60">Rank</th><th width="310">Model</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>98%</b></td><td><b>100%</b></td><td>93%</td><td><b>100%</b></td></tr>
@@ -57,7 +57,7 @@ Adding the question type label costs only a few extra characters in the prompt, 
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
-<th style="width: 8%;">Rank</th><th style="width: 42%;">Model</th><th style="width: 13%;">Pass@1</th><th style="width: 13%;">Pass@3</th><th style="width: 12%;">All-Pass@3</th><th style="width: 12%;">Best@3</th>
+<th width="60">Rank</th><th width="310">Model</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
@@ -73,7 +73,7 @@ Adding the question type label costs only a few extra characters in the prompt, 
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
-<th style="width: 8%;">Rank</th><th style="width: 42%;">Model</th><th style="width: 13%;">Pass@1</th><th style="width: 13%;">Pass@3</th><th style="width: 12%;">All-Pass@3</th><th style="width: 12%;">Best@3</th>
+<th width="60">Rank</th><th width="310">Model</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>98%</b></td><td><b>100%</b></td><td><b>93%</b></td><td><b>100%</b></td></tr>
@@ -86,7 +86,7 @@ Adding the question type label costs only a few extra characters in the prompt, 
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
-<th style="width: 8%;">Rank</th><th style="width: 42%;">Model</th><th style="width: 13%;">Pass@1</th><th style="width: 13%;">Pass@3</th><th style="width: 12%;">All-Pass@3</th><th style="width: 12%;">Best@3</th>
+<th width="60">Rank</th><th width="310">Model</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>83%</b></td><td><b>100%</b></td><td><b>71%</b></td><td><b>86%</b></td></tr>
