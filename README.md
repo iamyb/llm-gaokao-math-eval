@@ -41,39 +41,59 @@
 
 #### 标注题目类型后
 
-| 排名 | 模型 | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |
-|:----:|------|:------:|:------:|:----------:|:------:|
-| 1 | Qwen3.6-27b-UD-Q6_K_XL-MTP | **98%** | **100%** | 93% | **100%** |
-| 2 | Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP | **98%** | **100%** | 93% | **100%** |
-| 3 | gemma-4-31B-it-UD-Q6_K_XL | **98%** | **100%** | 93% | **100%** |
-| 4 | gemma-4-26B-A4B-it-UD-Q6_K_XL | **95%** | **100%** | 86% | **100%** |
+<table style="border-collapse: collapse; width: 100%; text-align: center;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th style="width: 8%;">排名</th><th style="width: 42%;">模型</th><th style="width: 13%;">Pass@1</th><th style="width: 13%;">Pass@3</th><th style="width: 12%;">All-Pass@3</th><th style="width: 12%;">Best@3</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>98%</b></td><td><b>100%</b></td><td>93%</td><td><b>100%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>2</td><td style="text-align: left;">Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP</td><td><b>98%</b></td><td><b>100%</b></td><td>93%</td><td><b>100%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>3</td><td style="text-align: left;">gemma-4-31B-it-UD-Q6_K_XL</td><td><b>98%</b></td><td><b>100%</b></td><td>93%</td><td><b>100%</b></td></tr>
+<tr><td>4</td><td style="text-align: left;">gemma-4-26B-A4B-it-UD-Q6_K_XL</td><td><b>95%</b></td><td><b>100%</b></td><td>86%</td><td><b>100%</b></td></tr>
+</tbody>
+</table>
 
 #### 未标注题目类型（对比）
 
-| 排名 | 模型 | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |
-|:----:|------|:------:|:------:|:----------:|:------:|
-| 1 | Qwen3.6-27b-UD-Q6_K_XL-MTP | **83%** | **93%** | 71% | **86%** |
-| 2 | Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP | **81%** | **86%** | 71% | **86%** |
-| 3 | gemma-4-31B-it-UD-Q6_K_XL | **79%** | **86%** | 71% | **79%** |
-| 4 | gemma-4-26B-A4B-it-UD-Q6_K_XL | **69%** | **79%** | 50% | **79%** |
+<table style="border-collapse: collapse; width: 100%; text-align: center;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th style="width: 8%;">排名</th><th style="width: 42%;">模型</th><th style="width: 13%;">Pass@1</th><th style="width: 13%;">Pass@3</th><th style="width: 12%;">All-Pass@3</th><th style="width: 12%;">Best@3</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>2</td><td style="text-align: left;">Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP</td><td><b>81%</b></td><td><b>86%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>3</td><td style="text-align: left;">gemma-4-31B-it-UD-Q6_K_XL</td><td><b>79%</b></td><td><b>86%</b></td><td>71%</td><td><b>79%</b></td></tr>
+<tr><td>4</td><td style="text-align: left;">gemma-4-26B-A4B-it-UD-Q6_K_XL</td><td><b>69%</b></td><td><b>79%</b></td><td>50%</td><td><b>79%</b></td></tr>
+</tbody>
+</table>
 
 ### 量化对比（Qwen3.6-27b）
 
 #### 标注题目类型后
 
-| 排名 | 模型 | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |
-|:----:|------|:------:|:------:|:----------:|:------:|
-| 1 | Qwen3.6-27b-UD-Q6_K_XL-MTP | **98%** | **100%** | **93%** | **100%** |
-| 1 | Qwen3.6-27b-UD-Q8_K_XL-MTP | **98%** | **100%** | **93%** | **100%** |
-| 3 | Qwen3.6-27b-UD-Q3_K_XL-MTP | **95%** | **100%** | 86% | **100%** |
+<table style="border-collapse: collapse; width: 100%; text-align: center;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th style="width: 8%;">排名</th><th style="width: 42%;">模型</th><th style="width: 13%;">Pass@1</th><th style="width: 13%;">Pass@3</th><th style="width: 12%;">All-Pass@3</th><th style="width: 12%;">Best@3</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>98%</b></td><td><b>100%</b></td><td><b>93%</b></td><td><b>100%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>98%</b></td><td><b>100%</b></td><td><b>93%</b></td><td><b>100%</b></td></tr>
+<tr><td>3</td><td style="text-align: left;">Qwen3.6-27b-UD-Q3_K_XL-MTP</td><td><b>95%</b></td><td><b>100%</b></td><td>86%</td><td><b>100%</b></td></tr>
+</tbody>
+</table>
 
 #### 未标注题目类型（对比）
 
-| 排名 | 模型 | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |
-|:----:|------|:------:|:------:|:----------:|:------:|
-| 1 | Qwen3.6-27b-UD-Q8_K_XL-MTP | **83%** | **100%** | **71%** | **86%** |
-| 2 | Qwen3.6-27b-UD-Q6_K_XL-MTP | **83%** | **93%** | 71% | **86%** |
-| 3 | Qwen3.6-27b-UD-Q3_K_XL-MTP | **74%** | **79%** | 64% | **79%** |
+<table style="border-collapse: collapse; width: 100%; text-align: center;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th style="width: 8%;">排名</th><th style="width: 42%;">模型</th><th style="width: 13%;">Pass@1</th><th style="width: 13%;">Pass@3</th><th style="width: 12%;">All-Pass@3</th><th style="width: 12%;">Best@3</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>83%</b></td><td><b>100%</b></td><td><b>71%</b></td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>2</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr><td>3</td><td style="text-align: left;">Qwen3.6-27b-UD-Q3_K_XL-MTP</td><td><b>74%</b></td><td><b>79%</b></td><td>64%</td><td><b>79%</b></td></tr>
+</tbody>
+</table>
 
 ### 关键发现
 
