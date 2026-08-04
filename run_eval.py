@@ -644,8 +644,12 @@ def generate_markdown_report(config: dict, all_results: list[dict],
 
 
 def build_cmd(cfg: dict, model_cfg: dict, output_name: str) -> list[str]:
-    # Resolve sensitive values from env vars (env > YAML)
-    server = _env_or(cfg, "server", "EVAL_SERVER")
+    # Model-level server wins so one YAML can target multiple providers.
+    server = model_cfg.get("server") or _env_or(cfg, "server", "EVAL_SERVER")
+    if "api_key_env" in model_cfg:
+        api_key_env = model_cfg["api_key_env"]
+    else:
+        api_key_env = cfg.get("api_key_env") or "EVAL_API_KEY"
     grader_server = _env_or(cfg, "grader_server", "EVAL_GRADER_SERVER")
     grader_model = _env_or(cfg, "grader_model", "EVAL_GRADER_MODEL")
 
@@ -653,6 +657,7 @@ def build_cmd(cfg: dict, model_cfg: dict, output_name: str) -> list[str]:
         sys.executable, "scripts/llama-eval.py",
         "--model", model_cfg["name"],
         "--server", server,
+        "--api-key-env", api_key_env,
         "--dataset", "gaokao",
         "--dataset-path", cfg["dataset_path"],
         "--grader-type", cfg["grader_type"],
@@ -737,7 +742,7 @@ def main():
 
         for output_name in missing:
             cmd = build_cmd(cfg, model_cfg, output_name)
-            server = _env_or(cfg, "server", "EVAL_SERVER")
+            server = model_cfg.get("server") or _env_or(cfg, "server", "EVAL_SERVER")
             print(f"  → {model_name} @ {server}  "
                   f"top_k={cfg['top_k']} threads={cfg['threads']}  output={output_name}")
 

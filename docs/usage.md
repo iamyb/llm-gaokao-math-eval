@@ -121,6 +121,33 @@ models:
 
 参数优先级：`global` → `preset` → 模型级别覆盖（server、temperature、top_k 等）。
 
+同一个 YAML 可以测试多个 Provider。模型级 `server` 会覆盖 `global.server`，`api_key_env` 是本机环境变量名，不是密钥本身：
+
+```yaml
+models:
+  - name: "online-model-a"
+    server: "https://provider-a.example.com"
+    api_key_env: "PROVIDER_A_API_KEY"
+    preset: "qwen"
+  - name: "online-model-b"
+    server: "https://provider-b.example.com"
+    api_key_env: "PROVIDER_B_API_KEY"
+    preset: "qwen"
+  - name: "local-model"
+    server: "http://localhost:8033"
+    api_key_env: ""
+    preset: "qwen"
+```
+
+在项目根目录 `.env` 中保存密钥：
+
+```env
+PROVIDER_A_API_KEY=your-provider-a-key
+PROVIDER_B_API_KEY=your-provider-b-key
+```
+
+评测时 API Key 只从环境变量读取，并用于被测模型请求的 `Authorization: Bearer ...` 请求头；评分器仍使用原有的 `EVAL_GRADER_SERVER` 和 `EVAL_GRADER_MODEL` 配置。
+
 ### 3.2 评测指标
 
 | 指标 | 含义 |

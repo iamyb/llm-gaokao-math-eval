@@ -1,0 +1,43 @@
+{
+  "id": "gaokao",
+  "model_name": "deepseek-v4-flash",
+  "dataset_path": "data/final_data/2026/2026\u5168\u56fd1(\u5c71\u4e1c,\u5e7f\u4e1c,\u6e56\u5357,\u6e56\u5317,\u6cb3\u5317,\u6c5f\u82cf,\u798f\u5efa,\u6d59\u6c5f,\u6cb3\u5357,\u6c5f\u897f,\u5b89\u5fbd)/questions.jsonl",
+  "dataset_dir": null,
+  "tasks": [
+    "gaokao_000_000"
+  ],
+  "task_states": {
+    "total": 1,
+    "correct": 1,
+    "total_time": 2.6802735328674316,
+    "ci_lower": 0.20654329147389294,
+    "ci_upper": 1.0,
+    "cases": {
+      "gaokao_000_000": {
+        "task_id": "gaokao_000_000",
+        "prompt": "\u8bf7\u89e3\u7b54\u4ee5\u4e0b\u6570\u5b66\u9898\u3002\u9010\u6b65\u63a8\u7406\uff0c\u5c06\u6700\u7ec8\u7b54\u6848\u653e\u5728 \\boxed{} \u4e2d\u3002\n\n1. \u6837\u672c\u6570\u636e6,8,4,5,12\u7684\u4e2d\u4f4d\u6570\u4e3a\uff08 \uff09\nA. 5\nB. 6\nC. 8\nD. 9\n\n\u8bf7\u5c06\u7b54\u6848\u653e\u5728 \\boxed{} \u4e2d\u3002\n",
+        "expected": "B",
+        "response": "\u5c06\u6570\u636e\u4ece\u5c0f\u5230\u5927\u6392\u5217\uff1a\n\n4\uff0c5\uff0c6\uff0c8\uff0c12\n\n\u5171\u6709 5 \u4e2a\u6570\uff0c\u4e2d\u4f4d\u6570\u662f\u7b2c 3 \u4e2a\u6570\uff0c\u5373 6\u3002\n\n\\[\n\\boxed{B}\n\\]",
+        "answer": "B",
+        "grader_log": {
+          "pred": "\u5c06\u6570\u636e\u4ece\u5c0f\u5230\u5927\u6392\u5217\uff1a\n\n4\uff0c5\uff0c6\uff0c8\uff0c12\n\n\u5171\u6709 5 \u4e2a\u6570\uff0c\u4e2d\u4f4d\u6570\u662f\u7b2c 3 \u4e2a\u6570\uff0c\u5373 6\u3002\n\n\\[\n\\boxed{B}\n\\]",
+          "grader_type": "regex",
+          "pattern": "\\\\boxed{([^}]+)}|\\b(-?\\d+\\.?\\d*)\\b"
+        },
+        "correct": true,
+        "status": "ok",
+        "tokens": 121,
+        "tps_gen": null,
+        "t_gen_ms": null,
+        "reasoning_content": "We need answer in Chinese likely. Need solve simple median. Need include reasoning and final in boxed. Need \"\u9010\u6b65\u63a8\u7406\" maybe brief. Need answer options B 6. Let's produce concise. Ensure final answer in \\boxed{} maybe \\boxed{B}. Need maybe mention sorted: 4,5,6,8,12, median third =6. Final.",
+        "server_name": "https://api.deepseek.com",
+        "chunk_idx": 0,
+        "problem_idx": 0
+      }
+    }
+  },
+  "sampling_config": {
+    "temperature": 1.0,
+    "top_p": 1.0
+  }
+}

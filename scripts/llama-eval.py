@@ -27,6 +27,7 @@ class ServerConfig:
     url: str
     threads: int
     name: str = ""
+    api_key: str = ""
 
 def wilson_interval(correct: int, total: int, z: float = 1.96) -> Tuple[float, float]:
     """Wilson score confidence interval for a proportion."""
@@ -1296,7 +1297,8 @@ class Processor:
     def _check_server(server_config: ServerConfig) -> List[str]:
         url = f"{server_config.url}/v1/models"
         try:
-            response = requests.get(url)
+            headers = {"Authorization": f"Bearer {server_config.api_key}"} if server_config.api_key else {}
+            response = requests.get(url, headers=headers)
             response.raise_for_status()
             models = [m["id"] for m in response.json().get("data", [])]
             return models
@@ -1309,6 +1311,8 @@ class Processor:
     ) -> Tuple[Dict[str, Any], int, Optional[float], Optional[float], str]:
         url = f"{server_config.url}/v1/chat/completions"
         headers = {"Content-Type": "application/json"}
+        if server_config.api_key:
+            headers["Authorization"] = f"Bearer {server_config.api_key}"
         data = {
             "model": self.model_name if self.model_name else "llama",
             "messages": [{"role": "user", "content": prompt}],
@@ -1533,6 +1537,12 @@ def main():
         help="Comma-separated display names for servers (default: use URLs)"
     )
     parser.add_argument(
+        "--api-key-env",
+        type=str,
+        default="EVAL_API_KEY",
+        help="Environment variable containing the API key for the evaluated model"
+    )
+    parser.add_argument(
         "--dataset",
         type=str,
         default="aime",
@@ -1655,6 +1665,8 @@ def main():
 
     args = parser.parse_args()
 
+    api_key = os.environ.get(args.api_key_env, "") if args.api_key_env else ""
+
     # Parse server URLs and thread counts
     server_urls = [u.strip() for u in args.server.split(",") if u.strip()]
     thread_counts = [int(t.strip()) for t in args.threads.split(",") if t.strip()]
@@ -1673,7 +1685,7 @@ def main():
         server_names = server_urls  # fallback to URLs
 
     server_configs = [
-        ServerConfig(url=url, threads=threads, name=name)
+        ServerConfig(url=url, threads=threads, name=name, api_key=api_key)
         for url, threads, name in zip(server_urls, thread_counts, server_names)
     ]
 
