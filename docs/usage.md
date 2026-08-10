@@ -85,6 +85,27 @@ python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml
 python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report
 ```
 
+### 使用 LLM 对已有结果重新评分
+
+如果模型结果已经生成，但希望区分数学语义正确性和格式遵循率，可以使用：
+
+```bash
+python scripts/regrade_results.py --config eval/configs/2026_gaokao_math_ng1_type_online.yaml
+```
+
+该命令不会重新运行被测模型，只读取已有结果 JSON，并调用 `EVAL_GRADER_SERVER` / `EVAL_GRADER_MODEL` 指定的 LLM grader。重评分结果默认写入原输出目录名加 `-regraded`，原始 JSON 不会被覆盖；汇总报告写入 `report.regraded.md`。
+
+每道题会记录：
+
+- `original_correct`：原评测时的严格字符串判定；
+- `semantic_correct`：LLM 判断数学答案是否正确；
+- `format_correct`：LLM 判断是否遵守题目要求的答题格式；
+- `grader_reason`：LLM 的简短判定理由。
+
+报告中的数学正确率使用 `semantic_correct`，格式遵循率单独使用 `format_correct`。复杂填空答案会结合完整题目和模型原始回答判断，而不是只比较提取出的字符串。
+
+正常运行 `scripts/llama-eval.py` 时，默认的 LLM grader 也会在每道题中保存 `semantic_correct`、`format_correct`、`normalized_answer` 和 `grader_reason`；其中 `correct` 等于 `semantic_correct`。grader 接收完整题目和模型完整回答，不接收模型返回的 `reasoning_content`。
+
 ### 3.1 YAML 配置
 
 编辑 `eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml` 配置评测参数：

@@ -97,6 +97,31 @@ GRADER_PATTERNS = {
     "jsonl": r'\\boxed{([^}]+)}|\b(-?\d+\.?\d*)\b',
 }
 
+
+def extract_boxed_answer(text: str) -> Optional[str]:
+    """Extract the content of the last balanced \\boxed{...} expression."""
+    marker = r"\boxed{"
+    start = text.rfind(marker)
+    if start < 0:
+        return None
+
+    opening_brace = start + len(marker) - 1
+    depth = 0
+    for index in range(opening_brace, len(text)):
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+            if depth == 0:
+                answer = text[opening_brace + 1:index].strip()
+                return answer or None
+    return None
+
+
+def display_answer(response: str, fallback: str = "") -> str:
+    answer = extract_boxed_answer(response) or fallback
+    return answer.strip()
+
 SAMPLE_ANSWERS = {
     "aime": [
         "42",
@@ -219,6 +244,9 @@ class TaskState:
     tps_gen: Optional[float] = None
     t_gen_ms: Optional[float] = None
     reasoning_content: Optional[str] = None
+    semantic_correct: Optional[bool] = None
+    format_correct: Optional[bool] = None
+    grader_reason: Optional[str] = None
     server_name: Optional[str] = None
     chunk_idx: int = 0
     problem_idx: int = 0
@@ -331,6 +359,10 @@ class EvalState:
         server_name: Optional[str] = None,
         chunk_idx: int = 0,
         problem_idx: int = 0,
+        semantic_correct: Optional[bool] = None,
+        format_correct: Optional[bool] = None,
+        grader_reason: Optional[str] = None,
+        normalized_answer: Optional[str] = None,
     ):
         with self._lock:
             if "cases" not in self.task_states:
@@ -352,6 +384,10 @@ class EvalState:
                 "server_name": server_name,
                 "chunk_idx": chunk_idx,
                 "problem_idx": problem_idx,
+                "semantic_correct": semantic_correct,
+                "format_correct": format_correct,
+                "grader_reason": grader_reason,
+                "normalized_answer": normalized_answer,
             }
 
             self.correct = sum(1 for c in self.task_states.get("cases", {}).values() if c.get("correct", False))
@@ -442,6 +478,9 @@ class EvalState:
         cases = all_cases
         completed = {tid: c for tid, c in cases.items() if c.get("status") == "ok"}
         n_correct = sum(1 for c in completed.values() if c.get("correct", False))
+        structured_cases = [c for c in completed.values() if c.get("semantic_correct") is not None]
+        n_semantic = sum(1 for c in structured_cases if c.get("semantic_correct", False))
+        n_format = sum(1 for c in structured_cases if c.get("format_correct", False))
         n_incorrect = len(completed) - n_correct
         n_pending = len(tasks_to_save) - len(completed)
         accuracy = n_correct / len(completed) * 100 if completed else 0.0
@@ -458,9 +497,14 @@ class EvalState:
             case = cases.get(task_id, {})
             status = case.get("status", "pending")
             expected = case.get("expected", "")
-            answer = case.get("answer") or "" if status == "ok" else ""
-            is_correct = case.get("correct", False) if status == "ok" else False
             response = case.get("response", "") or ""
+            answer = (
+                display_answer(response, case.get("answer") or "")
+                if status == "ok" else ""
+            )
+            is_correct = case.get("correct", False) if status == "ok" else False
+            semantic = case.get("semantic_correct")
+            formatting = case.get("format_correct")
             prompt = case.get("prompt", "") or ""
             grader_log = case.get("grader_log", {})
 
@@ -487,6 +531,7 @@ class EvalState:
             escaped_prompt = self._escape_html(prompt)
             escaped_reasoning = self._escape_html(reasoning_content)
             grader_log_str = self._escape_html(json.dumps(grader_log, indent=2))
+            grader_reason = self._escape_html(str(case.get("grader_reason", "") or ""))
             escaped_server = self._escape_html(server_name)
 
             answer_class = status_class if status == "ok" else ""
@@ -495,17 +540,20 @@ class EvalState:
                 <td class="{status_class}">{status_text}</td>
                 <td>{self._escape_html(expected)}</td>
                 <td class="{answer_class}">{self._escape_html(answer)}</td>
+                    <td class="{answer_class}">{'Y' if semantic is True else 'N' if semantic is False else ''}</td>
+                    <td class="{answer_class}">{'Y' if formatting is True else 'N' if formatting is False else ''}</td>
                 <td>{tokens_str}</td>
                 <td>{tps_str}</td>
                 <td>{t_gen_str}</td>
                 <td>{escaped_server}</td>
             </tr>
             <tr id="details-{task_id}" class="details-row">
-                <td colspan="8">
+                <td colspan="10">
                     <div class="details-content">
                         <b>Prompt</b><pre>{escaped_prompt}</pre>
                         <b>Response</b><pre>{escaped_response}</pre>
                         {f'<b>Reasoning</b><pre>{escaped_reasoning}</pre>' if escaped_reasoning else ''}
+                        {f'<b>Grader reason</b><pre>{grader_reason}</pre>' if grader_reason else ''}
                         <b>Grader</b><pre>{grader_log_str}</pre>
                     </div>
                 </td>
@@ -606,6 +654,8 @@ class EvalState:
         <div class="label">Model</div><div class="value"><b>{self.model_name or 'N/A'}</b></div>
         <div class="label">Accuracy</div><div class="value"><b>{accuracy:.1f}%</b> [{ci_lower*100:.1f}%, {ci_upper*100:.1f}%]</div>
         <div class="label">Correct</div><div class="value"><span class="correct">{n_correct}</span> / {len(completed)}</div>
+        <div class="label">Semantic</div><div class="value"><span class="correct">{n_semantic}</span> / {len(structured_cases)}</div>
+        <div class="label">Format</div><div class="value"><span class="correct">{n_format}</span> / {len(structured_cases)}</div>
         <div class="label">Pending</div><div class="value">{n_pending}</div>
         <div class="label">Time</div><div class="value">{self.total_time:.1f}s</div>
         <div class="label">Sampling</div><div class="value">{sampling_str}</div>
@@ -622,6 +672,8 @@ class EvalState:
                     <th></th>
                     <th>Gold</th>
                     <th>Answer</th>
+                    <th>Semantic</th>
+                    <th>Format</th>
                     <th>Tokens</th>
                     <th>T/s</th>
                     <th>Gen s</th>
@@ -1162,18 +1214,37 @@ class Grader:
             return GRADER_PATTERNS.get(self.dataset_type)  # Use dataset_type as key
         return None
 
+    @staticmethod
+    def _extract_boxed_answer(pred: str) -> Optional[str]:
+        """Extract the content of the last balanced \\boxed{...} expression."""
+        marker = r"\boxed{"
+        start = pred.rfind(marker)
+        if start < 0:
+            return None
+
+        opening_brace = start + len(marker) - 1
+        depth = 0
+        for index in range(opening_brace, len(pred)):
+            if pred[index] == "{":
+                depth += 1
+            elif pred[index] == "}":
+                depth -= 1
+                if depth == 0:
+                    answer = pred[opening_brace + 1:index].strip()
+                    return answer or None
+        return None
+
+    def _extract_answer(self, pred: str) -> Optional[str]:
+        """Extract boxed content first, then fall back to the dataset regex."""
+        boxed_answer = self._extract_boxed_answer(pred)
+        if boxed_answer is not None:
+            return boxed_answer
+        return self._extract_answer_regex(pred)
+
     def _extract_answer_regex(self, pred: str) -> Optional[str]:
         """Extract answer using regex pattern"""
         if not self.pattern:
             return None
-
-        # For AIME datasets, prioritize boxed answers
-        if self.dataset_type in ["aime", "aime2025"]:
-            boxed_pattern = r'\\boxed{([^}]+)}'
-            boxed_matches = re.findall(boxed_pattern, pred, re.IGNORECASE)
-            if boxed_matches:
-                # Return the last boxed answer found (most likely the final answer)
-                return boxed_matches[-1].strip()
 
         # For other datasets, search for numbers from the end of the text
         # This prioritizes numbers that appear later in the response
@@ -1192,7 +1263,7 @@ class Grader:
 
     def _grade_regex(self, gold: str, pred: str) -> Tuple[bool, Optional[str]]:
         """Grade using regex pattern matching"""
-        answer = self._extract_answer_regex(pred)
+        answer = self._extract_answer(pred)
         if answer is None:
             return False, None
         is_correct = answer.strip() == gold.strip()
@@ -1222,26 +1293,58 @@ class Grader:
         except Exception as e:
             return False, None
 
-    def _grade_llm(self, gold: str, pred: str, problem: str) -> Tuple[bool, Optional[str]]:
-        """Grade using LLM-based extraction with few-shot examples"""
-        sample_answers = SAMPLE_ANSWERS.get(self.dataset_type, [])
-        sample_examples = "\n".join([
-            f"Example {i+1}: {ans}" for i, ans in enumerate(sample_answers)
-        ])
+    def _grade_llm(self, gold: str, pred: str, problem: str) -> Dict[str, Any]:
+        """Grade semantics and answer-format compliance with an LLM."""
+        extracted_answer = self._extract_answer(pred)
+        system_prompt = """You are a strict but fair mathematics evaluation judge.
+Judge the complete model response against the complete problem and expected answer.
+Return only one valid JSON object, with no Markdown or extra text."""
 
-        system_prompt = f"""You are an answer extraction system. Your task is to extract the answer from the model's response.
+        user_prompt = f"""Evaluate the model response below.
 
-Here are some examples of extracted answers to demonstrate what you are supposed to output:
+Rules:
+1. semantic_correct means the mathematical meaning is correct. Equivalent expressions,
+   different variable names, and an answer in the correct order are acceptable.
+2. format_correct means the response follows explicit answer-format requirements in the
+   problem. A format error must not make a mathematically correct answer semantically wrong.
+3. For single-choice questions, the final answer inside \\boxed{{}} must contain exactly
+    one option letter: A, B, C, or D. Output such as \\boxed{{B (6)}}, \\boxed{{6}},
+    or \\boxed{{Option B}} is format_correct=false, even when the mathematical meaning
+    is correct.
+4. For multiple-choice questions, the final answer inside \\boxed{{}} must contain
+    only the option letters, such as AB or ACD, with no option text or extra explanation.
+5. Selecting the wrong or incomplete set of option letters is a semantic/content error,
+    not a format error, when the selected answer is presented in the required form.
+    For example, outputting \\boxed{{B}} when the expected answer is BC means
+    semantic_correct=false but format_correct=true.
+6. Do not set format_correct to false merely because the answer is mathematically wrong
+    or does not match the expected answer. Set it to false when an explicit formatting
+    requirement is violated, including a missing required \\boxed{{}} or extra content
+    in a single-choice or multiple-choice answer box.
+7. If the answer is ambiguous or information is insufficient, semantic_correct is false.
 
-{sample_examples}
+Return exactly this JSON schema:
+{{
+  "semantic_correct": true,
+  "format_correct": false,
+    "normalized_answer": "ignored; extracted deterministically by the caller",
+  "reason": "brief explanation"
+}}
 
-When extracting the answer, provide only the extracted answer itself, nothing else. If there is no clear answer that can be extracted from the response, reply with 'no answer'."""
+Problem and answer requirements:
+---
+{problem}
+---
+Expected answer:
+{gold}
 
-        user_prompt = f"""Extract the answer from the following response:
+Complete model response:
+---
+{pred}
+---
 
-"{pred}"
-
-Please provide only the extracted answer, nothing else. If there is no clear answer that can be extracted from the response, reply with 'no answer'."""
+Deterministically extracted answer (use only as a locating hint; do not rewrite it):
+{extracted_answer or "no answer"}"""
 
         url = f"{self.grader_server_url}/v1/chat/completions"
         headers = {"Content-Type": "application/json"}
@@ -1256,20 +1359,43 @@ Please provide only the extracted answer, nothing else. If there is no clear ans
         #print(json.dumps(data, indent=2))
 
         try:
-            response = requests.post(url, headers=headers, json=data)
+            response = requests.post(url, headers=headers, json=data, timeout=180)
             response.raise_for_status()
-            answer = response.json()["choices"][0]["message"]["content"].strip()
-            is_correct = answer.strip().lower() == gold.strip().lower()
-            return is_correct, answer
-        except Exception as e:
-            return False, None
+            grader_response = response.json()["choices"][0]["message"]["content"]
+            text = grader_response.strip()
+            fenced = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.DOTALL | re.IGNORECASE)
+            if fenced:
+                text = fenced.group(1)
+            else:
+                start, end = text.find("{"), text.rfind("}")
+                if start < 0 or end <= start:
+                    raise ValueError("grader response does not contain a JSON object")
+                text = text[start:end + 1]
+            result = json.loads(text)
+            if not isinstance(result, dict):
+                raise ValueError("grader response is not a JSON object")
+            return {
+                "semantic_correct": result.get("semantic_correct") is True,
+                "format_correct": result.get("format_correct") is True,
+                "normalized_answer": extracted_answer,
+                "grader_reason": str(result.get("reason", "") or ""),
+                "grader_response": grader_response,
+            }
+        except Exception as exc:
+            return {
+                "semantic_correct": False,
+                "format_correct": False,
+                "normalized_answer": extracted_answer,
+                "grader_reason": f"LLM grader error: {exc}",
+                "grader_response": None,
+            }
 
     def _truncate_response(self, response: str, max_lines: int = 6) -> str:
         """Keep only last N lines of response"""
         lines = response.split('\n')
         return '\n'.join(lines[-max_lines:]) if len(lines) > max_lines else response
 
-    def grade(self, gold: str, pred: str, problem: str = "") -> Tuple[bool, Optional[str]]:
+    def grade(self, gold: str, pred: str, problem: str = "") -> Any:
         """Grade the response"""
         if self.grader_type == "regex":
             return self._grade_regex(gold, pred)
@@ -1326,6 +1452,8 @@ class Processor:
             data["top_p"] = eval_state.sampling_config["top_p"]
         if eval_state.sampling_config.get("min_p") is not None:
             data["min_p"] = eval_state.sampling_config["min_p"]
+        if eval_state.sampling_config.get("reasoning_effort") is not None:
+            data["reasoning_effort"] = eval_state.sampling_config["reasoning_effort"]
 
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
@@ -1378,18 +1506,34 @@ class Processor:
                 eval_state.dump()
                 return task_state
 
-            result_truncated = self.grader._truncate_response(result, max_lines=10)
-            is_correct, answer = self.grader.grade(expected, result_truncated, prompt)
+            grading_result = self.grader.grade(expected, result, prompt)
+            if self.grader.grader_type == "llm":
+                semantic_correct = grading_result["semantic_correct"]
+                format_correct = grading_result["format_correct"]
+                answer = grading_result.get("normalized_answer")
+                grader_reason = grading_result.get("grader_reason", "")
+                is_correct = semantic_correct
+            else:
+                is_correct, answer = grading_result
+                semantic_correct = is_correct
+                format_correct = None
+                grader_reason = None
 
             grader_log = {
-                "pred": result_truncated,
+                "pred": result,
                 "grader_type": self.grader.grader_type
             }
             if self.grader.grader_type == "regex" and self.grader.pattern:
                 grader_log["pattern"] = self.grader.pattern
+            if self.grader.grader_type == "llm":
+                grader_log["grader_response"] = grading_result.get("grader_response")
+                grader_log["reason"] = grader_reason
 
             task_state.correct = is_correct
             task_state.answer = answer
+            task_state.semantic_correct = semantic_correct
+            task_state.format_correct = format_correct
+            task_state.grader_reason = grader_reason
             task_state.grader_log = grader_log
             task_state.status = "ok"
 
@@ -1397,7 +1541,8 @@ class Processor:
                 task_id, prompt, expected, result, answer,
                 grader_log, is_correct, "ok",
                 tokens, tps_gen, t_gen_ms, reasoning_content, server_config.name,
-                chunk_idx, problem_idx,
+                chunk_idx, problem_idx, semantic_correct, format_correct,
+                grader_reason, answer,
             )
 
             eval_state.dump()
@@ -1604,6 +1749,12 @@ def main():
         help="Min P sampling (default: not passed)"
     )
     parser.add_argument(
+        "--reasoning-effort",
+        type=str,
+        default=None,
+        help="Reasoning effort passed to compatible OpenAI-compatible servers (default: not passed)"
+    )
+    parser.add_argument(
         "--threads",
         type=str,
         default="32",
@@ -1776,6 +1927,8 @@ def main():
             sampling_config["top_p"] = args.top_p
         if args.min_p is not None:
             sampling_config["min_p"] = args.min_p
+        if args.reasoning_effort is not None:
+            sampling_config["reasoning_effort"] = args.reasoning_effort
 
         eval_state = EvalState(
             dataset_type=args.dataset,

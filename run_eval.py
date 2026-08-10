@@ -16,6 +16,7 @@ import sys
 import time
 from pathlib import Path
 from math import sqrt
+from typing import Optional
 
 try:
     from dotenv import load_dotenv
@@ -55,7 +56,10 @@ def resolve_params(global_cfg: dict, presets: dict, model_cfg: dict) -> dict:
         merged.update(presets[preset_name])
 
     # 2. Apply model-level overrides
-    overridable = {"server", "temperature", "top_k", "top_p", "min_p", "seed", "threads"}
+    overridable = {
+        "server", "temperature", "top_k", "top_p", "min_p", "seed",
+        "threads", "reasoning_effort",
+    }
     for key in overridable:
         if key in model_cfg:
             merged[key] = model_cfg[key]
@@ -100,6 +104,31 @@ def _strip_wrappers(text: str) -> str:
         value = unboxed.strip()
 
     return value
+
+
+def _extract_boxed_answer(text: str) -> Optional[str]:
+    """Extract the content of the last balanced \\boxed{...} expression."""
+    marker = r"\boxed{"
+    start = text.rfind(marker)
+    if start < 0:
+        return None
+
+    opening_brace = start + len(marker) - 1
+    depth = 0
+    for index in range(opening_brace, len(text)):
+        if text[index] == "{":
+            depth += 1
+        elif text[index] == "}":
+            depth -= 1
+            if depth == 0:
+                answer = text[opening_brace + 1:index].strip()
+                return answer or None
+    return None
+
+
+def _display_answer(response: str, fallback: str = "") -> str:
+    answer = _extract_boxed_answer(response) or fallback
+    return answer.strip()
 
 
 def _normalize_piece(text: str) -> str:
@@ -155,6 +184,10 @@ def _regenerate_html(data: dict, json_path: Path) -> str:
     n_pending = len(tasks_to_save) - len(completed)
     accuracy = n_correct / len(completed) * 100 if completed else 0.0
     ci_lower, ci_upper = wilson_interval(n_correct, len(completed)) if completed else (0.0, 1.0)
+    n_semantic = sum(1 for c in completed.values() if c.get("semantic_correct", c.get("correct", False)))
+    n_format = sum(1 for c in completed.values() if c.get("format_correct", False))
+    semantic_accuracy = n_semantic / len(completed) * 100 if completed else 0.0
+    format_accuracy = n_format / len(completed) * 100 if completed else 0.0
 
     sampling_parts = []
     for k, v in sampling_config.items():
@@ -168,9 +201,17 @@ def _regenerate_html(data: dict, json_path: Path) -> str:
         case = cases.get(task_id, {})
         status = case.get("status", "pending")
         expected = case.get("expected", "")
-        answer = case.get("answer") or "" if status == "ok" else ""
-        is_correct = case.get("correct", False) if status == "ok" else False
         response = case.get("response", "") or ""
+        answer = (
+            _display_answer(
+                response,
+                case.get("answer") or case.get("normalized_answer") or "",
+            )
+            if status == "ok" else ""
+        )
+        is_correct = case.get("correct", False) if status == "ok" else False
+        semantic_correct = case.get("semantic_correct", is_correct) if status == "ok" else False
+        format_correct = case.get("format_correct", False) if status == "ok" else False
         prompt = case.get("prompt", "") or ""
         grader_log = case.get("grader_log", {})
 
@@ -205,14 +246,18 @@ def _regenerate_html(data: dict, json_path: Path) -> str:
                 <td class="{status_class}">{status_text}</td>
                 <td>{_escape_html(expected)}</td>
                 <td class="{answer_class}">{_escape_html(answer)}</td>
+            <td class="{'correct' if semantic_correct else 'incorrect'}">{'✓' if semantic_correct else '✗'}</td>
+            <td class="{'correct' if format_correct else 'incorrect'}">{'✓' if format_correct else '✗'}</td>
                 <td>{tokens_str}</td>
                 <td>{tps_str}</td>
                 <td>{t_gen_str}</td>
                 <td>{escaped_server}</td>
             </tr>
             <tr id="details-{task_id}" class="details-row">
-                <td colspan="8">
+                <td colspan="10">
                     <div class="details-content">
+                        <b>Semantic correct</b><pre>{str(bool(semantic_correct))}</pre>
+                        <b>Format correct</b><pre>{str(bool(format_correct))}</pre>
                         <b>Prompt</b><pre>{escaped_prompt}</pre>
                         <b>Response</b><pre>{escaped_response}</pre>
                         {f'<b>Reasoning</b><pre>{escaped_reasoning}</pre>' if escaped_reasoning else ''}
@@ -316,6 +361,8 @@ def _regenerate_html(data: dict, json_path: Path) -> str:
         <div class="label">Model</div><div class="value"><b>{model_name}</b></div>
         <div class="label">Accuracy</div><div class="value"><b>{accuracy:.1f}%</b> [{ci_lower*100:.1f}%, {ci_upper*100:.1f}%]</div>
         <div class="label">Correct</div><div class="value"><span class="correct">{n_correct}</span> / {len(completed)}</div>
+        <div class="label">Semantic</div><div class="value"><span class="correct">{n_semantic}</span> / {len(completed)} ({semantic_accuracy:.1f}%)</div>
+        <div class="label">Format</div><div class="value"><span class="correct">{n_format}</span> / {len(completed)} ({format_accuracy:.1f}%)</div>
         <div class="label">Pending</div><div class="value">{n_pending}</div>
         <div class="label">Time</div><div class="value">{total_time:.1f}s</div>
         <div class="label">Sampling</div><div class="value">{sampling_str}</div>
@@ -332,6 +379,8 @@ def _regenerate_html(data: dict, json_path: Path) -> str:
                     <th></th>
                     <th>Gold</th>
                     <th>Answer</th>
+                    <th>Semantic</th>
+                    <th>Format</th>
                     <th>Tokens</th>
                     <th>T/s</th>
                     <th>Gen s</th>
@@ -461,7 +510,27 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
             correct = ts.get("correct", 0)
             cases = ts.get("cases", {})
             acc = correct / total if total > 0 else 0.0
-            results.append({"label": label, "total": total, "correct": correct, "accuracy": acc})
+            semantic_correct = sum(
+                1 for case in cases.values()
+                if case.get("status") == "ok"
+                and case.get("semantic_correct", case.get("correct", False))
+            )
+            format_available = any("format_correct" in case for case in cases.values())
+            format_correct = sum(
+                1 for case in cases.values()
+                if case.get("status") == "ok" and case.get("format_correct", False)
+            )
+            results.append({
+                "label": label,
+                "total": total,
+                "correct": correct,
+                "accuracy": acc,
+                "semantic_correct": semantic_correct,
+                "semantic_accuracy": semantic_correct / total if total > 0 else 0.0,
+                "format_correct": format_correct,
+                "format_accuracy": format_correct / total if total > 0 else 0.0,
+                "format_available": format_available,
+            })
             all_cases_list.append(cases)
 
         best = max(results, key=lambda r: r["accuracy"])
@@ -479,6 +548,10 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
         pass3_set = set()
         # all-pass@3 — correct in ALL runs
         allpass_set = set()
+        semantic_pass3_set = set()
+        semantic_allpass_set = set()
+        format_pass3_set = set()
+        format_allpass_set = set()
         # Single vs Multi choice classification
         single_task_ids = set()
         multi_task_ids = set()
@@ -487,6 +560,9 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
 
         for task_id in all_task_ids:
             correct_per_run = []
+            semantic_per_run = []
+            format_per_run = []
+            format_seen = False
             answers_per_run = []
             expected = None
 
@@ -494,6 +570,10 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
                 if task_id in cases:
                     case = cases[task_id]
                     correct_per_run.append(case.get("correct", False))
+                    semantic_per_run.append(case.get("semantic_correct", case.get("correct", False)))
+                    if "format_correct" in case:
+                        format_seen = True
+                        format_per_run.append(case.get("format_correct", False))
                     answers_per_run.append(case.get("answer", ""))
                     if expected is None:
                         expected = case.get("expected", "")
@@ -505,6 +585,15 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
             # all-pass@3
             if all(correct_per_run):
                 allpass_set.add(task_id)
+
+            if any(semantic_per_run):
+                semantic_pass3_set.add(task_id)
+            if len(semantic_per_run) == len(all_cases_list) and all(semantic_per_run):
+                semantic_allpass_set.add(task_id)
+            if format_seen and any(format_per_run):
+                format_pass3_set.add(task_id)
+            if format_seen and len(format_per_run) == len(all_cases_list) and all(format_per_run):
+                format_allpass_set.add(task_id)
 
             # Single vs Multi classification
             if expected and len(expected.strip()) <= 2:
@@ -520,8 +609,23 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
         pass3_acc = pass3_count / total_questions if total_questions > 0 else 0.0
         allpass_count = len(allpass_set)
         allpass_acc = allpass_count / total_questions if total_questions > 0 else 0.0
+        semantic_pass3_count = len(semantic_pass3_set)
+        semantic_pass3_acc = semantic_pass3_count / total_questions if total_questions > 0 else 0.0
+        semantic_allpass_count = len(semantic_allpass_set)
+        semantic_allpass_acc = semantic_allpass_count / total_questions if total_questions > 0 else 0.0
+        format_available = any(r["format_available"] for r in results)
+        format_pass1_acc = (
+            sum(r["format_accuracy"] for r in results) / len(results)
+            if format_available and results else None
+        )
+        format_pass3_count = len(format_pass3_set) if format_available else None
+        format_pass3_acc = format_pass3_count / total_questions if format_pass3_count is not None and total_questions > 0 else None
+        format_allpass_count = len(format_allpass_set) if format_available else None
+        format_allpass_acc = format_allpass_count / total_questions if format_allpass_count is not None and total_questions > 0 else None
         # Best@3 — best accuracy among all runs
         best_acc = max(r["accuracy"] for r in results)
+        semantic_best3_acc = max(r["semantic_accuracy"] for r in results)
+        format_best3_acc = max(r["format_accuracy"] for r in results) if format_available else None
 
         single_total = len(single_task_ids)
         multi_total = len(multi_task_ids)
@@ -539,6 +643,19 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
             "allpass_count": allpass_count,
             "allpass_acc": allpass_acc,
             "best3_acc": best_acc,
+            "semantic_pass1_acc": sum(r["semantic_accuracy"] for r in results) / len(results),
+            "semantic_pass3_count": semantic_pass3_count,
+            "semantic_pass3_acc": semantic_pass3_acc,
+            "semantic_allpass_count": semantic_allpass_count,
+            "semantic_allpass_acc": semantic_allpass_acc,
+            "semantic_best3_acc": semantic_best3_acc,
+            "format_available": format_available,
+            "format_pass1_acc": format_pass1_acc,
+            "format_pass3_count": format_pass3_count,
+            "format_pass3_acc": format_pass3_acc,
+            "format_allpass_count": format_allpass_count,
+            "format_allpass_acc": format_allpass_acc,
+            "format_best3_acc": format_best3_acc,
             "total_questions": total_questions,
             "single_acc": single_acc,
             "single_total": single_total,
@@ -616,16 +733,17 @@ def generate_markdown_report(config: dict, all_results: list[dict],
     w()
     w("| 指标 | 含义 |")
     w("|------|------|")
-    w("| **Pass@1** | 临场表现：单次运行就答对的概率，反映用户直接交互时的实际体验 |")
-    w("| **Pass@3** | 能力上限：多次运行中至少有一次答对的概率，衡量模型'知道'多少 |")
-    w("| **All-Pass@3** | 确定性：多次运行全部答对的概率，反映模型输出的稳定性 |")
-    w("| **Best@3** | 最佳表现：多次运行中的最高正确率 |")
+    w("| **Pass@1 / Pass@3 / All-Pass@3 / Best@3** | 基于原始 `correct` 判定的单次、至少一次、全部和最佳正确率 |")
+    w("| **Semantic-*** | 基于重评分 `semantic_correct` 的对应指标；未重评分结果回退到 `correct` |")
+    w("| **Format-*** | 基于重评分 `format_correct` 的对应指标；未提供格式字段时显示为 `—` |")
     w()
 
     # === 评测结果 ===
     w("---")
     w()
     w("## 评测结果")
+    w()
+    w("### 原始判定指标")
     w()
     w("| 排名 | 模型 | Pass@1 | Pass@3 | All-Pass@3 | Best@3 |")
     w("|:----:|------|:------:|:------:|:----------:|:------:|")
@@ -635,6 +753,31 @@ def generate_markdown_report(config: dict, all_results: list[dict],
         allpass_str = f"{r['allpass_acc']:.0%}" if r["has_multi_run"] else "—"
         best3_str = f"{r['best3_acc']:.0%}" if r["has_multi_run"] else "—"
         w(f"| {i + 1} | {r['model']} | **{r['pass1_acc']:.0%}** | **{pass3_str}** | {allpass_str} | **{best3_str}** |")
+    w()
+
+    w("### 语义重评分指标")
+    w()
+    w("| 模型 | Semantic Pass@1 | Semantic Pass@3 | Semantic All-Pass@3 | Semantic Best@3 |")
+    w("|------|:----------------:|:----------------:|:-------------------:|:----------------:|")
+    for r in all_results:
+        pass3_str = f"{r['semantic_pass3_acc']:.0%}" if r["has_multi_run"] else "—"
+        allpass_str = f"{r['semantic_allpass_acc']:.0%}" if r["has_multi_run"] else "—"
+        best3_str = f"{r['semantic_best3_acc']:.0%}" if r["has_multi_run"] else "—"
+        w(f"| {r['model']} | **{r['semantic_pass1_acc']:.0%}** | **{pass3_str}** | {allpass_str} | **{best3_str}** |")
+    w()
+
+    w("### 格式重评分指标")
+    w()
+    w("| 模型 | Format Pass@1 | Format Pass@3 | Format All-Pass@3 | Format Best@3 |")
+    w("|------|:--------------:|:--------------:|:-----------------:|:--------------:|")
+    for r in all_results:
+        if not r["format_available"]:
+            w(f"| {r['model']} | — | — | — | — |")
+            continue
+        pass3_str = f"{r['format_pass3_acc']:.0%}" if r["has_multi_run"] else "—"
+        allpass_str = f"{r['format_allpass_acc']:.0%}" if r["has_multi_run"] else "—"
+        best3_str = f"{r['format_best3_acc']:.0%}" if r["has_multi_run"] else "—"
+        w(f"| {r['model']} | **{r['format_pass1_acc']:.0%}** | **{pass3_str}** | {allpass_str} | **{best3_str}** |")
     w()
 
     # Write to file
@@ -663,15 +806,21 @@ def build_cmd(cfg: dict, model_cfg: dict, output_name: str) -> list[str]:
         "--grader-type", cfg["grader_type"],
         "--grader-model", grader_model,
         "--grader-server", grader_server,
-        "--temperature", str(cfg["temperature"]),
-        "--top-k", str(cfg["top_k"]),
-        "--top-p", str(cfg["top_p"]),
-        "--min-p", str(cfg["min_p"]),
         "--output", output_name,
         "--output-root", cfg["output_root"],
         "--seed", str(cfg["seed"]),
         "--threads", str(cfg["threads"]),
     ]
+    for key, option in (
+        ("temperature", "--temperature"),
+        ("top_k", "--top-k"),
+        ("top_p", "--top-p"),
+        ("min_p", "--min-p"),
+    ):
+        if cfg.get(key) is not None:
+            cmd.extend([option, str(cfg[key])])
+    if cfg.get("reasoning_effort") is not None:
+        cmd.extend(["--reasoning-effort", str(cfg["reasoning_effort"])])
     return cmd
 
 
@@ -744,7 +893,12 @@ def main():
             cmd = build_cmd(cfg, model_cfg, output_name)
             server = model_cfg.get("server") or _env_or(cfg, "server", "EVAL_SERVER")
             print(f"  → {model_name} @ {server}  "
-                  f"top_k={cfg['top_k']} threads={cfg['threads']}  output={output_name}")
+                f"temperature={cfg.get('temperature', 'skip')} "
+                f"top_k={cfg.get('top_k', 'skip')} "
+                f"top_p={cfg.get('top_p', 'skip')} "
+                f"min_p={cfg.get('min_p', 'skip')} "
+                f"reasoning_effort={cfg.get('reasoning_effort', 'skip')} "
+                f"threads={cfg.get('threads', 'skip')}  output={output_name}")
 
             if dry_run:
                 continue

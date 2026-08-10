@@ -1,6 +1,6 @@
 global:
-  output_root: "eval/results/2026_gaokao_math_ng1_type_online"
-  dataset_path: "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions_with_type.jsonl"
+  output_root: "eval/results/2026_gaokao_math_ng1_deepseek_flash_vs_qwen_36_27b"
+  dataset_path: "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl"
   grader_type: "llm"
   # grader_model, grader_server, server 优先从 .env 读取
   seed: 1234
@@ -22,13 +22,14 @@ presets:
     threads: 1
   deepseek:
     temperature: 1.0
-    top_k: 20
     top_p: 1.0
-    min_p: 0.0
     threads: 2
+    reasoning_effort: "max"
 
 models:
   - name: "deepseek-v4-flash"
     preset: "deepseek"
     server: "https://api.deepseek.com"
     api_key_env: "PROVIDER_A_API_KEY"
+  - name: "Qwen3.6-27b-UD-Q8_K_XL-MTP"
+    preset: "qwen"
