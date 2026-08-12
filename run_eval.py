@@ -793,8 +793,8 @@ def build_cmd(cfg: dict, model_cfg: dict, output_name: str) -> list[str]:
         api_key_env = model_cfg["api_key_env"]
     else:
         api_key_env = cfg.get("api_key_env") or "EVAL_API_KEY"
-    grader_server = _env_or(cfg, "grader_server", "EVAL_GRADER_SERVER")
-    grader_model = _env_or(cfg, "grader_model", "EVAL_GRADER_MODEL")
+    grader_server = _env_or(cfg, "grader_server", "EVAL_GRADER_SERVER", server)
+    grader_model = _env_or(cfg, "grader_model", "EVAL_GRADER_MODEL", model_cfg["name"])
 
     cmd = [
         sys.executable, "scripts/llama-eval.py",
