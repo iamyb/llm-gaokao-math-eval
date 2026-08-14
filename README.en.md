@@ -16,7 +16,7 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (C
 
 | Date | Evaluation |
 |:----:|------|
-| 2026-08-14 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) — Q8 / Q6 / Q4 / Q3 / Q2 / IQ3 / IQ2 |
+| 2026-08-14 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) — Q8 / Q6 / Q4 / Q3 / Q2 / IQ3 / IQ2 / Ternary-Bonsai-Q2 |
 | 2026-08-12 | [Model Comparison (Muse-Glimmer-30B vs Qwen3.6-27b)](#model-comparison) |
 | 2026-08-07 | [Model Comparison (deepseek-v4-flash vs Qwen3.6-27b)](#model-comparison) |
 | 2026-07-31 | [Model Comparison (Qwen3.6 vs Gemma4)](#model-comparison) |
