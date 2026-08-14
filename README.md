@@ -14,14 +14,19 @@
 
 ### 评测索引
 
-| 更新日期 | 评测 | 模型 |
-|:--------:|------|------|
-| 2026-08-14 | [量化对比（Qwen3.6-27b）](#量化对比qwen36-27b) | Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2 |
-| 2026-08-12 | [模型对比（Muse-Glimmer-30B vs Qwen3.6-27b）](#模型对比) | Muse-Glimmer-30B vs Qwen3.6-27b-Q8 |
-| 2026-08-07 | [模型对比（deepseek-v4-flash vs Qwen3.6-27b）](#模型对比) | deepseek-v4-flash vs Qwen3.6-27b-Q8 |
-| 2026-07-31 | [模型对比（Qwen3.6 vs Gemma4）](#模型对比) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B |
-| 2026-07-24 | [模型对比（Qwen3.6 vs Gemma4）](#模型对比) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B |
-| 2026-07-24 | [量化对比（Qwen3.6-27b）](#量化对比qwen36-27b) | Q8 / Q6 / Q3 |
+<table style="border-collapse: collapse; width: 100%; text-align: left; font-size: 13px;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th width="90" style="text-align:center;">日期</th><th>评测</th><th style="text-align:center;">模型</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-08-14</td><td><a href="#量化对比qwen36-27b">量化对比（Qwen3.6-27b）</a></td><td style="text-align:center;">Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2</td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-08-12</td><td><a href="#模型对比">模型对比（Muse-Glimmer-30B vs Qwen3.6-27b）</a></td><td style="text-align:center;">Muse-Glimmer-30B vs Qwen3.6-27b-Q8</td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-08-07</td><td><a href="#模型对比">模型对比（deepseek-v4-flash vs Qwen3.6-27b）</a></td><td style="text-align:center;">deepseek-v4-flash vs Qwen3.6-27b-Q8</td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-07-31</td><td><a href="#模型对比">模型对比（Qwen3.6 vs Gemma4）</a></td><td style="text-align:center;">Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B</td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-07-24</td><td><a href="#模型对比">模型对比（Qwen3.6 vs Gemma4）</a></td><td style="text-align:center;">Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B</td></tr>
+<tr><td style="text-align:center;">2026-07-24</td><td><a href="#量化对比qwen36-27b">量化对比（Qwen3.6-27b）</a></td><td style="text-align:center;">Q8 / Q6 / Q3</td></tr>
+</tbody>
+</table>
 
 ### 试卷样例
 
