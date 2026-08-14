@@ -12,6 +12,17 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (C
 >
 > **Note**: This exam was administered after the release of Qwen3.6 and Gemma4, so the models' training data does not include this paper.
 
+### Evaluation Index
+
+| Date | Evaluation | Models | Type |
+|:----:|------------|--------|:----:|
+| 2026-08-14 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) | Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2 | Without labels |
+| 2026-08-12 | [Model Comparison](#model-comparison) | Muse-Glimmer-30B vs Qwen3.6-27b-Q8 | Without labels |
+| 2026-08-07 | [Model Comparison](#model-comparison) | deepseek-v4-flash vs Qwen3.6-27b-Q8 | Without labels |
+| 2026-07-31 | [Model Comparison](#model-comparison) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B | Without labels |
+| 2026-07-24 | [Model Comparison](#model-comparison) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B | With labels |
+| 2026-07-24 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) | Q8 / Q6 / Q3 | With labels |
+
 ### Paper Sample
 
 > Excerpt from the 2026 National 1 Math Exam Paper
@@ -37,9 +48,9 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (C
 
 Adding the question type label costs only a few extra characters in the prompt, but gives the model a clear expectation of the answer format (single letter for single-choice, multiple letters for multi-choice).
 
-### Model Comparison (Qwen3.6 vs Gemma4)
+### Model Comparison
 
-#### With Question Type Labels
+#### Qwen3.6 vs Gemma4 (With Question Type Labels)
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
@@ -53,7 +64,7 @@ Adding the question type label costs only a few extra characters in the prompt, 
 </tbody>
 </table>
 
-#### Without Question Type Labels (Baseline)
+#### Qwen3.6 vs Gemma4 (Without Question Type Labels)
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
@@ -64,6 +75,34 @@ Adding the question type label costs only a few extra characters in the prompt, 
 <tr style="border-bottom: 1px solid #eee;"><td>2</td><td style="text-align: left;">Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP</td><td><b>81%</b></td><td><b>86%</b></td><td>71%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>3</td><td style="text-align: left;">gemma-4-31B-it-UD-Q6_K_XL</td><td><b>79%</b></td><td><b>86%</b></td><td>71%</td><td><b>79%</b></td></tr>
 <tr><td>4</td><td style="text-align: left;">gemma-4-26B-A4B-it-UD-Q6_K_XL</td><td><b>69%</b></td><td><b>79%</b></td><td>50%</td><td><b>79%</b></td></tr>
+</tbody>
+</table>
+
+#### deepseek-v4-flash vs Qwen3.6-27b
+
+> Without question type labels · deepseek-v4-flash is an online API model (with deep reasoning mode enabled)
+
+<table style="border-collapse: collapse; width: 100%; text-align: center;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th width="60">Rank</th><th width="310">Model</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">deepseek-v4-flash</td><td><b>100%</b></td><td><b>100%</b></td><td><b>100%</b></td><td><b>100%</b></td></tr>
+<tr><td>2</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>90%</b></td><td><b>100%</b></td><td>86%</td><td><b>93%</b></td></tr>
+</tbody>
+</table>
+
+#### Muse-Glimmer-30B vs Qwen3.6-27b
+
+> Without question type labels · Muse-Glimmer-30B is a locally-inferred model
+
+<table style="border-collapse: collapse; width: 100%; text-align: center;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th width="60">Rank</th><th width="310">Model</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>90%</b></td><td><b>100%</b></td><td><b>86%</b></td><td><b>93%</b></td></tr>
+<tr><td>1</td><td style="text-align: left;">Muse-Glimmer-30B-UD-Q8_K_XL</td><td><b>90%</b></td><td><b>100%</b></td><td>79%</td><td><b>100%</b></td></tr>
 </tbody>
 </table>
 
@@ -90,8 +129,13 @@ Adding the question type label costs only a few extra characters in the prompt, 
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>83%</b></td><td><b>100%</b></td><td><b>71%</b></td><td><b>86%</b></td></tr>
-<tr style="border-bottom: 1px solid #eee;"><td>2</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
-<tr><td>3</td><td style="text-align: left;">Qwen3.6-27b-UD-Q3_K_XL-MTP</td><td><b>74%</b></td><td><b>79%</b></td><td>64%</td><td><b>79%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q4_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>64%</td><td><b>93%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>4</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ3_XXS-MTP</td><td><b>81%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>5</td><td style="text-align: left;">Ternary-Bonsai-27B-Q2_g64</td><td><b>81%</b></td><td><b>86%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>6</td><td style="text-align: left;">Qwen3.6-27b-UD-Q2_K_XL-MTP</td><td><b>76%</b></td><td><b>86%</b></td><td>64%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>7</td><td style="text-align: left;">Qwen3.6-27b-UD-Q3_K_XL-MTP</td><td><b>74%</b></td><td><b>79%</b></td><td>64%</td><td><b>79%</b></td></tr>
+<tr><td>8</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ2_XXS-MTP</td><td><b>67%</b></td><td><b>86%</b></td><td>43%</td><td><b>79%</b></td></tr>
 </tbody>
 </table>
 
@@ -100,8 +144,12 @@ Adding the question type label costs only a few extra characters in the prompt, 
 - **Question type labels significantly improve results**: Pass@1 jumps from 69%~83% to 95%~98%, Pass@3 from 79%~93% to 100%
 - **Qwen3.6 series leads overall**: 27b and 35b versions are close, with 27b slightly ahead in stability
 - **gemma-4 series closes the gap**: Pass@3 reaches 100% with labels, but Pass@1 still lags
-- **Q8/Q6 quantization is nearly lossless**: With type labels, Q8 and Q6 are identical across all metrics (Pass@1=98%, Pass@3=100%), making Q6 the best value choice with smaller model size
-- **Q3 quantization shows noticeable degradation**: Without labels, Pass@1 drops to 74% (9pp behind Q6/Q8); with labels, Pass@1 is 95% (3pp behind), and All-Pass@3 is the lowest
+- **Q8/Q6/Q4 quantization is nearly lossless**: Without labels, all three share Pass@1=83%; with labels, Q8 and Q6 are identical (Pass@1=98%, Pass@3=100%), and Q4 also matches at a smaller size
+- **Q3 quantization shows noticeable degradation**: Without labels, Pass@1 drops to 74% (9pp behind Q8/Q6/Q4); with labels, Pass@1 is 95% (3pp behind Q8/Q6)
+- **Low-bit quantization (Q2 / IQ2_XXS) degrades significantly**: IQ2_XXS Pass@1 is only 67% without labels, All-Pass@3 just 43%; Q2 slightly better at 76% vs 67%
+- **Ternary-Bonsai-27B-Q2 exceeds expectations**: As a binarized model, it achieves Pass@1=81%, tying with IQ3_XXS and outperforming both Q2 and IQ2_XXS
+- **deepseek-v4-flash achieves perfect scores**: The online API model reaches 100% across all 14 questions and 3 runs, significantly leading local models
+- **Muse-Glimmer-30B ties with Qwen3.6-27b**: Both at Pass@1=90%, Muse even reaches Best@3=100%, but All-Pass@3 (79%) is slightly below Qwen (86%), indicating weaker stability
 - **Full reports**: After running evaluation, reports are generated under `eval/results/<config-name>/` with detailed per-question records and scoring analysis
 
 ---

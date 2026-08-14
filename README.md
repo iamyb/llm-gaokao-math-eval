@@ -12,6 +12,17 @@
 >
 > **注**: 本次考试在 Qwen3.6 和 Gemma4 发布之后进行，模型训练数据不包含该试卷内容。
 
+### 评测索引
+
+| 更新日期 | 评测 | 模型 | 题型 |
+|:--------:|------|------|:----:|
+| 2026-08-14 | [量化对比（Qwen3.6-27b）](#量化对比qwen36-27b) | Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2 | 未标注 |
+| 2026-08-12 | [模型对比（Muse-Glimmer-30B vs Qwen3.6-27b）](#模型对比) | Muse-Glimmer-30B vs Qwen3.6-27b-Q8 | 未标注 |
+| 2026-08-07 | [模型对比（deepseek-v4-flash vs Qwen3.6-27b）](#模型对比) | deepseek-v4-flash vs Qwen3.6-27b-Q8 | 未标注 |
+| 2026-07-31 | [模型对比（Qwen3.6 vs Gemma4）](#模型对比) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B | 未标注 |
+| 2026-07-24 | [模型对比（Qwen3.6 vs Gemma4）](#模型对比) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B | 标注 |
+| 2026-07-24 | [量化对比（Qwen3.6-27b）](#量化对比qwen36-27b) | Q8 / Q6 / Q3 | 标注 |
+
 ### 试卷样例
 
 > 以下为 2026 全国1卷数学试卷节选
@@ -37,9 +48,9 @@
 
 题型标注虽然只增加了几个字，但为模型提供了明确的答题格式预期（单选只需选一个字母，多选可选多个）。
 
-### 模型对比（Qwen3.6 vs Gemma4）
+### 模型对比
 
-#### 标注题目类型后
+#### Qwen3.6 vs Gemma4（标注题目类型）
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
@@ -53,7 +64,7 @@
 </tbody>
 </table>
 
-#### 未标注题目类型（对比）
+#### Qwen3.6 vs Gemma4（未标注题目类型）
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
@@ -64,6 +75,34 @@
 <tr style="border-bottom: 1px solid #eee;"><td>2</td><td style="text-align: left;">Qwen3.6-35b-A3B-UD-Q6_K_XL-MTP</td><td><b>81%</b></td><td><b>86%</b></td><td>71%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>3</td><td style="text-align: left;">gemma-4-31B-it-UD-Q6_K_XL</td><td><b>79%</b></td><td><b>86%</b></td><td>71%</td><td><b>79%</b></td></tr>
 <tr><td>4</td><td style="text-align: left;">gemma-4-26B-A4B-it-UD-Q6_K_XL</td><td><b>69%</b></td><td><b>79%</b></td><td>50%</td><td><b>79%</b></td></tr>
+</tbody>
+</table>
+
+#### deepseek-v4-flash vs Qwen3.6-27b
+
+> 未标注题目类型 · deepseek-v4-flash 为在线 API 模型（启用深度推理模式）
+
+<table style="border-collapse: collapse; width: 100%; text-align: center;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th width="60">排名</th><th width="310">模型</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">deepseek-v4-flash</td><td><b>100%</b></td><td><b>100%</b></td><td><b>100%</b></td><td><b>100%</b></td></tr>
+<tr><td>2</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>90%</b></td><td><b>100%</b></td><td>86%</td><td><b>93%</b></td></tr>
+</tbody>
+</table>
+
+#### Muse-Glimmer-30B vs Qwen3.6-27b
+
+> 未标注题目类型 · Muse-Glimmer-30B 为本地推理模型
+
+<table style="border-collapse: collapse; width: 100%; text-align: center;">
+<thead><tr style="border-bottom: 2px solid #ddd;">
+<th width="60">排名</th><th width="310">模型</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>90%</b></td><td><b>100%</b></td><td><b>86%</b></td><td><b>93%</b></td></tr>
+<tr><td>1</td><td style="text-align: left;">Muse-Glimmer-30B-UD-Q8_K_XL</td><td><b>90%</b></td><td><b>100%</b></td><td>79%</td><td><b>100%</b></td></tr>
 </tbody>
 </table>
 
@@ -90,8 +129,13 @@
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q8_K_XL-MTP</td><td><b>83%</b></td><td><b>100%</b></td><td><b>71%</b></td><td><b>86%</b></td></tr>
-<tr style="border-bottom: 1px solid #eee;"><td>2</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
-<tr><td>3</td><td style="text-align: left;">Qwen3.6-27b-UD-Q3_K_XL-MTP</td><td><b>74%</b></td><td><b>79%</b></td><td>64%</td><td><b>79%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q4_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>64%</td><td><b>93%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>4</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ3_XXS-MTP</td><td><b>81%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>5</td><td style="text-align: left;">Ternary-Bonsai-27B-Q2_g64</td><td><b>81%</b></td><td><b>86%</b></td><td>71%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>6</td><td style="text-align: left;">Qwen3.6-27b-UD-Q2_K_XL-MTP</td><td><b>76%</b></td><td><b>86%</b></td><td>64%</td><td><b>86%</b></td></tr>
+<tr style="border-bottom: 1px solid #eee;"><td>7</td><td style="text-align: left;">Qwen3.6-27b-UD-Q3_K_XL-MTP</td><td><b>74%</b></td><td><b>79%</b></td><td>64%</td><td><b>79%</b></td></tr>
+<tr><td>8</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ2_XXS-MTP</td><td><b>67%</b></td><td><b>86%</b></td><td>43%</td><td><b>79%</b></td></tr>
 </tbody>
 </table>
 
@@ -100,8 +144,12 @@
 - **标注题目类型显著提升效果**: Pass@1 从 69%~83% 提升至 95%~98%，Pass@3 从 79%~93% 提升至 100%
 - **Qwen3.6 系列综合领先**: 27b 和 35b 版本表现接近，27b 在稳定性上略占优势
 - **gemma-4 系列差距缩小**: 标注类型后 Pass@3 也达到 100%，但 Pass@1 仍有差距
-- **Q8/Q6 量化几乎无损**: 标注类型后 Q8 与 Q6 各项指标完全一致（Pass@1=98%, Pass@3=100%），Q6 在体积更小的情况下达到同等效果，是性价比最优选择
-- **Q3 量化有明显退化**: 未标注时 Pass@1 仅 74%（比 Q6/Q8 低 9pp），标注后 Pass@1 也仅 95%（比 Q6/Q8 低 3pp），All-Pass@3 最低
+- **Q8/Q6/Q4 量化几乎无损**: 未标注时三者 Pass@1 同为 83%，标注后 Q8 与 Q6 各项指标完全一致（Pass@1=98%, Pass@3=100%），Q4 在体积更小的情况下也达到同等效果
+- **Q3 量化有明显退化**: 未标注时 Pass@1 仅 74%（比 Q8/Q6/Q4 低 9pp），标注后 Pass@1 也仅 95%（比 Q8/Q6 低 3pp）
+- **低比特量化（Q2 / IQ2_XXS）退化显著**: IQ2_XXS 未标注 Pass@1 仅 67%，All-Pass@3 仅 43%；Q2 略好于 IQ2_XXS（76% vs 67%）
+- **Ternary-Bonsai-27B-Q2 表现超出预期**: 作为二值化模型，Pass@1 达 81%，与 IQ3_XXS 持平，优于 Q2 和 IQ2_XXS
+- **deepseek-v4-flash 全面满分**: 在线 API 模型在全部 14 题、3 次运行中达到 100% 正确率，显著领先本地模型
+- **Muse-Glimmer-30B 与 Qwen3.6-27b 持平**: Pass@1 同为 90%，Best@3 甚至达到 100%，但 All-Pass@3（79%）略低于 Qwen（86%），稳定性稍弱
 - **完整报告**: 运行评测后，报告将生成在 `eval/results/<配置名>/` 目录下，包含详细的每题答题记录和评分分析
 
 ---
