@@ -14,14 +14,14 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (C
 
 ### Evaluation Index
 
-| Date | Evaluation | Models | Type |
-|:----:|------------|--------|:----:|
-| 2026-08-14 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) | Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2 | Without labels |
-| 2026-08-12 | [Model Comparison](#model-comparison) | Muse-Glimmer-30B vs Qwen3.6-27b-Q8 | Without labels |
-| 2026-08-07 | [Model Comparison](#model-comparison) | deepseek-v4-flash vs Qwen3.6-27b-Q8 | Without labels |
-| 2026-07-31 | [Model Comparison](#model-comparison) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B | Without labels |
-| 2026-07-24 | [Model Comparison](#model-comparison) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B | With labels |
-| 2026-07-24 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) | Q8 / Q6 / Q3 | With labels |
+| Date | Evaluation | Models |
+|:----:|------------|--------|
+| 2026-08-14 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) | Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2 |
+| 2026-08-12 | [Model Comparison](#model-comparison) | Muse-Glimmer-30B vs Qwen3.6-27b-Q8 |
+| 2026-08-07 | [Model Comparison](#model-comparison) | deepseek-v4-flash vs Qwen3.6-27b-Q8 |
+| 2026-07-31 | [Model Comparison](#model-comparison) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B |
+| 2026-07-24 | [Model Comparison](#model-comparison) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B |
+| 2026-07-24 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) | Q8 / Q6 / Q3 |
 
 ### Paper Sample
 

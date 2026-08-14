@@ -14,14 +14,14 @@
 
 ### 评测索引
 
-| 更新日期 | 评测 | 模型 | 题型 |
-|:--------:|------|------|:----:|
-| 2026-08-14 | [量化对比（Qwen3.6-27b）](#量化对比qwen36-27b) | Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2 | 未标注 |
-| 2026-08-12 | [模型对比（Muse-Glimmer-30B vs Qwen3.6-27b）](#模型对比) | Muse-Glimmer-30B vs Qwen3.6-27b-Q8 | 未标注 |
-| 2026-08-07 | [模型对比（deepseek-v4-flash vs Qwen3.6-27b）](#模型对比) | deepseek-v4-flash vs Qwen3.6-27b-Q8 | 未标注 |
-| 2026-07-31 | [模型对比（Qwen3.6 vs Gemma4）](#模型对比) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B | 未标注 |
-| 2026-07-24 | [模型对比（Qwen3.6 vs Gemma4）](#模型对比) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B | 标注 |
-| 2026-07-24 | [量化对比（Qwen3.6-27b）](#量化对比qwen36-27b) | Q8 / Q6 / Q3 | 标注 |
+| 更新日期 | 评测 | 模型 |
+|:--------:|------|------|
+| 2026-08-14 | [量化对比（Qwen3.6-27b）](#量化对比qwen36-27b) | Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2 |
+| 2026-08-12 | [模型对比（Muse-Glimmer-30B vs Qwen3.6-27b）](#模型对比) | Muse-Glimmer-30B vs Qwen3.6-27b-Q8 |
+| 2026-08-07 | [模型对比（deepseek-v4-flash vs Qwen3.6-27b）](#模型对比) | deepseek-v4-flash vs Qwen3.6-27b-Q8 |
+| 2026-07-31 | [模型对比（Qwen3.6 vs Gemma4）](#模型对比) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B |
+| 2026-07-24 | [模型对比（Qwen3.6 vs Gemma4）](#模型对比) | Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B |
+| 2026-07-24 | [量化对比（Qwen3.6-27b）](#量化对比qwen36-27b) | Q8 / Q6 / Q3 |
 
 ### 试卷样例
 
