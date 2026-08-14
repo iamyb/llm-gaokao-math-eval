@@ -14,19 +14,14 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (C
 
 ### Evaluation Index
 
-<table style="border-collapse: collapse; width: 100%; text-align: left; font-size: 13px;">
-<thead><tr style="border-bottom: 2px solid #ddd;">
-<th width="90" style="text-align:center;">Date</th><th>Evaluation</th><th style="text-align:center;">Models</th>
-</tr></thead>
-<tbody>
-<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-08-14</td><td><a href="#quantization-comparison-qwen36-27b">Quantization Comparison (Qwen3.6-27b)</a></td><td style="text-align:center;">Q8 / Q6 / Q4 / Q3 / Q2 / IQ3_XXS / IQ2_XXS / Ternary-Bonsai-Q2</td></tr>
-<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-08-12</td><td><a href="#model-comparison">Model Comparison (Muse-Glimmer-30B vs Qwen3.6-27b)</a></td><td style="text-align:center;">Muse-Glimmer-30B vs Qwen3.6-27b-Q8</td></tr>
-<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-08-07</td><td><a href="#model-comparison">Model Comparison (deepseek-v4-flash vs Qwen3.6-27b)</a></td><td style="text-align:center;">deepseek-v4-flash vs Qwen3.6-27b-Q8</td></tr>
-<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-07-31</td><td><a href="#model-comparison">Model Comparison (Qwen3.6 vs Gemma4)</a></td><td style="text-align:center;">Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B</td></tr>
-<tr style="border-bottom: 1px solid #eee;"><td style="text-align:center;">2026-07-24</td><td><a href="#model-comparison">Model Comparison (Qwen3.6 vs Gemma4)</a></td><td style="text-align:center;">Qwen3.6-27b / 35b-A3B vs Gemma4-31B / 26B-A4B</td></tr>
-<tr><td style="text-align:center;">2026-07-24</td><td><a href="#quantization-comparison-qwen36-27b">Quantization Comparison (Qwen3.6-27b)</a></td><td style="text-align:center;">Q8 / Q6 / Q3</td></tr>
-</tbody>
-</table>
+| Date | Evaluation |
+|:----:|------|
+| 2026-08-14 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) — Q8 / Q6 / Q4 / Q3 / Q2 / IQ3 / IQ2 |
+| 2026-08-12 | [Model Comparison (Muse-Glimmer-30B vs Qwen3.6-27b)](#model-comparison) |
+| 2026-08-07 | [Model Comparison (deepseek-v4-flash vs Qwen3.6-27b)](#model-comparison) |
+| 2026-07-31 | [Model Comparison (Qwen3.6 vs Gemma4)](#model-comparison) |
+| 2026-07-24 | [Model Comparison (Qwen3.6 vs Gemma4)](#model-comparison) |
+| 2026-07-24 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) — Q8 / Q6 / Q3 |
 
 ### Paper Sample
 
