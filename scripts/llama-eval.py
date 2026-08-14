@@ -1359,7 +1359,7 @@ Deterministically extracted answer (use only as a locating hint; do not rewrite 
         #print(json.dumps(data, indent=2))
 
         try:
-            response = requests.post(url, headers=headers, json=data, timeout=180)
+            response = requests.post(url, headers=headers, json=data, timeout=(10, 600))
             response.raise_for_status()
             grader_response = response.json()["choices"][0]["message"]["content"]
             text = grader_response.strip()

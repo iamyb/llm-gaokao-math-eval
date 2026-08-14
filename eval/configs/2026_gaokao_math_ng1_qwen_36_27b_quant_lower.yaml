@@ -20,6 +20,11 @@ presets:
     top_p: 0.95
     min_p: 0.0
     threads: 1
+  ternary_bonsai:
+    temperature: 0.95
+    top_k: 20
+    top_p: 0.95
+    threads: 1
 
 models:
   - name: "Qwen3.6-27b-UD-Q8_K_XL-MTP"
@@ -36,3 +41,5 @@ models:
     preset: "qwen"
   - name: "Qwen3.6-27b-UD-IQ2_XXS-MTP"
     preset: "qwen"
+  - name: "Ternary-Bonsai-27B-Q2_g64"
+    preset: "ternary_bonsai"

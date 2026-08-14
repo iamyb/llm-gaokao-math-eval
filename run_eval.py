@@ -11,6 +11,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -72,6 +73,42 @@ def compute_missing_runs(model_dir: Path, base_output: str, runs: int) -> list[s
     wanted = [base_output] + [f"{stem}_{i}{suffix}" for i in range(1, runs)]
     existing = {f.name for f in model_dir.glob("*.json")}
     return [name for name in wanted if name not in existing]
+
+
+def validate_reusable_result(filepath: Path, model_name: str, dataset_path: str) -> dict:
+    """Load and validate a complete result that can be reused without inference."""
+    data = load_run(filepath)
+    if data.get("model_name") != model_name:
+        raise ValueError(
+            f"Model mismatch in reuse source {filepath}: "
+            f"expected '{model_name}', found '{data.get('model_name')}'"
+        )
+    source_dataset = data.get("dataset_path")
+    if source_dataset and Path(source_dataset).as_posix() != Path(dataset_path).as_posix():
+        raise ValueError(
+            f"Dataset mismatch in reuse source {filepath}: "
+            f"expected '{dataset_path}', found '{source_dataset}'"
+        )
+    cases = data.get("task_states", {}).get("cases", {})
+    tasks = data.get("tasks", [])
+    if not tasks or len(cases) != len(tasks) or any(
+        cases.get(task_id, {}).get("status") != "ok" for task_id in tasks
+    ):
+        raise ValueError(f"Reuse source is incomplete: {filepath}")
+    return data
+
+
+def reuse_result(source: Path, target: Path, model_name: str, dataset_path: str) -> None:
+    """Copy a validated result and its HTML report into the current experiment."""
+    data = validate_reusable_result(source, model_name, dataset_path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    source_html = Path(str(source) + ".html")
+    target_html = Path(str(target) + ".html")
+    if source_html.exists():
+        shutil.copy2(source_html, target_html)
+    else:
+        target_html.write_text(_regenerate_html(data, target), encoding="utf-8")
 
 
 def load_run(filepath: Path) -> dict:
@@ -888,6 +925,21 @@ def main():
 
         print(f"🚀 {model_name} (preset={model_cfg.get('preset', 'none')}) — "
               f"running {len(missing)} missing run(s): {', '.join(missing)}")
+
+        reuse_from = model_cfg.get("reuse_from")
+        if reuse_from:
+            source_dir = Path(reuse_from)
+            print(f"♻️  Reusing completed runs from: {source_dir}")
+            for output_name in missing:
+                source = source_dir / output_name
+                if not source.exists():
+                    raise FileNotFoundError(
+                        f"Missing reuse source for {model_name}: {source}"
+                    )
+                target = model_dir / output_name
+                reuse_result(source, target, model_name, global_cfg["dataset_path"])
+                print(f"  ✅ REUSED {output_name} -> {target}")
+            continue
 
         for output_name in missing:
             cmd = build_cmd(cfg, model_cfg, output_name)

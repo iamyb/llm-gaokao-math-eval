@@ -1,0 +1,40 @@
+global:
+  output_root: "eval/results/2026_gaokao_math_ng1_qwen_36_27b_vs_ternary_bonsai_27b_q2"
+  dataset_path: "data/final_data/2026/2026全国1(山东,广东,湖南,湖北,河北,江苏,福建,浙江,河南,江西,安徽)/questions.jsonl"
+  grader_type: "llm"
+  # grader_model, grader_server, server 优先从 .env 读取
+  seed: 1234
+  runs_per_model: 3
+  base_output: "2026_gaokao_math_quanguo1.json"
+
+presets:
+  qwen:
+    temperature: 1.0
+    top_k: 20
+    top_p: 0.95
+    min_p: 0.0
+    threads: 2
+  gemma:
+    temperature: 1.0
+    top_k: 64
+    top_p: 0.95
+    min_p: 0.0
+    threads: 1
+  ternary_bonsai:
+    temperature: 0.95
+    top_k: 20
+    top_p: 0.95
+    threads: 2
+
+models:
+  - name: "Ternary-Bonsai-27B-Q2_g64"
+    preset: "ternary_bonsai"
+  # - name: "Qwen3.6-27b-UD-Q2_K_XL-MTP"
+  #   preset: "qwen"
+  #   reuse_from: "eval/results/2026_gaokao_math_ng1_qwen_36_27b_quant_lower/Qwen3.6-27b-UD-Q2_K_XL-MTP"
+  # - name: "Qwen3.6-27b-UD-IQ3_XXS-MTP"
+  #   preset: "qwen"
+  #   reuse_from: "eval/results/2026_gaokao_math_ng1_qwen_36_27b_quant_lower/Qwen3.6-27b-UD-IQ3_XXS-MTP"
+  # - name: "Qwen3.6-27b-UD-IQ2_XXS-MTP"
+  #   preset: "qwen"
+  #   reuse_from: "eval/results/2026_gaokao_math_ng1_qwen_36_27b_quant_lower/Qwen3.6-27b-UD-IQ2_XXS-MTP"
