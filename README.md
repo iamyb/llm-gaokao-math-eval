@@ -163,7 +163,7 @@
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
-<th width="310">模型</th><th width="90">Effort</th><th width="90">Pass@1</th><th width="90">Pass@3</th><th width="90">All-Pass@3</th><th width="90">Best@3</th>
+<th width="300">模型</th><th width="90">Effort</th><th width="90">Pass@1</th><th width="90">Pass@3</th><th width="100">All-Pass@3</th><th width="90">Best@3</th>
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td style="text-align: left;">Qwen3.8-27b-UD-Q4_K_XL-MTP</td><td>low</td><td><b>98%</b></td><td><b>100%</b></td><td><b>93%</b></td><td><b>100%</b></td></tr>
@@ -179,7 +179,7 @@
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
-<th width="310">模型</th><th width="90">Effort</th><th width="90">Avg Tok</th><th width="90">P90 Tok</th><th width="90">~Reason%</th><th width="90">Med Tok</th>
+<th width="300">模型</th><th width="90">Effort</th><th width="90">Avg Tok</th><th width="90">P90 Tok</th><th width="100">~Reason%</th><th width="90">Med Tok</th>
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td style="text-align: left;">Qwen3.8-27b-UD-Q4_K_XL-MTP</td><td>low</td><td><b>2729</b></td><td><b>6536</b></td><td>45%</td><td><b>1180</b></td></tr>
