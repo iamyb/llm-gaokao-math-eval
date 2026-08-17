@@ -17,10 +17,10 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (C
 | Date | Evaluation |
 |:----:|------|
 | 2026-08-14 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) — Q8 / Q6 / Q4 / Q3 / Q2 / IQ3 / IQ2 / Ternary-Bonsai-Q2 |
-| 2026-08-12 | [Model Comparison (Muse-Glimmer-30B vs Qwen3.6-27b)](#model-comparison) |
-| 2026-08-07 | [Model Comparison (deepseek-v4-flash vs Qwen3.6-27b)](#model-comparison) |
-| 2026-07-31 | [Model Comparison (Qwen3.6 vs Gemma4)](#model-comparison) |
-| 2026-07-24 | [Model Comparison (Qwen3.6 vs Gemma4)](#model-comparison) |
+| 2026-08-12 | [Model Comparison (Muse-Glimmer-30B vs Qwen3.6-27b)](#muse-glimmer-30b-vs-qwen36-27b) |
+| 2026-08-07 | [Model Comparison (deepseek-v4-flash vs Qwen3.6-27b)](#deepseek-v4-flash-vs-qwen36-27b) |
+| 2026-07-31 | [Model Comparison (Qwen3.6 vs Gemma4)](#qwen36-vs-gemma4-with-question-type-labels) |
+| 2026-07-24 | [Model Comparison (Qwen3.6 vs Gemma4)](#qwen36-vs-gemma4-with-question-type-labels) |
 | 2026-07-24 | [Quantization Comparison (Qwen3.6-27b)](#quantization-comparison-qwen36-27b) — Q8 / Q6 / Q3 |
 
 ### Paper Sample
@@ -141,16 +141,25 @@ Adding the question type label costs only a few extra characters in the prompt, 
 
 ### Key Findings
 
-- **Question type labels significantly improve results**: Pass@1 jumps from 69%~83% to 95%~98%, Pass@3 from 79%~93% to 100%
-- **Qwen3.6 series leads overall**: 27b and 35b versions are close, with 27b slightly ahead in stability
-- **gemma-4 series closes the gap**: Pass@3 reaches 100% with labels, but Pass@1 still lags
-- **Q8/Q6/Q4 quantization is nearly lossless**: Without labels, all three share Pass@1=83%; with labels, Q8 and Q6 are identical (Pass@1=98%, Pass@3=100%), and Q4 also matches at a smaller size
-- **Q3 quantization shows noticeable degradation**: Without labels, Pass@1 drops to 74% (9pp behind Q8/Q6/Q4); with labels, Pass@1 is 95% (3pp behind Q8/Q6)
-- **Low-bit quantization (Q2 / IQ2_XXS) degrades significantly**: IQ2_XXS Pass@1 is only 67% without labels, All-Pass@3 just 43%; Q2 slightly better at 76% vs 67%
-- **Ternary-Bonsai-27B-Q2 exceeds expectations**: As a binarized model, it achieves Pass@1=81%, tying with IQ3_XXS and outperforming both Q2 and IQ2_XXS
-- **deepseek-v4-flash achieves perfect scores**: The online API model reaches 100% across all 14 questions and 3 runs, significantly leading local models
-- **Muse-Glimmer-30B ties with Qwen3.6-27b**: Both at Pass@1=90%, Muse even reaches Best@3=100%, but All-Pass@3 (79%) is slightly below Qwen (86%), indicating weaker stability
-- **Full reports**: After running evaluation, reports are generated under `eval/results/<config-name>/` with detailed per-question records and scoring analysis
+#### Question Type Labels (Applies to All Comparisons)
+
+- **Question type labels significantly improve results**: Pass@1 jumps from 69%~83% to 95%~98%, Pass@3 from 79%~93% to 100% ([with labels](#qwen36-vs-gemma4-with-question-type-labels) / [without labels](#qwen36-vs-gemma4-without-question-type-labels))
+
+#### Model Comparison Summary
+
+- **Qwen3.6 series leads overall**: 27b and 35b versions are close, with 27b slightly ahead in stability ([→ table](#qwen36-vs-gemma4-with-question-type-labels))
+- **gemma-4 series closes the gap**: Pass@3 reaches 100% with labels, but Pass@1 still lags ([→ table](#qwen36-vs-gemma4-with-question-type-labels))
+- **deepseek-v4-flash achieves perfect scores**: The online API model reaches 100% across all 14 questions and 3 runs, significantly leading local models ([→ table](#deepseek-v4-flash-vs-qwen36-27b))
+- **Muse-Glimmer-30B ties with Qwen3.6-27b**: Both at Pass@1=90%, Muse even reaches Best@3=100%, but All-Pass@3 (79%) is slightly below Qwen (86%), indicating weaker stability ([→ table](#muse-glimmer-30b-vs-qwen36-27b))
+
+#### Quantization Comparison Summary
+
+- **Q8/Q6/Q4 quantization is nearly lossless**: Without labels, all three share Pass@1=83% (Q4 on par with Q8/Q6); with labels, Q8 and Q6 are identical (Pass@1=98%, Pass@3=100%) ([→ table](#quantization-comparison-qwen36-27b))
+- **Q3 quantization shows noticeable degradation**: Without labels, Pass@1 drops to 74% (9pp behind Q8/Q6/Q4); with labels, Pass@1 is 95% (3pp behind Q8/Q6) ([→ table](#quantization-comparison-qwen36-27b))
+- **Low-bit quantization (Q2 / IQ2_XXS) degrades significantly**: IQ2_XXS Pass@1 is only 67% without labels, All-Pass@3 just 43%; Q2 slightly better at 76% vs 67% ([→ table](#quantization-comparison-qwen36-27b))
+- **Ternary-Bonsai-27B-Q2 exceeds expectations**: As a binarized model, it achieves Pass@1=81%, tying with IQ3_XXS and outperforming both Q2 and IQ2_XXS ([→ table](#quantization-comparison-qwen36-27b))
+
+> **Full reports**: After running evaluation, reports are generated under `eval/results/<config-name>/` with detailed per-question records and scoring analysis
 
 ---
 
