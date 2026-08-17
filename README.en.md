@@ -47,7 +47,7 @@ Extracts objective questions (multiple-choice, fill-in-the-blank) from Gaokao (C
 
 Adding the question type label costs only a few extra characters in the prompt, but gives the model a clear expectation of the answer format (single letter for single-choice, multiple letters for multi-choice).
 
-> **Key finding**: Question type labels significantly improve results: Pass@1 jumps from 69%~83% to 95%~98%, Pass@3 from 79%~93% to 100%
+> **Key finding**: Question type labels significantly improve results: Pass@1 jumps from 69%\~83% to 95%\~98%, Pass@3 from 79%\~93% to 100%
 
 ### Model Comparison
 
@@ -163,7 +163,7 @@ Adding the question type label costs only a few extra characters in the prompt, 
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
-<th width="310">Model</th><th width="90">Effort</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
+<th width="310">Model</th><th width="90">Effort</th><th width="90">Pass@1</th><th width="90">Pass@3</th><th width="90">All-Pass@3</th><th width="90">Best@3</th>
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td style="text-align: left;">Qwen3.8-27b-UD-Q4_K_XL-MTP</td><td>low</td><td><b>98%</b></td><td><b>100%</b></td><td><b>93%</b></td><td><b>100%</b></td></tr>
@@ -195,10 +195,10 @@ Adding the question type label costs only a few extra characters in the prompt, 
 
 **Summary**:
 
-- **Qwen3.8 leads overall and is more efficient**: Pass@1 is 98% at all three effort levels (Qwen3.6 peaks at 95%), and low's Avg Tok is only ~45% of Qwen3.6 low's
-- **Qwen3.8's low is the best value in this evaluation**: Accuracy is identical across all three levels (Pass@1=98%), while high uses ~2.8× the Avg Tok of low (7550 vs 2729) and ~4× the P90 (25378 vs 6536); this may be because the question difficulty is saturated, so even low effort suffices
+- **Qwen3.8 leads overall and is more efficient**: Pass@1 is 98% at all three effort levels (Qwen3.6 peaks at 95%), and low's Avg Tok is only \~45% of Qwen3.6 low's
+- **Qwen3.8's low is the best value in this evaluation**: Accuracy is identical across all three levels (Pass@1=98%), while high uses \~2.8× the Avg Tok of low (7550 vs 2729) and \~4× the P90 (25378 vs 6536); this may be because the question difficulty is saturated, so even low effort suffices
 - **Qwen3.6's medium is an outlier**: Highest token usage (12987) but lowest Pass@1 (88%); high is both cheaper and more accurate (95%)
-- **The two models respond differently to reasoning_effort**: Qwen3.8's ~Reason% rises step by step (45%→48%→70%) while the response length stays roughly the same (~1.5k–2.3k tokens); Qwen3.6's ~Reason% barely changes (54%→54%→53%), and the token variation comes mainly from the response (~2.8k→6.0k→3.4k)
+- **The two models respond differently to reasoning_effort**: Qwen3.8's \~Reason% rises step by step (45%→48%→70%) while the response length stays roughly the same (\~1.5k–2.3k tokens); Qwen3.6's \~Reason% barely changes (54%→54%→53%), and the token variation comes mainly from the response (\~2.8k→6.0k→3.4k)
 - **Qwen3.8's high is more frugal on easy questions**: Comparing the high tier of both models, Qwen3.8's Avg Tok is slightly higher (7550 vs 7170), but its Med Tok is much lower (1412 vs 4984) and its P90 Tok is much higher (25378 vs 14383) — Qwen3.8 spends fewer tokens on easy questions and concentrates its reasoning effort on the hard ones
 
 > **Full reports**: After running evaluation, reports are generated under `eval/results/<config-name>/` with detailed per-question records and scoring analysis

@@ -47,7 +47,7 @@
 
 题型标注虽然只增加了几个字，但为模型提供了明确的答题格式预期（单选只需选一个字母，多选可选多个）。
 
-> **关键发现**: 标注题目类型显著提升效果：Pass@1 从 69%~83% 提升至 95%~98%，Pass@3 从 79%~93% 提升至 100%
+> **关键发现**: 标注题目类型显著提升效果：Pass@1 从 69%\~83% 提升至 95%\~98%，Pass@3 从 79%\~93% 提升至 100%
 
 ### 模型对比
 
@@ -163,7 +163,7 @@
 
 <table style="border-collapse: collapse; width: 100%; text-align: center;">
 <thead><tr style="border-bottom: 2px solid #ddd;">
-<th width="310">模型</th><th width="90">Effort</th><th width="95">Pass@1</th><th width="95">Pass@3</th><th width="110">All-Pass@3</th><th width="90">Best@3</th>
+<th width="310">模型</th><th width="90">Effort</th><th width="90">Pass@1</th><th width="90">Pass@3</th><th width="90">All-Pass@3</th><th width="90">Best@3</th>
 </tr></thead>
 <tbody>
 <tr style="border-bottom: 1px solid #eee;"><td style="text-align: left;">Qwen3.8-27b-UD-Q4_K_XL-MTP</td><td>low</td><td><b>98%</b></td><td><b>100%</b></td><td><b>93%</b></td><td><b>100%</b></td></tr>
@@ -195,10 +195,10 @@
 
 **小结**:
 
-- **Qwen3.8 全面领先且更省**: 三档 effort 的 Pass@1 均为 98%（Qwen3.6 最高仅 95%），low 的 Avg Tok 仅为 Qwen3.6 low 的 ~45%
-- **Qwen3.8 的 low 在这套测评中性价比最高**: 三档准确率相同（Pass@1=98%），high 的 Avg Tok 是 low 的 ~2.8 倍（7550 vs 2729），P90 更是 ~4 倍（25378 vs 6536）；可能是题目难度饱和，low effort 已足够解出全部题目
+- **Qwen3.8 全面领先且更省**: 三档 effort 的 Pass@1 均为 98%（Qwen3.6 最高仅 95%），low 的 Avg Tok 仅为 Qwen3.6 low 的 \~45%
+- **Qwen3.8 的 low 在这套测评中性价比最高**: 三档准确率相同（Pass@1=98%），high 的 Avg Tok 是 low 的 \~2.8 倍（7550 vs 2729），P90 更是 \~4 倍（25378 vs 6536）；可能是题目难度饱和，low effort 已足够解出全部题目
 - **Qwen3.6 的 medium 是异常点**: token 最多（12987）但 Pass@1 最低（88%），high 反而更省更准（95%）
-- **两模型对 reasoning_effort 的响应不同**: Qwen3.8 的 ~Reason% 逐档上升（45%→48%→70%），response 长度基本不变（约 1.5k~2.3k token）；Qwen3.6 的 ~Reason% 几乎不变（54%→54%→53%），token 变化主要来自 response（约 2.8k→6.0k→3.4k）
+- **两模型对 reasoning_effort 的响应不同**: Qwen3.8 的 \~Reason% 逐档上升（45%→48%→70%），response 长度基本不变（约 1.5k\~2.3k token）；Qwen3.6 的 \~Reason% 几乎不变（54%→54%→53%），token 变化主要来自 response（约 2.8k→6.0k→3.4k）
 - **Qwen3.8 的 high 在简单题上更省**: 对比两模型的 high 档，Qwen3.8 的 Avg Tok 略多（7550 vs 7170），但 Med Tok 少很多（1412 vs 4984），P90 Tok 多很多（25378 vs 14383）——说明 Qwen3.8 在简单题上花更少的 token，思考主要集中发力在复杂题上
 
 > **完整报告**: 运行评测后，报告将生成在 `eval/results/<配置名>/` 目录下，包含详细的每题答题记录和评分分析
