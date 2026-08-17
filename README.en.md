@@ -140,6 +140,7 @@ Adding the question type label costs only a few extra characters in the prompt, 
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q4_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>64%</td><td><b>93%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>4</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ3_XXS-MTP</td><td><b>81%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
+
 **Summary**:
 
 - **Q8/Q6/Q4 quantization is nearly lossless**: Without labels, all three share Pass@1=83% (Q4 on par with Q8/Q6); with labels, Q8 and Q6 are identical (Pass@1=98%, Pass@3=100%)
