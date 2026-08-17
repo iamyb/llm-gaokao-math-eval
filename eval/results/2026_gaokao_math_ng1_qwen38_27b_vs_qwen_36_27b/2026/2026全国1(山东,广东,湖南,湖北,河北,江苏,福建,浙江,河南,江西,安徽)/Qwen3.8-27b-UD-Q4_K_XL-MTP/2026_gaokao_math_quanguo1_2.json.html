@@ -1,0 +1,3083 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GAOKAO Eval</title>
+<style>
+        body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; background: #fff; color: #222; }
+        .bar { padding: 8px 0; font-size: 13px; color: #555; font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 2px 12px; align-items: baseline; }
+        .bar .label { color: #888; }
+        .bar .value { color: #222; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; }
+        th { text-align: left; padding: 6px 8px; border-bottom: 2px solid #ccc; font-weight: 600; }
+        td { padding: 4px 8px; border-bottom: 1px solid #eee; vertical-align: top; }
+        .task-row { cursor: pointer; }
+        .task-row:hover { background: #f5f5f5; }
+        .correct { color: #1a7f37; }
+        .incorrect { color: #cf222e; }
+        .pending { color: #888; }
+        .error { color: #9a6700; }
+        .details-row { display: none; }
+        .details-row.open { display: table-row; }
+        .details-content { padding: 8px 16px; background: #f6f8fa; font-size: 12px; }
+        .details-content b { color: #555; }
+        .details-content pre { background: #fff; border: 1px solid #e1e4e8; padding: 8px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; margin: 4px 0 8px; }
+        .summary-table { margin-bottom: 16px; font-size: 13px; width: 100%; }
+        .summary-row { background: #fafbfc; }
+        .summary-row:hover { background: #f5f5f5; }
+        .summary-table th { text-align: right; font-weight: 600; }
+        .summary-table th:first-child { text-align: left; }
+        .summary-table th[colspan] { text-align: center; }
+        .summary-table td { text-align: right; }
+        .summary-table td:first-child { text-align: left; }
+        .tabs { display: flex; border-bottom: 2px solid #ddd; margin: 12px 0 0; }
+        .tab-btn { padding: 6px 16px; border: none; background: none; font-size: 13px; cursor: pointer; color: #555; border-bottom: 2px solid transparent; margin-bottom: -2px; font-weight: 500; }
+        .tab-btn:hover { color: #222; }
+        .tab-btn.active { color: #222; border-bottom-color: #222; font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+</style>
+</head>
+<body>
+    <div class="bar">
+        <div class="label">Dataset</div><div class="value"><b>GAOKAO</b></div>
+        <div class="label">Model</div><div class="value"><b>Qwen3.8-27b-UD-Q4_K_XL-MTP</b></div>
+        <div class="label">Accuracy</div><div class="value"><b>92.9%</b> [68.5%, 98.7%]</div>
+        <div class="label">Correct</div><div class="value"><span class="correct">13</span> / 14</div>
+        <div class="label">Semantic</div><div class="value"><span class="correct">13</span> / 14</div>
+        <div class="label">Format</div><div class="value"><span class="correct">14</span> / 14</div>
+        <div class="label">Pending</div><div class="value">0</div>
+        <div class="label">Time</div><div class="value">400.7s</div>
+        <div class="label">Sampling</div><div class="value">temperature=1.0, top_k=20, top_p=0.95, min_p=0.0</div>
+    </div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="detailed" onclick="switchTab(this)">Detailed</button>
+        <button class="tab-btn" data-tab="summary" onclick="switchTab(this)">Summary</button>
+    </div>
+    <div id="tab-detailed" class="tab-content active">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th></th>
+                    <th>Gold</th>
+                    <th>Answer</th>
+                    <th>Semantic</th>
+                    <th>Format</th>
+                    <th>Tokens</th>
+                    <th>T/s</th>
+                    <th>Gen s</th>
+                    <th>Server</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="task-row" onclick="toggleDetails('gaokao_000_000')">
+                <td>gaokao_000_000</td>
+                <td class="correct">✓</td>
+                <td>B</td>
+                <td class="correct">B</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>197</td>
+                <td>74.7</td>
+                <td>2.6</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_000" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+1. 样本数据6,8,4,5,12的中位数为（ ）
+A. 5
+B. 6
+C. 8
+D. 9
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre>## 求中位数
+
+**步骤 1：将数据从小到大排列**
+
+原始数据：6, 8, 4, 5, 12
+
+排序后：4, 5, **6**, 8, 12
+
+**步骤 2：确定中位数**
+
+共有 5 个数据（奇数个），中位数为第 $\dfrac{5+1}{2} = 3$ 个数。
+
+即中位数 = **6**
+
+## 答案
+
+$\boxed{B}$</pre>
+                        <b>Reasoning</b><pre>用户问的是求样本数据 6, 8, 4, 5, 12 的中位数。
+
+中位数是将数据从小到大排列后，位于中间位置的数。
+
+首先将数据从小到大排列：4, 5, 6, 8, 12
+
+共有5个数据，中位数是第3个数，即6。
+
+所以答案是B。
+</pre>
+                        <b>Grader reason</b><pre>The model correctly sorted the data (4, 5, 6, 8, 12), identified the median as the 3rd value (6), and selected option B. The answer is placed in \boxed{B} with exactly one option letter, satisfying both semantic and format requirements.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;## \u6c42\u4e2d\u4f4d\u6570\n\n**\u6b65\u9aa4 1\uff1a\u5c06\u6570\u636e\u4ece\u5c0f\u5230\u5927\u6392\u5217**\n\n\u539f\u59cb\u6570\u636e\uff1a6, 8, 4, 5, 12\n\n\u6392\u5e8f\u540e\uff1a4, 5, **6**, 8, 12\n\n**\u6b65\u9aa4 2\uff1a\u786e\u5b9a\u4e2d\u4f4d\u6570**\n\n\u5171\u6709 5 \u4e2a\u6570\u636e\uff08\u5947\u6570\u4e2a\uff09\uff0c\u4e2d\u4f4d\u6570\u4e3a\u7b2c $\\dfrac{5+1}{2} = 3$ \u4e2a\u6570\u3002\n\n\u5373\u4e2d\u4f4d\u6570 = **6**\n\n## \u7b54\u6848\n\n$\\boxed{B}$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;B\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly sorted the data (4, 5, 6, 8, 12), identified the median as the 3rd value (6), and selected option B. The answer is placed in \\\\boxed{B} with exactly one option letter, satisfying both semantic and format requirements.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly sorted the data (4, 5, 6, 8, 12), identified the median as the 3rd value (6), and selected option B. The answer is placed in \\boxed{B} with exactly one option letter, satisfying both semantic and format requirements.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_001')">
+                <td>gaokao_000_001</td>
+                <td class="correct">✓</td>
+                <td>A</td>
+                <td class="correct">A</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>346</td>
+                <td>59.1</td>
+                <td>5.8</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_001" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+2. 已知平面向量\vec{a}，\vec{b}不共线，且2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}，则（ ）
+A. x=2, y=-3
+B. x=-2, y=3
+C. x=2, y=3
+D. x=-2, y=-3
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解平面向量方程
+
+## 分析
+
+已知平面向量 $\vec{a}$，$\vec{b}$ **不共线**，即 $\vec{a}$ 和 $\vec{b}$ 线性无关，构成平面的一组基。
+
+## 求解过程
+
+给定方程：
+$$2\vec{a} + y\vec{b} = x\vec{a} - 3\vec{b}$$
+
+将方程两边整理，将所有项移到一边：
+$$(2 - x)\vec{a} + (y + 3)\vec{b} = \vec{0}$$
+
+由于 $\vec{a}$ 和 $\vec{b}$ **不共线**（线性无关），要使上式成立，各系数必须为零：
+
+$$\begin{cases} 2 - x = 0 \\ y + 3 = 0 \end{cases}$$
+
+解得：
+$$x = 2, \quad y = -3$$
+
+## 结论
+
+答案为 $x = 2,\; y = -3$，对应选项 **A**。
+
+$\boxed{A}$</pre>
+                        <b>Reasoning</b><pre>We have vectors a and b that are not collinear (linearly independent). We need to find x and y from:
+
+2a + yb = xa - 3b
+
+Since a and b are not collinear, they form a basis for the plane. So we can equate coefficients:
+
+Coefficient of a: 2 = x
+Coefficient of b: y = -3
+
+So x = 2, y = -3.
+
+The answer is A.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly identifies that since vectors a and b are linearly independent, the coefficients must be zero, yielding x=2 and y=-3, which corresponds to option A. The final answer is presented as \boxed{A}, matching the expected answer and following the required format.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3\u5e73\u9762\u5411\u91cf\u65b9\u7a0b\n\n## \u5206\u6790\n\n\u5df2\u77e5\u5e73\u9762\u5411\u91cf $\\vec{a}$\uff0c$\\vec{b}$ **\u4e0d\u5171\u7ebf**\uff0c\u5373 $\\vec{a}$ \u548c $\\vec{b}$ \u7ebf\u6027\u65e0\u5173\uff0c\u6784\u6210\u5e73\u9762\u7684\u4e00\u7ec4\u57fa\u3002\n\n## \u6c42\u89e3\u8fc7\u7a0b\n\n\u7ed9\u5b9a\u65b9\u7a0b\uff1a\n$$2\\vec{a} + y\\vec{b} = x\\vec{a} - 3\\vec{b}$$\n\n\u5c06\u65b9\u7a0b\u4e24\u8fb9\u6574\u7406\uff0c\u5c06\u6240\u6709\u9879\u79fb\u5230\u4e00\u8fb9\uff1a\n$$(2 - x)\\vec{a} + (y + 3)\\vec{b} = \\vec{0}$$\n\n\u7531\u4e8e $\\vec{a}$ \u548c $\\vec{b}$ **\u4e0d\u5171\u7ebf**\uff08\u7ebf\u6027\u65e0\u5173\uff09\uff0c\u8981\u4f7f\u4e0a\u5f0f\u6210\u7acb\uff0c\u5404\u7cfb\u6570\u5fc5\u987b\u4e3a\u96f6\uff1a\n\n$$\\begin{cases} 2 - x = 0 \\\\ y + 3 = 0 \\end{cases}$$\n\n\u89e3\u5f97\uff1a\n$$x = 2, \\quad y = -3$$\n\n## \u7ed3\u8bba\n\n\u7b54\u6848\u4e3a $x = 2,\\; y = -3$\uff0c\u5bf9\u5e94\u9009\u9879 **A**\u3002\n\n$\\boxed{A}$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;A\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly identifies that since vectors a and b are linearly independent, the coefficients must be zero, yielding x=2 and y=-3, which corresponds to option A. The final answer is presented as \\\\boxed{A}, matching the expected answer and following the required format.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly identifies that since vectors a and b are linearly independent, the coefficients must be zero, yielding x=2 and y=-3, which corresponds to option A. The final answer is presented as \\boxed{A}, matching the expected answer and following the required format.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_002')">
+                <td>gaokao_000_002</td>
+                <td class="correct">✓</td>
+                <td>C</td>
+                <td class="correct">C</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>807</td>
+                <td>69.4</td>
+                <td>11.6</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_002" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+3. 已知集合A={sin\frac{7\pi}{6}, cos\frac{5\pi}{3}, tan\frac{5\pi}{4}}, B={-\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1}，则A \cap B = （ ）
+A. {-\frac{\sqrt{3}}{2}, -\frac{1}{2}}
+B. {-\frac{\sqrt{3}}{2}, 1}
+C. {-\frac{1}{2}, 1}
+D. {-\frac{\sqrt{3}}{2}, -\frac{1}{2}, 1}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解集合 A ∩ B
+
+## 第一步：计算集合 A 中各元素
+
+**计算 $\sin\frac{7\pi}{6}$：**
+
+$\frac{7\pi}{6} = \pi + \frac{\pi}{6}$，在第三象限，正弦为负。
+
+$$\sin\frac{7\pi}{6} = -\sin\frac{\pi}{6} = -\frac{1}{2}$$
+
+**计算 $\cos\frac{5\pi}{3}$：**
+
+$\frac{5\pi}{3} = 2\pi - \frac{\pi}{3}$，在第四象限，余弦为正。
+
+$$\cos\frac{5\pi}{3} = \cos\frac{\pi}{3} = \frac{1}{2}$$
+
+**计算 $\tan\frac{5\pi}{4}$：**
+
+$\frac{5\pi}{4} = \pi + \frac{\pi}{4}$，在第三象限，正切为正。
+
+$$\tan\frac{5\pi}{4} = \tan\frac{\pi}{4} = 1$$
+
+因此：
+$$A = \left\{-\frac{1}{2},\ \frac{1}{2},\ 1\right\}$$
+
+## 第二步：求交集
+
+$$B = \left\{-\frac{\sqrt{3}}{2},\ -\frac{1}{2},\ 1\right\}$$
+
+逐一检查 A 中元素是否在 B 中：
+
+| A 中元素 | 是否在 B 中 |
+|---------|-----------|
+| $-\frac{1}{2}$ | ✅ 是 |
+| $\frac{1}{2}$ | ❌ 否 |
+| $1$ | ✅ 是 |
+
+## 最终结果
+
+$$A \cap B = \left\{-\frac{1}{2},\ 1\right\}$$
+
+对应选项 **C**。
+
+\boxed{C}</pre>
+                        <b>Reasoning</b><pre>We need to find the values of sin(7π/6), cos(5π/3), and tan(5π/4), then find the intersection of set A with set B.
+
+Let me compute each value:
+
+1. sin(7π/6):
+7π/6 is in the third quadrant. The reference angle is 7π/6 - π = π/6.
+sin(7π/6) = -sin(π/6) = -1/2
+
+2. cos(5π/3):
+5π/3 is in the fourth quadrant. The reference angle is 2π - 5π/3 = π/3.
+cos(5π/3) = cos(π/3) = 1/2
+
+Wait, let me reconsider. cos(5π/3) = cos(2π - π/3) = cos(π/3) = 1/2.
+
+3. tan(5π/4):
+5π/4 is in the third quadrant. The reference angle is 5π/4 - π = π/4.
+tan(5π/4) = tan(π/4) = 1
+
+So set A = {-1/2, 1/2, 1}
+
+Set B = {-√3/2, -1/2, 1}
+
+Now find A ∩ B:
+- -1/2 is in both A and B ✓
+- 1/2 is in A but not in B ✗
+- 1 is in both A and B ✓
+
+So A ∩ B = {-1/2, 1}
+
+The answer is C.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly computes sin(7π/6)=-1/2, cos(5π/3)=1/2, tan(5π/4)=1, giving A={-1/2, 1/2, 1}. The intersection with B={-√3/2, -1/2, 1} is {-1/2, 1}, which is option C. The final answer \boxed{C} is in the correct format for a single-choice question.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3\u96c6\u5408 A \u2229 B\n\n## \u7b2c\u4e00\u6b65\uff1a\u8ba1\u7b97\u96c6\u5408 A \u4e2d\u5404\u5143\u7d20\n\n**\u8ba1\u7b97 $\\sin\\frac{7\\pi}{6}$\uff1a**\n\n$\\frac{7\\pi}{6} = \\pi + \\frac{\\pi}{6}$\uff0c\u5728\u7b2c\u4e09\u8c61\u9650\uff0c\u6b63\u5f26\u4e3a\u8d1f\u3002\n\n$$\\sin\\frac{7\\pi}{6} = -\\sin\\frac{\\pi}{6} = -\\frac{1}{2}$$\n\n**\u8ba1\u7b97 $\\cos\\frac{5\\pi}{3}$\uff1a**\n\n$\\frac{5\\pi}{3} = 2\\pi - \\frac{\\pi}{3}$\uff0c\u5728\u7b2c\u56db\u8c61\u9650\uff0c\u4f59\u5f26\u4e3a\u6b63\u3002\n\n$$\\cos\\frac{5\\pi}{3} = \\cos\\frac{\\pi}{3} = \\frac{1}{2}$$\n\n**\u8ba1\u7b97 $\\tan\\frac{5\\pi}{4}$\uff1a**\n\n$\\frac{5\\pi}{4} = \\pi + \\frac{\\pi}{4}$\uff0c\u5728\u7b2c\u4e09\u8c61\u9650\uff0c\u6b63\u5207\u4e3a\u6b63\u3002\n\n$$\\tan\\frac{5\\pi}{4} = \\tan\\frac{\\pi}{4} = 1$$\n\n\u56e0\u6b64\uff1a\n$$A = \\left\\{-\\frac{1}{2},\\ \\frac{1}{2},\\ 1\\right\\}$$\n\n## \u7b2c\u4e8c\u6b65\uff1a\u6c42\u4ea4\u96c6\n\n$$B = \\left\\{-\\frac{\\sqrt{3}}{2},\\ -\\frac{1}{2},\\ 1\\right\\}$$\n\n\u9010\u4e00\u68c0\u67e5 A \u4e2d\u5143\u7d20\u662f\u5426\u5728 B \u4e2d\uff1a\n\n| A \u4e2d\u5143\u7d20 | \u662f\u5426\u5728 B \u4e2d |\n|---------|-----------|\n| $-\\frac{1}{2}$ | \u2705 \u662f |\n| $\\frac{1}{2}$ | \u274c \u5426 |\n| $1$ | \u2705 \u662f |\n\n## \u6700\u7ec8\u7ed3\u679c\n\n$$A \\cap B = \\left\\{-\\frac{1}{2},\\ 1\\right\\}$$\n\n\u5bf9\u5e94\u9009\u9879 **C**\u3002\n\n\\boxed{C}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;C\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly computes sin(7\u03c0/6)=-1/2, cos(5\u03c0/3)=1/2, tan(5\u03c0/4)=1, giving A={-1/2, 1/2, 1}. The intersection with B={-\u221a3/2, -1/2, 1} is {-1/2, 1}, which is option C. The final answer \\\\boxed{C} is in the correct format for a single-choice question.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly computes sin(7\u03c0/6)=-1/2, cos(5\u03c0/3)=1/2, tan(5\u03c0/4)=1, giving A={-1/2, 1/2, 1}. The intersection with B={-\u221a3/2, -1/2, 1} is {-1/2, 1}, which is option C. The final answer \\boxed{C} is in the correct format for a single-choice question.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_003')">
+                <td>gaokao_000_003</td>
+                <td class="correct">✓</td>
+                <td>D</td>
+                <td class="correct">D</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>457</td>
+                <td>83.7</td>
+                <td>5.4</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_003" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+4. 曲线y=5x+8lnx在点(1,5)处的切线方程为（ ）
+A. y=3x+2
+B. y=5x
+C. y=8x-3
+D. y=13x-8
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求曲线 $y = 5x + 8\ln x$ 在点 $(1,5)$ 处的切线方程
+
+## 第一步：验证点在曲线上
+
+$$y = 5(1) + 8\ln(1) = 5 + 0 = 5 \checkmark$$
+
+## 第二步：求导数（切线斜率）
+
+$$y&#39; = 5 + \frac{8}{x}$$
+
+在 $x = 1$ 处：
+
+$$y&#39;(1) = 5 + \frac{8}{1} = 13$$
+
+## 第三步：写出切线方程
+
+由点斜式 $y - y_0 = k(x - x_0)$，其中 $k = 13$，$(x_0, y_0) = (1, 5)$：
+
+$$y - 5 = 13(x - 1)$$
+
+$$y = 13x - 13 + 5$$
+
+$$y = 13x - 8$$
+
+## 最终答案
+
+$$\boxed{D}$$</pre>
+                        <b>Reasoning</b><pre>We need to find the tangent line to the curve y = 5x + 8ln(x) at the point (1, 5).
+
+First, let me verify the point (1, 5) is on the curve:
+y = 5(1) + 8ln(1) = 5 + 8(0) = 5 ✓
+
+Now, find the derivative:
+y&#39; = 5 + 8/x
+
+At x = 1:
+y&#39;(1) = 5 + 8/1 = 5 + 8 = 13
+
+So the slope of the tangent line at (1, 5) is 13.
+
+The tangent line equation:
+y - 5 = 13(x - 1)
+y - 5 = 13x - 13
+y = 13x - 13 + 5
+y = 13x - 8
+
+So the answer is D.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly computes the derivative y&#39; = 5 + 8/x, evaluates it at x=1 to get slope 13, and derives the tangent line y = 13x - 8, which matches option D. The final answer is presented as \boxed{D}, which is the correct format for a single-choice question.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u66f2\u7ebf $y = 5x + 8\\ln x$ \u5728\u70b9 $(1,5)$ \u5904\u7684\u5207\u7ebf\u65b9\u7a0b\n\n## \u7b2c\u4e00\u6b65\uff1a\u9a8c\u8bc1\u70b9\u5728\u66f2\u7ebf\u4e0a\n\n$$y = 5(1) + 8\\ln(1) = 5 + 0 = 5 \\checkmark$$\n\n## \u7b2c\u4e8c\u6b65\uff1a\u6c42\u5bfc\u6570\uff08\u5207\u7ebf\u659c\u7387\uff09\n\n$$y&#39; = 5 + \\frac{8}{x}$$\n\n\u5728 $x = 1$ \u5904\uff1a\n\n$$y&#39;(1) = 5 + \\frac{8}{1} = 13$$\n\n## \u7b2c\u4e09\u6b65\uff1a\u5199\u51fa\u5207\u7ebf\u65b9\u7a0b\n\n\u7531\u70b9\u659c\u5f0f $y - y_0 = k(x - x_0)$\uff0c\u5176\u4e2d $k = 13$\uff0c$(x_0, y_0) = (1, 5)$\uff1a\n\n$$y - 5 = 13(x - 1)$$\n\n$$y = 13x - 13 + 5$$\n\n$$y = 13x - 8$$\n\n## \u6700\u7ec8\u7b54\u6848\n\n$$\\boxed{D}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;D\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly computes the derivative y&#39; = 5 + 8/x, evaluates it at x=1 to get slope 13, and derives the tangent line y = 13x - 8, which matches option D. The final answer is presented as \\\\boxed{D}, which is the correct format for a single-choice question.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly computes the derivative y&#39; = 5 + 8/x, evaluates it at x=1 to get slope 13, and derives the tangent line y = 13x - 8, which matches option D. The final answer is presented as \\boxed{D}, which is the correct format for a single-choice question.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_004')">
+                <td>gaokao_000_004</td>
+                <td class="correct">✓</td>
+                <td>D</td>
+                <td class="correct">D</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>1026</td>
+                <td>78.0</td>
+                <td>13.1</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_004" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+5. 已知抛物线C_1:y^2=2p_1x (p_1&gt;0)和C_2:x^2=2p_2y (p_2&gt;0)均经过点(4,8)，则C_1的焦点与C_2的焦点之间的距离为（ ）
+A. 12
+B. 4\sqrt{5}
+C. 6
+D. \frac{\sqrt{65}}{2}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解两抛物线焦点之间的距离
+
+## 第一步：求 p₁ 和 p₂
+
+**对于 C₁: y² = 2p₁x**，将点 (4, 8) 代入：
+
+$$8^2 = 2p_1 \cdot 4 \implies 64 = 8p_1 \implies p_1 = 8$$
+
+**对于 C₂: x² = 2p₂y**，将点 (4, 8) 代入：
+
+$$4^2 = 2p_2 \cdot 8 \implies 16 = 16p_2 \implies p_2 = 1$$
+
+## 第二步：求焦点坐标
+
+**C₁: y² = 16x**，即 y² = 4ax 的形式，其中 $4a = 16$，$a = 4$。
+
+焦点为 $\left(\dfrac{p_1}{2},\, 0\right) = (4,\; 0)$
+
+**C₂: x² = 2y**，即 x² = 4ay 的形式，其中 $4a = 2$，$a = \dfrac{1}{2}$。
+
+焦点为 $\left(0,\, \dfrac{p_2}{2}\right) = \left(0,\; \dfrac{1}{2}\right)$
+
+## 第三步：计算两焦点之间的距离
+
+$$d = \sqrt{(4 - 0)^2 + \left(0 - \dfrac{1}{2}\right)^2} = \sqrt{16 + \dfrac{1}{4}} = \sqrt{\dfrac{65}{4}} = \dfrac{\sqrt{65}}{2}$$
+
+## 最终答案
+
+$$\boxed{D}$$</pre>
+                        <b>Reasoning</b><pre>We need to find the foci of two parabolas that both pass through the point (4, 8).
+
+Parabola C₁: y² = 2p₁x (p₁ &gt; 0)
+Parabola C₂: x² = 2p₂y (p₂ &gt; 0)
+
+First, find p₁ and p₂ using the point (4, 8).
+
+For C₁: y² = 2p₁x
+8² = 2p₁ · 4
+64 = 8p₁
+p₁ = 8
+
+For C₂: x² = 2p₂y
+4² = 2p₂ · 8
+16 = 16p₂
+p₂ = 1
+
+Now find the foci:
+
+For C₁: y² = 2p₁x = 16x
+This is a parabola opening to the right. The standard form is y² = 4ax where 4a = 2p₁, so a = p₁/2 = 4.
+The focus is at (a, 0) = (p₁/2, 0) = (4, 0).
+
+For C₂: x² = 2p₂y = 2y
+This is a parabola opening upward. The standard form is x² = 4ay where 4a = 2p₂, so a = p₂/2 = 1/2.
+The focus is at (0, a) = (0, p₂/2) = (0, 1/2).
+
+Distance between foci:
+d = √[(4-0)² + (0-1/2)²] = √[16 + 1/4] = √[65/4] = √65/2
+
+So the answer is D.
+
+Wait, let me double-check the standard forms.
+
+For y² = 2px, the focus is at (p/2, 0). Yes, because y² = 4ax means 4a = 2p, so a = p/2.
+
+For x² = 2py, the focus is at (0, p/2). Yes, because x² = 4ay means 4a = 2p, so a = p/2.
+
+So focus of C₁: (p₁/2, 0) = (8/2, 0) = (4, 0)
+Focus of C₂: (0, p₂/2) = (0, 1/2)
+
+Distance = √[(4-0)² + (0-1/2)²] = √(16 + 1/4) = √(65/4) = √65/2
+
+The answer is D.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly computes p₁=8 and p₂=1, finds the foci at (4,0) and (0,1/2), calculates the distance as √65/2, and selects option D. The final answer is in the required format \boxed{D} with exactly one option letter.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3\u4e24\u629b\u7269\u7ebf\u7126\u70b9\u4e4b\u95f4\u7684\u8ddd\u79bb\n\n## \u7b2c\u4e00\u6b65\uff1a\u6c42 p\u2081 \u548c p\u2082\n\n**\u5bf9\u4e8e C\u2081: y\u00b2 = 2p\u2081x**\uff0c\u5c06\u70b9 (4, 8) \u4ee3\u5165\uff1a\n\n$$8^2 = 2p_1 \\cdot 4 \\implies 64 = 8p_1 \\implies p_1 = 8$$\n\n**\u5bf9\u4e8e C\u2082: x\u00b2 = 2p\u2082y**\uff0c\u5c06\u70b9 (4, 8) \u4ee3\u5165\uff1a\n\n$$4^2 = 2p_2 \\cdot 8 \\implies 16 = 16p_2 \\implies p_2 = 1$$\n\n## \u7b2c\u4e8c\u6b65\uff1a\u6c42\u7126\u70b9\u5750\u6807\n\n**C\u2081: y\u00b2 = 16x**\uff0c\u5373 y\u00b2 = 4ax \u7684\u5f62\u5f0f\uff0c\u5176\u4e2d $4a = 16$\uff0c$a = 4$\u3002\n\n\u7126\u70b9\u4e3a $\\left(\\dfrac{p_1}{2},\\, 0\\right) = (4,\\; 0)$\n\n**C\u2082: x\u00b2 = 2y**\uff0c\u5373 x\u00b2 = 4ay \u7684\u5f62\u5f0f\uff0c\u5176\u4e2d $4a = 2$\uff0c$a = \\dfrac{1}{2}$\u3002\n\n\u7126\u70b9\u4e3a $\\left(0,\\, \\dfrac{p_2}{2}\\right) = \\left(0,\\; \\dfrac{1}{2}\\right)$\n\n## \u7b2c\u4e09\u6b65\uff1a\u8ba1\u7b97\u4e24\u7126\u70b9\u4e4b\u95f4\u7684\u8ddd\u79bb\n\n$$d = \\sqrt{(4 - 0)^2 + \\left(0 - \\dfrac{1}{2}\\right)^2} = \\sqrt{16 + \\dfrac{1}{4}} = \\sqrt{\\dfrac{65}{4}} = \\dfrac{\\sqrt{65}}{2}$$\n\n## \u6700\u7ec8\u7b54\u6848\n\n$$\\boxed{D}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;D\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly computes p\u2081=8 and p\u2082=1, finds the foci at (4,0) and (0,1/2), calculates the distance as \u221a65/2, and selects option D. The final answer is in the required format \\\\boxed{D} with exactly one option letter.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly computes p\u2081=8 and p\u2082=1, finds the foci at (4,0) and (0,1/2), calculates the distance as \u221a65/2, and selects option D. The final answer is in the required format \\boxed{D} with exactly one option letter.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_005')">
+                <td>gaokao_000_005</td>
+                <td class="correct">✓</td>
+                <td>B</td>
+                <td class="correct">B</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>2235</td>
+                <td>72.4</td>
+                <td>30.9</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_005" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+6. 已知函数f(x)=\frac{x+2}{e^x+a}的最大值为1，则a = （ ）
+A. \frac{1}{2}
+B. 1
+C. \frac{3}{2}
+D. 2
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解函数最大值问题
+
+## 求导找临界点
+
+$$f(x) = \frac{x+2}{e^x + a}$$
+
+$$f&#39;(x) = \frac{(e^x + a) - (x+2)e^x}{(e^x + a)^2} = \frac{a - (x+1)e^x}{(e^x + a)^2}$$
+
+令 $f&#39;(x) = 0$，得：
+$$a = (x+1)e^x \quad \cdots (1)$$
+
+## 利用最大值为1的条件
+
+在最大值点 $x_0$ 处：
+$$f(x_0) = \frac{x_0 + 2}{e^{x_0} + a} = 1 \implies a = x_0 + 2 - e^{x_0} \quad \cdots (2)$$
+
+## 联立求解
+
+将 (1) 和 (2) 联立：
+$$(x_0+1)e^{x_0} = x_0 + 2 - e^{x_0}$$
+
+$$(x_0+1)e^{x_0} + e^{x_0} = x_0 + 2$$
+
+$$(x_0+2)e^{x_0} = x_0 + 2$$
+
+$$(x_0+2)(e^{x_0} - 1) = 0$$
+
+**情况1：** $x_0 = -2$，则 $a = (-1)e^{-2} &lt; 0$，此时分母 $e^x + a$ 在 $x=-2$ 处为零，函数无定义，**舍去**。
+
+**情况2：** $x_0 = 0$，则：
+$$a = (0+1)e^0 = 1$$
+
+## 验证
+
+当 $a=1$ 时，$f(x) = \dfrac{x+2}{e^x+1}$：
+
+- $f(0) = \dfrac{2}{2} = 1$ ✓
+- 当 $x&lt;0$（接近0）时，$f&#39;(x)&gt;0$（函数递增）
+- 当 $x&gt;0$（接近0）时，$f&#39;(x)&lt;0$（函数递减）
+- $x \to -\infty$ 时 $f(x) \to -\infty$；$x \to +\infty$ 时 $f(x) \to 0$
+
+因此 $x=0$ 是**全局最大值点**，最大值为 1。✓
+
+## 答案
+
+$$a = 1$$
+
+\boxed{B}</pre>
+                        <b>Reasoning</b><pre>We need to find $a$ such that the maximum value of $f(x) = \frac{x+2}{e^x + a}$ is 1.
+
+First, let&#39;s find the derivative of $f(x)$:
+$f&#39;(x) = \frac{1 \cdot (e^x + a) - (x+2) \cdot e^x}{(e^x + a)^2} = \frac{e^x + a - xe^x - 2e^x}{(e^x + a)^2} = \frac{a - (x+1)e^x}{(e^x + a)^2}$
+
+For the function to have a maximum value, we need to find critical points where $f&#39;(x) = 0$:
+$a = (x+1)e^x$
+
+For the function to have a maximum value of 1, there must exist some $x_0$ such that:
+1. $f&#39;(x_0) = 0$, i.e., $a = (x_0+1)e^{x_0}$
+2. $f(x_0) = 1$, i.e., $\frac{x_0+2}{e^{x_0} + a} = 1$
+
+From condition 2:
+$x_0 + 2 = e^{x_0} + a$
+$a = x_0 + 2 - e^{x_0}$
+
+From condition 1:
+$a = (x_0 + 1)e^{x_0}$
+
+Setting them equal:
+$(x_0 + 1)e^{x_0} = x_0 + 2 - e^{x_0}$
+$(x_0 + 1)e^{x_0} + e^{x_0} = x_0 + 2$
+$(x_0 + 2)e^{x_0} = x_0 + 2$
+
+This gives us two cases:
+Case 1: $x_0 + 2 = 0$, so $x_0 = -2$
+Case 2: $e^{x_0} = 1$, so $x_0 = 0$
+
+Case 1: $x_0 = -2$
+$a = (x_0 + 1)e^{x_0} = (-1)e^{-2} = -e^{-2}$
+
+But wait, if $a = -e^{-2}$, then $e^x + a$ could be zero for some $x$, which would make the function undefined. Let&#39;s check: $e^x = e^{-2}$ when $x = -2$. So $f(x)$ would be undefined at $x = -2$. This doesn&#39;t work as a maximum value.
+
+Actually, let me reconsider. If $a &lt; 0$, the denominator $e^x + a$ could be zero, making the function undefined. So we need $a &gt; 0$ for the function to be defined for all real $x$.
+
+Case 2: $x_0 = 0$
+$a = (x_0 + 1)e^{x_0} = (1)(1) = 1$
+
+Let&#39;s verify: if $a = 1$, then $f(x) = \frac{x+2}{e^x + 1}$
+
+$f&#39;(x) = \frac{1 - (x+1)e^x}{(e^x + 1)^2}$
+
+$f&#39;(x) = 0$ when $1 = (x+1)e^x$, i.e., $(x+1)e^x = 1$.
+
+At $x = 0$: $(0+1)e^0 = 1$ ✓
+
+$f(0) = \frac{0+2}{1+1} = 1$ ✓
+
+Now let&#39;s verify this is indeed a maximum:
+For $x &lt; 0$ (close to 0), say $x = -0.1$: $(x+1)e^x = (0.9)(0.905) ≈ 0.814 &lt; 1$, so $f&#39;(x) &gt; 0$
+For $x &gt; 0$ (close to 0), say $x = 0.1$: $(x+1)e^x = (1.1)(1.105) ≈ 1.216 &gt; 1$, so $f&#39;(x) &lt; 0$
+
+So $x = 0$ is indeed a local maximum.
+
+But we need to check if it&#39;s the global maximum. Let&#39;s check the behavior:
+- As $x \to -\infty$: $f(x) = \frac{x+2}{e^x + 1} \to -\infty$ (since $x+2 \to -\infty$ and $e^x + 1 \to 1$)
+- As $x \to +\infty$: $f(x) = \frac{x+2}{e^x + 1} \to 0$
+
+So the function goes from $-\infty$ to a maximum and then approaches 0. The maximum should be at the critical point.
+
+Wait, but I need to check if there are other critical points. The equation $(x+1)e^x = 1$ - let&#39;s think about this more carefully.
+
+Let $g(x) = (x+1)e^x$. Then $g&#39;(x) = e^x + (x+1)e^x = (x+2)e^x$.
+
+$g&#39;(x) = 0$ at $x = -2$. For $x &lt; -2$, $g&#39;(x) &lt; 0$, and for $x &gt; -2$, $g&#39;(x) &gt; 0$.
+
+So $g(x)$ has a minimum at $x = -2$: $g(-2) = (-1)e^{-2} = -1/e^2$.
+
+As $x \to -\infty$: $g(x) = (x+1)e^x \to 0$ (from the negative side, since $x+1 &lt; 0$ and $e^x &gt; 0$)
+
+Wait, actually as $x \to -\infty$, $(x+1)e^x \to 0$ (since exponential decay dominates linear growth). And $g(-2) = -1/e^2 &lt; 0$.
+
+For $x &gt; -2$, $g(x)$ is increasing. $g(0) = 1$, $g(1) = 2e &gt; 1$, etc.
+
+So the equation $g(x) = 1$ has exactly one solution for $x &gt; -2$ (which is $x = 0$), and for $x &lt; -2$, $g(x) &lt; 0 &lt; 1$, so no solutions there.
+
+Wait, actually let me reconsider. For $x &lt; -2$, $g(x)$ is decreasing from 0 (as $x \to -\infty$) to $-1/e^2$ (at $x = -2$). So $g(x) &lt; 0$ for all $x &lt; -2$. Thus $g(x) = 1$ has no solution for $x &lt; -2$.
+
+So $x = 0$ is the only critical point, and since the function goes from $-\infty$ to this maximum and then to 0, it is the global maximum.
+
+Therefore $a = 1$.
+
+The answer is B.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly derives that a=1 by finding the critical point and using the maximum value condition. The final answer \boxed{B} matches the expected answer and follows the required single-choice format.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3\u51fd\u6570\u6700\u5927\u503c\u95ee\u9898\n\n## \u6c42\u5bfc\u627e\u4e34\u754c\u70b9\n\n$$f(x) = \\frac{x+2}{e^x + a}$$\n\n$$f&#39;(x) = \\frac{(e^x + a) - (x+2)e^x}{(e^x + a)^2} = \\frac{a - (x+1)e^x}{(e^x + a)^2}$$\n\n\u4ee4 $f&#39;(x) = 0$\uff0c\u5f97\uff1a\n$$a = (x+1)e^x \\quad \\cdots (1)$$\n\n## \u5229\u7528\u6700\u5927\u503c\u4e3a1\u7684\u6761\u4ef6\n\n\u5728\u6700\u5927\u503c\u70b9 $x_0$ \u5904\uff1a\n$$f(x_0) = \\frac{x_0 + 2}{e^{x_0} + a} = 1 \\implies a = x_0 + 2 - e^{x_0} \\quad \\cdots (2)$$\n\n## \u8054\u7acb\u6c42\u89e3\n\n\u5c06 (1) \u548c (2) \u8054\u7acb\uff1a\n$$(x_0+1)e^{x_0} = x_0 + 2 - e^{x_0}$$\n\n$$(x_0+1)e^{x_0} + e^{x_0} = x_0 + 2$$\n\n$$(x_0+2)e^{x_0} = x_0 + 2$$\n\n$$(x_0+2)(e^{x_0} - 1) = 0$$\n\n**\u60c5\u51b51\uff1a** $x_0 = -2$\uff0c\u5219 $a = (-1)e^{-2} &lt; 0$\uff0c\u6b64\u65f6\u5206\u6bcd $e^x + a$ \u5728 $x=-2$ \u5904\u4e3a\u96f6\uff0c\u51fd\u6570\u65e0\u5b9a\u4e49\uff0c**\u820d\u53bb**\u3002\n\n**\u60c5\u51b52\uff1a** $x_0 = 0$\uff0c\u5219\uff1a\n$$a = (0+1)e^0 = 1$$\n\n## \u9a8c\u8bc1\n\n\u5f53 $a=1$ \u65f6\uff0c$f(x) = \\dfrac{x+2}{e^x+1}$\uff1a\n\n- $f(0) = \\dfrac{2}{2} = 1$ \u2713\n- \u5f53 $x&lt;0$\uff08\u63a5\u8fd10\uff09\u65f6\uff0c$f&#39;(x)&gt;0$\uff08\u51fd\u6570\u9012\u589e\uff09\n- \u5f53 $x&gt;0$\uff08\u63a5\u8fd10\uff09\u65f6\uff0c$f&#39;(x)&lt;0$\uff08\u51fd\u6570\u9012\u51cf\uff09\n- $x \\to -\\infty$ \u65f6 $f(x) \\to -\\infty$\uff1b$x \\to +\\infty$ \u65f6 $f(x) \\to 0$\n\n\u56e0\u6b64 $x=0$ \u662f**\u5168\u5c40\u6700\u5927\u503c\u70b9**\uff0c\u6700\u5927\u503c\u4e3a 1\u3002\u2713\n\n## \u7b54\u6848\n\n$$a = 1$$\n\n\\boxed{B}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;B\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly derives that a=1 by finding the critical point and using the maximum value condition. The final answer \\\\boxed{B} matches the expected answer and follows the required single-choice format.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly derives that a=1 by finding the critical point and using the maximum value condition. The final answer \\boxed{B} matches the expected answer and follows the required single-choice format.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_006')">
+                <td>gaokao_000_006</td>
+                <td class="correct">✓</td>
+                <td>B</td>
+                <td class="correct">B</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>2635</td>
+                <td>73.0</td>
+                <td>36.1</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_006" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+7. 一百零八塔位于宁夏回族自治区青铜峡市，以其独特的建筑格局和深厚的历史文化闻名遐迩。该塔群共有108座塔，依山势自上而下排成12行，将第i行中塔的座数记为a_i(i=1,2,...,12)，其中a_1=1, a_2=a_3=3, a_4=a_5=5，且a_6, a_7, ..., a_{12}是一个首项为7，公差为2的等差数列。将a_1, a_2, ..., a_{12}分为6组，每组2个数，使得每组的2个数之和可构成一个项数为6且公差为d(d&gt;0)的等差数列，则d = （ ）
+A. 2
+B. 4
+C. 6
+D. 8
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解一百零八塔的分组问题
+
+## 第一步：确定 $a_1$ 到 $a_{12}$ 的值
+
+根据题意：
+- $a_1 = 1$
+- $a_2 = a_3 = 3$
+- $a_4 = a_5 = 5$
+- $a_6, a_7, \ldots, a_{12}$ 是首项为7、公差为2的等差数列
+
+所以：$a_6=7,\ a_7=9,\ a_8=11,\ a_9=13,\ a_{10}=15,\ a_{11}=17,\ a_{12}=19$
+
+**验证总数：** $1+3+3+5+5+7+9+11+13+15+17+19 = 108$ ✓
+
+## 第二步：确定分组和的等差数列
+
+12个数之和为108，分成6组后，6个组之和构成公差为 $d$ 的等差数列。设首项为 $s_1$，则：
+
+$$6s_1 + 15d = 108 \implies s_1 = \frac{36-5d}{2}$$
+
+由 $s_1$ 为正整数，$d$ 必须为偶数。逐一检验选项：
+
+| $d$ | $s_1$ | 6个和 | 可行性 |
+|-----|--------|--------|--------|
+| 2 | 13 | 13,15,17,19,21,**23** | 无法从集合中凑出和为23的对 ✗ |
+| 4 | 8 | 8,12,16,20,24,**28** | 待验证 |
+| 6 | 3 | 3,9,15,21,27,**33** | 无法凑出和为33的对 ✗ |
+| 8 | −2 | 出现负数 | ✗ |
+
+## 第三步：验证 $d=4$
+
+需将 $\{1,3,3,5,5,7,9,11,13,15,17,19\}$ 分成6对，和分别为 $8,12,16,20,24,28$：
+
+$$\begin{aligned}
+5+3 &amp;= 8 \\
+11+1 &amp;= 12 \\
+13+3 &amp;= 16 \\
+15+5 &amp;= 20 \\
+17+7 &amp;= 24 \\
+19+9 &amp;= 28
+\end{aligned}$$
+
+使用的数：$1,3,3,5,5,7,9,11,13,15,17,19$ — 每个数恰好使用一次 ✓
+
+## 结论
+
+$$d = 4$$
+
+\boxed{B}</pre>
+                        <b>Reasoning</b><pre>Let me work through this problem step by step.
+
+First, I need to determine the values of a_1, a_2, ..., a_12.
+
+Given:
+- a_1 = 1
+- a_2 = a_3 = 3
+- a_4 = a_5 = 5
+- a_6, a_7, ..., a_12 is an arithmetic sequence with first term 7 and common difference 2
+
+So:
+- a_6 = 7
+- a_7 = 9
+- a_8 = 11
+- a_9 = 13
+- a_10 = 15
+- a_11 = 17
+- a_12 = 19
+
+Let me verify: the total number of towers is 108.
+Sum = 1 + 3 + 3 + 5 + 5 + 7 + 9 + 11 + 13 + 15 + 17 + 19
+
+= 1 + 6 + 10 + 7 + 9 + 11 + 13 + 15 + 17 + 19
+
+Let me compute:
+1 + 3 + 3 + 5 + 5 = 17
+7 + 9 + 11 + 13 + 15 + 17 + 19 = 91
+
+Total = 17 + 91 = 108 ✓
+
+Now, the 12 numbers are: 1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19
+
+We need to divide these into 6 groups of 2 numbers each, such that the sums of the pairs form an arithmetic sequence with 6 terms and common difference d &gt; 0.
+
+Let me denote the 6 pair sums as s_1, s_2, ..., s_6, which form an arithmetic sequence with common difference d &gt; 0.
+
+The sum of all pair sums = sum of all 12 numbers = 108.
+
+If the 6 pair sums form an arithmetic sequence: s_1, s_1+d, s_1+2d, s_1+3d, s_1+4d, s_1+5d
+
+Sum = 6s_1 + 15d = 108
+So 2s_1 + 5d = 36
+s_1 = (36 - 5d)/2
+
+For s_1 to be an integer, 36 - 5d must be even, so 5d must be even, so d must be even.
+
+Possible values of d from the options: 2, 4, 6, 8.
+
+Let me check each:
+
+If d = 2: s_1 = (36 - 10)/2 = 13
+The sums are: 13, 15, 17, 19, 21, 23
+
+If d = 4: s_1 = (36 - 20)/2 = 8
+The sums are: 8, 12, 16, 20, 24, 28
+
+If d = 6: s_1 = (36 - 30)/2 = 3
+The sums are: 3, 9, 15, 21, 27, 33
+
+If d = 8: s_1 = (36 - 40)/2 = -2
+This gives negative values, which is impossible since all numbers are positive. So d = 8 is impossible.
+
+Now let me check which d works.
+
+The 12 numbers are: 1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19
+
+**Case d = 2:** Sums should be: 13, 15, 17, 19, 21, 23
+
+I need to partition {1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19} into 6 pairs with sums 13, 15, 17, 19, 21, 23.
+
+Let me try:
+- Sum 23: 19 + 4? No 4. 17 + 6? No 6. 15 + 8? No 8. Hmm.
+  Wait, let me reconsider. The numbers are: 1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19
+
+  For sum 23: 19 + 4 (no), 17 + 6 (no), 15 + 8 (no), 13 + 10 (no), 11 + 12 (no), 9 + 14 (no), 7 + 16 (no), 5 + 18 (no), 3 + 20 (no), 1 + 22 (no)
+
+  None of these work! So d = 2 is impossible.
+
+Wait, let me double-check. The pairs need to sum to specific values. For sum 23, I need two numbers from the set that add to 23.
+
+Available numbers: 1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19
+
+19 + 4 = 23 → 4 not available
+17 + 6 = 23 → 6 not available
+15 + 8 = 23 → 8 not available
+13 + 10 = 23 → 10 not available
+11 + 12 = 23 → 12 not available
+9 + 14 = 23 → 14 not available
+7 + 16 = 23 → 16 not available
+
+So d = 2 is impossible.
+
+**Case d = 4:** Sums should be: 8, 12, 16, 20, 24, 28
+
+Let me try to partition:
+- Sum 28: 19 + 9 = 28 ✓
+- Sum 24: 17 + 7 = 24 ✓
+- Sum 20: 15 + 5 = 20 ✓
+- Sum 16: 13 + 3 = 16 ✓
+- Sum 12: 11 + 1 = 12 ✓
+- Sum 8: 5 + 3 = 8 ✓
+
+Let me verify I&#39;m using each number exactly once:
+- 19, 9 (sum 28)
+- 17, 7 (sum 24)
+- 15, 5 (sum 20)
+- 13, 3 (sum 16)
+- 11, 1 (sum 12)
+- 5, 3 (sum 8)
+
+Numbers used: 19, 9, 17, 7, 15, 5, 13, 3, 11, 1, 5, 3
+Sorted: 1, 3, 3, 5, 5, 7, 9, 11, 13, 15, 17, 19 ✓
+
+This works!
+
+**Case d = 6:** Sums should be: 3, 9, 15, 21, 27, 33
+
+- Sum 33: 19 + 14 (no), 17 + 16 (no), 15 + 18 (no), 13 + 20 (no)
+  No two numbers from the set add to 33. The maximum sum is 19 + 17 = 36.
+  19 + 14? No 14. So d = 6 is impossible.
+
+Wait, let me check: 19 + 14, 17 + 16, 15 + 18... none of these work since 14, 16, 18 are not in the set.
+
+So d = 6 is impossible.
+
+Therefore, d = 4.
+
+The answer is B.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly identifies all 12 values, verifies the sum is 108, systematically eliminates options d=2, 6, 8, and provides a valid pairing for d=4 that uses each number exactly once. The final answer \boxed{B} matches the expected answer and follows the required single-choice format.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3\u4e00\u767e\u96f6\u516b\u5854\u7684\u5206\u7ec4\u95ee\u9898\n\n## \u7b2c\u4e00\u6b65\uff1a\u786e\u5b9a $a_1$ \u5230 $a_{12}$ \u7684\u503c\n\n\u6839\u636e\u9898\u610f\uff1a\n- $a_1 = 1$\n- $a_2 = a_3 = 3$\n- $a_4 = a_5 = 5$\n- $a_6, a_7, \\ldots, a_{12}$ \u662f\u9996\u9879\u4e3a7\u3001\u516c\u5dee\u4e3a2\u7684\u7b49\u5dee\u6570\u5217\n\n\u6240\u4ee5\uff1a$a_6=7,\\ a_7=9,\\ a_8=11,\\ a_9=13,\\ a_{10}=15,\\ a_{11}=17,\\ a_{12}=19$\n\n**\u9a8c\u8bc1\u603b\u6570\uff1a** $1+3+3+5+5+7+9+11+13+15+17+19 = 108$ \u2713\n\n## \u7b2c\u4e8c\u6b65\uff1a\u786e\u5b9a\u5206\u7ec4\u548c\u7684\u7b49\u5dee\u6570\u5217\n\n12\u4e2a\u6570\u4e4b\u548c\u4e3a108\uff0c\u5206\u62106\u7ec4\u540e\uff0c6\u4e2a\u7ec4\u4e4b\u548c\u6784\u6210\u516c\u5dee\u4e3a $d$ \u7684\u7b49\u5dee\u6570\u5217\u3002\u8bbe\u9996\u9879\u4e3a $s_1$\uff0c\u5219\uff1a\n\n$$6s_1 + 15d = 108 \\implies s_1 = \\frac{36-5d}{2}$$\n\n\u7531 $s_1$ \u4e3a\u6b63\u6574\u6570\uff0c$d$ \u5fc5\u987b\u4e3a\u5076\u6570\u3002\u9010\u4e00\u68c0\u9a8c\u9009\u9879\uff1a\n\n| $d$ | $s_1$ | 6\u4e2a\u548c | \u53ef\u884c\u6027 |\n|-----|--------|--------|--------|\n| 2 | 13 | 13,15,17,19,21,**23** | \u65e0\u6cd5\u4ece\u96c6\u5408\u4e2d\u51d1\u51fa\u548c\u4e3a23\u7684\u5bf9 \u2717 |\n| 4 | 8 | 8,12,16,20,24,**28** | \u5f85\u9a8c\u8bc1 |\n| 6 | 3 | 3,9,15,21,27,**33** | \u65e0\u6cd5\u51d1\u51fa\u548c\u4e3a33\u7684\u5bf9 \u2717 |\n| 8 | \u22122 | \u51fa\u73b0\u8d1f\u6570 | \u2717 |\n\n## \u7b2c\u4e09\u6b65\uff1a\u9a8c\u8bc1 $d=4$\n\n\u9700\u5c06 $\\{1,3,3,5,5,7,9,11,13,15,17,19\\}$ \u5206\u62106\u5bf9\uff0c\u548c\u5206\u522b\u4e3a $8,12,16,20,24,28$\uff1a\n\n$$\\begin{aligned}\n5+3 &amp;= 8 \\\\\n11+1 &amp;= 12 \\\\\n13+3 &amp;= 16 \\\\\n15+5 &amp;= 20 \\\\\n17+7 &amp;= 24 \\\\\n19+9 &amp;= 28\n\\end{aligned}$$\n\n\u4f7f\u7528\u7684\u6570\uff1a$1,3,3,5,5,7,9,11,13,15,17,19$ \u2014 \u6bcf\u4e2a\u6570\u6070\u597d\u4f7f\u7528\u4e00\u6b21 \u2713\n\n## \u7ed3\u8bba\n\n$$d = 4$$\n\n\\boxed{B}&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;B\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly identifies all 12 values, verifies the sum is 108, systematically eliminates options d=2, 6, 8, and provides a valid pairing for d=4 that uses each number exactly once. The final answer \\\\boxed{B} matches the expected answer and follows the required single-choice format.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly identifies all 12 values, verifies the sum is 108, systematically eliminates options d=2, 6, 8, and provides a valid pairing for d=4 that uses each number exactly once. The final answer \\boxed{B} matches the expected answer and follows the required single-choice format.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_007')">
+                <td>gaokao_000_007</td>
+                <td class="correct">✓</td>
+                <td>A</td>
+                <td class="correct">A</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>1403</td>
+                <td>64.6</td>
+                <td>21.7</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_007" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+8. 设U={(x_1, x_2, x_3)|x_i \in \{-2,-1,1,2\}, i=1,2,3}\}为空间中64个点构成的集合，点P(1,1,1)，记样本空间\Omega = C_U^P，从\Omega中随机取一个点，定义随机变量X如下：对\Omega中的每个点A(x_1, x_2, x_3)，令X(A) = x_1 + x_2 + x_3，则X的数学期望值为（ ）
+A. -\frac{1}{21}
+B. -\frac{1}{63}
+C. 0
+D. \frac{1}{7}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解随机变量 X 的数学期望
+
+## 理解题意
+
+- $U = \{(x_1, x_2, x_3) | x_i \in \{-2, -1, 1, 2\}\}$，共 $4^3 = 64$ 个点
+- $P = (1, 1, 1) \in U$
+- 样本空间 $\Omega = U \setminus \{P\}$，共 **63** 个点
+- 从 $\Omega$ 中**等概率**随机取一个点 $A(x_1, x_2, x_3)$
+- $X(A) = x_1 + x_2 + x_3$
+
+## 计算所有 64 个点的 $X$ 值之和
+
+对于任意一个坐标位置（如 $x_1$），其余两个坐标各有 4 种取值，因此：
+
+$$\sum_{U} x_1 = 16 \times (-2 + (-1) + 1 + 2) = 16 \times 0 = 0$$
+
+同理 $\sum_U x_2 = 0$，$\sum_U x_3 = 0$。
+
+因此 $U$ 中所有 64 个点的 $x_1 + x_2 + x_3$ 之和为：
+
+$$\sum_{U}(x_1 + x_2 + x_3) = 0$$
+
+## 去掉点 P 后的和
+
+点 $P = (1,1,1)$ 对应的 $X$ 值为 $1+1+1 = 3$。
+
+所以 $\Omega$（63 个点）中 $X$ 值之和为：
+
+$$\sum_{\Omega} X = 0 - 3 = -3$$
+
+## 计算期望
+
+每个点被取到的概率为 $\frac{1}{63}$，因此：
+
+$$E[X] = \frac{1}{63} \sum_{\Omega} X = \frac{-3}{63} = -\frac{1}{21}$$
+
+## 答案
+
+$$\boxed{A}$$</pre>
+                        <b>Reasoning</b><pre>Let me carefully analyze this problem.
+
+We have $U = \{(x_1, x_2, x_3) | x_i \in \{-2, -1, 1, 2\}, i = 1, 2, 3\}$, which is a set of 64 points in space.
+
+Point $P = (1, 1, 1)$.
+
+The sample space $\Omega = C_U^P$ - this notation likely means the set of points in $U$ that are different from $P$, or it could mean the set of points in $U$ excluding $P$. Wait, let me think about this more carefully.
+
+Actually, $C_U^P$ - this notation is a bit unusual. Let me think... In Chinese math notation, this might mean the complement of $P$ in $U$, i.e., $U \setminus \{P\}$. But wait, $P = (1,1,1)$ is indeed in $U$ since each coordinate is in $\{-2, -1, 1, 2\}$.
+
+So $\Omega = U \setminus \{P\}$, which has 63 points.
+
+Wait, actually let me reconsider. The notation $C_U^P$ might mean something else. In Chinese probability notation, $C_n^k$ usually means combinations. But here it&#39;s written as $C_U^P$, which doesn&#39;t fit that pattern.
+
+Actually, I think $C_U^P$ might be a notation issue. Let me re-read the problem.
+
+&quot;记样本空间 $\Omega = C_U^P$&quot; - maybe this is meant to be read as &quot;the set of points in U other than P&quot; or &quot;the complement of P in U&quot;.
+
+Actually, I think the notation might be poorly transcribed and it should be $\Omega = U \setminus \{P\}$, giving 63 points.
+
+So we have 63 points in $\Omega$ (all points in $U$ except $(1,1,1)$).
+
+We pick a point uniformly at random from $\Omega$, and $X = x_1 + x_2 + x_3$.
+
+Let me compute $E[X]$.
+
+First, let me compute the sum of all coordinates for all 64 points in $U$.
+
+For each coordinate $x_i$, the values $-2, -1, 1, 2$ each appear equally often. For a fixed coordinate position, say $x_1$:
+- $x_1 = -2$: occurs $4 \times 4 = 16$ times
+- $x_1 = -1$: occurs $4 \times 4 = 16$ times
+- $x_1 = 1$: occurs $4 \times 4 = 16$ times
+- $x_1 = 2$: occurs $4 \times 4 = 16$ times
+
+Sum of $x_1$ values over all 64 points: $16(-2 + -1 + 1 + 2) = 16 \times 0 = 0$
+
+Similarly for $x_2$ and $x_3$.
+
+So the sum of $x_1 + x_2 + x_3$ over all 64 points in $U$ is $0 + 0 + 0 = 0$.
+
+Now, the point $P = (1,1,1)$ has $x_1 + x_2 + x_3 = 3$.
+
+The sum of $X$ values over all 63 points in $\Omega$ is $0 - 3 = -3$.
+
+Therefore, $E[X] = \frac{-3}{63} = -\frac{1}{21}$.
+
+The answer is A.
+
+Let me double-check: We remove $(1,1,1)$ from $U$. The total sum of $(x_1+x_2+x_3)$ over all points in $U$ is 0. Removing $(1,1,1)$ which contributes 3, the remaining sum is $-3$. With 63 points remaining, the expected value is $-3/63 = -1/21$.
+
+Yes, the answer is A.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly computes E[X] = -3/63 = -1/21, which corresponds to option A. The final answer is presented as \boxed{A}, which is the correct format for a single-choice question.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3\u968f\u673a\u53d8\u91cf X \u7684\u6570\u5b66\u671f\u671b\n\n## \u7406\u89e3\u9898\u610f\n\n- $U = \\{(x_1, x_2, x_3) | x_i \\in \\{-2, -1, 1, 2\\}\\}$\uff0c\u5171 $4^3 = 64$ \u4e2a\u70b9\n- $P = (1, 1, 1) \\in U$\n- \u6837\u672c\u7a7a\u95f4 $\\Omega = U \\setminus \\{P\\}$\uff0c\u5171 **63** \u4e2a\u70b9\n- \u4ece $\\Omega$ \u4e2d**\u7b49\u6982\u7387**\u968f\u673a\u53d6\u4e00\u4e2a\u70b9 $A(x_1, x_2, x_3)$\n- $X(A) = x_1 + x_2 + x_3$\n\n## \u8ba1\u7b97\u6240\u6709 64 \u4e2a\u70b9\u7684 $X$ \u503c\u4e4b\u548c\n\n\u5bf9\u4e8e\u4efb\u610f\u4e00\u4e2a\u5750\u6807\u4f4d\u7f6e\uff08\u5982 $x_1$\uff09\uff0c\u5176\u4f59\u4e24\u4e2a\u5750\u6807\u5404\u6709 4 \u79cd\u53d6\u503c\uff0c\u56e0\u6b64\uff1a\n\n$$\\sum_{U} x_1 = 16 \\times (-2 + (-1) + 1 + 2) = 16 \\times 0 = 0$$\n\n\u540c\u7406 $\\sum_U x_2 = 0$\uff0c$\\sum_U x_3 = 0$\u3002\n\n\u56e0\u6b64 $U$ \u4e2d\u6240\u6709 64 \u4e2a\u70b9\u7684 $x_1 + x_2 + x_3$ \u4e4b\u548c\u4e3a\uff1a\n\n$$\\sum_{U}(x_1 + x_2 + x_3) = 0$$\n\n## \u53bb\u6389\u70b9 P \u540e\u7684\u548c\n\n\u70b9 $P = (1,1,1)$ \u5bf9\u5e94\u7684 $X$ \u503c\u4e3a $1+1+1 = 3$\u3002\n\n\u6240\u4ee5 $\\Omega$\uff0863 \u4e2a\u70b9\uff09\u4e2d $X$ \u503c\u4e4b\u548c\u4e3a\uff1a\n\n$$\\sum_{\\Omega} X = 0 - 3 = -3$$\n\n## \u8ba1\u7b97\u671f\u671b\n\n\u6bcf\u4e2a\u70b9\u88ab\u53d6\u5230\u7684\u6982\u7387\u4e3a $\\frac{1}{63}$\uff0c\u56e0\u6b64\uff1a\n\n$$E[X] = \\frac{1}{63} \\sum_{\\Omega} X = \\frac{-3}{63} = -\\frac{1}{21}$$\n\n## \u7b54\u6848\n\n$$\\boxed{A}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;A\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly computes E[X] = -3/63 = -1/21, which corresponds to option A. The final answer is presented as \\\\boxed{A}, which is the correct format for a single-choice question.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly computes E[X] = -3/63 = -1/21, which corresponds to option A. The final answer is presented as \\boxed{A}, which is the correct format for a single-choice question.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_008')">
+                <td>gaokao_000_008</td>
+                <td class="correct">✓</td>
+                <td>ACD</td>
+                <td class="correct">ACD</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>949</td>
+                <td>75.4</td>
+                <td>12.6</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_008" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+9. 设z = 3 + 2i，则（ ）
+A. \bar{z} = 3 - 2i
+B. |z| = 5
+C. z^2 = 5 + 12i
+D. \frac{z+3}{z-i} \in \mathbf{R}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解 z = 3 + 2i 的相关判断
+
+## 逐项验证
+
+**选项 A：** $\bar{z} = 3 - 2i$
+
+复数 $z = 3 + 2i$ 的共轭复数为 $\bar{z} = 3 - 2i$。✅ **正确**
+
+**选项 B：** $|z| = 5$
+
+$$|z| = \sqrt{3^2 + 2^2} = \sqrt{9 + 4} = \sqrt{13} \neq 5$$
+
+❌ **错误**
+
+**选项 C：** $z^2 = 5 + 12i$
+
+$$z^2 = (3+2i)^2 = 9 + 12i + 4i^2 = 9 + 12i - 4 = 5 + 12i$$
+
+✅ **正确**
+
+**选项 D：** $\dfrac{z+3}{z-i} \in \mathbf{R}$
+
+计算分子：$z + 3 = (3+2i) + 3 = 6 + 2i$
+
+计算分母：$z - i = 3 + 2i - i = 3 + i$
+
+$$\frac{6+2i}{3+i} = \frac{(6+2i)(3-i)}{(3+i)(3-i)} = \frac{18 - 6i + 6i - 2i^2}{9+1} = \frac{18 + 2}{10} = \frac{20}{10} = 2 \in \mathbf{R}$$
+
+✅ **正确**
+
+## 最终结果
+
+正确选项为 A、C、D。
+
+$$\boxed{ACD}$$</pre>
+                        <b>Reasoning</b><pre>We need to analyze each option for z = 3 + 2i.
+
+A. $\bar{z} = 3 - 2i$
+The conjugate of z = 3 + 2i is indeed 3 - 2i. So A is correct.
+
+B. $|z| = 5$
+$|z| = \sqrt{3^2 + 2^2} = \sqrt{9 + 4} = \sqrt{13}$, not 5. So B is incorrect.
+
+C. $z^2 = 5 + 12i$
+$z^2 = (3 + 2i)^2 = 9 + 12i + 4i^2 = 9 + 12i - 4 = 5 + 12i$. So C is correct.
+
+D. $\frac{z+3}{z-i} \in \mathbb{R}$
+$z + 3 = (3+2i) + 3 = 6 + 2i$
+$z - i = 3 + 2i - i = 3 + i$
+
+$\frac{6+2i}{3+i} = \frac{(6+2i)(3-i)}{(3+i)(3-i)} = \frac{18 - 6i + 6i - 2i^2}{9 + 1} = \frac{18 + 2}{10} = \frac{20}{10} = 2$
+
+So D is also correct.
+
+Wait, let me recheck. The question says &quot;则（ ）&quot; which means &quot;then ( )&quot;. This could be a multiple choice question where multiple answers are correct, or it could be asking which ones are correct.
+
+Let me re-examine:
+- A: $\bar{z} = 3 - 2i$ ✓
+- B: $|z| = 5$ ✗ (it&#39;s $\sqrt{13}$)
+- C: $z^2 = 5 + 12i$ ✓
+- D: $\frac{z+3}{z-i} \in \mathbb{R}$ ✓ (it equals 2)
+
+So the correct answers are A, C, D.
+
+Wait, let me re-read the problem. It says &quot;9.&quot; suggesting it&#39;s question 9, and it&#39;s asking which options are correct. In Chinese math exams, this could be a multiple-select question.
+
+The answer should be ACD.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly evaluates each option: A is correct (conjugate), B is incorrect (|z|=√13≠5), C is correct (z²=5+12i), D is correct (the fraction equals 2, which is real). The final answer ACD matches the expected answer, and the format is correct with only option letters in the boxed answer.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3 z = 3 + 2i \u7684\u76f8\u5173\u5224\u65ad\n\n## \u9010\u9879\u9a8c\u8bc1\n\n**\u9009\u9879 A\uff1a** $\\bar{z} = 3 - 2i$\n\n\u590d\u6570 $z = 3 + 2i$ \u7684\u5171\u8f6d\u590d\u6570\u4e3a $\\bar{z} = 3 - 2i$\u3002\u2705 **\u6b63\u786e**\n\n**\u9009\u9879 B\uff1a** $|z| = 5$\n\n$$|z| = \\sqrt{3^2 + 2^2} = \\sqrt{9 + 4} = \\sqrt{13} \\neq 5$$\n\n\u274c **\u9519\u8bef**\n\n**\u9009\u9879 C\uff1a** $z^2 = 5 + 12i$\n\n$$z^2 = (3+2i)^2 = 9 + 12i + 4i^2 = 9 + 12i - 4 = 5 + 12i$$\n\n\u2705 **\u6b63\u786e**\n\n**\u9009\u9879 D\uff1a** $\\dfrac{z+3}{z-i} \\in \\mathbf{R}$\n\n\u8ba1\u7b97\u5206\u5b50\uff1a$z + 3 = (3+2i) + 3 = 6 + 2i$\n\n\u8ba1\u7b97\u5206\u6bcd\uff1a$z - i = 3 + 2i - i = 3 + i$\n\n$$\\frac{6+2i}{3+i} = \\frac{(6+2i)(3-i)}{(3+i)(3-i)} = \\frac{18 - 6i + 6i - 2i^2}{9+1} = \\frac{18 + 2}{10} = \\frac{20}{10} = 2 \\in \\mathbf{R}$$\n\n\u2705 **\u6b63\u786e**\n\n## \u6700\u7ec8\u7ed3\u679c\n\n\u6b63\u786e\u9009\u9879\u4e3a A\u3001C\u3001D\u3002\n\n$$\\boxed{ACD}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;ACD\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly evaluates each option: A is correct (conjugate), B is incorrect (|z|=\u221a13\u22605), C is correct (z\u00b2=5+12i), D is correct (the fraction equals 2, which is real). The final answer ACD matches the expected answer, and the format is correct with only option letters in the boxed answer.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly evaluates each option: A is correct (conjugate), B is incorrect (|z|=\u221a13\u22605), C is correct (z\u00b2=5+12i), D is correct (the fraction equals 2, which is real). The final answer ACD matches the expected answer, and the format is correct with only option letters in the boxed answer.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_009')">
+                <td>gaokao_000_009</td>
+                <td class="incorrect">✗</td>
+                <td>BC</td>
+                <td class="incorrect">B</td>
+                    <td class="incorrect">N</td>
+                    <td class="incorrect">Y</td>
+                <td>5386</td>
+                <td>72.8</td>
+                <td>74.0</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_009" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+10. 在空间中，A、B为两个定点，动点C到直线AB的距离为2，动点D到直线AB的距离为1。若二面角C - AB - D为60°，则（ ）
+A. \angle CAD \ge 60^\circ
+B. CD \ge \sqrt{3}
+C. 当AB \perp CD时，CD \perp平面ABD
+D. 当AB \perp平面ACD时，AC \perp AD
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 空间几何题解答
+
+## 建立坐标系
+
+设 A 为原点，直线 AB 沿 x 轴方向。
+
+- 点 C 到直线 AB 的距离为 2：C = (x_C, y_C, z_C)，其中 $y_C^2 + z_C^2 = 4$
+- 点 D 到直线 AB 的距离为 1：D = (x_D, y_D, z_D)，其中 $y_D^2 + z_D^2 = 1$
+
+**二面角条件：** C-AB-D 的二面角为 60°，即 C、D 在垂直于 AB 的平面上的投影方向夹角为 60°：
+
+$$\frac{y_C y_D + z_C z_D}{2 \times 1} = \cos 60° = \frac{1}{2}$$
+
+因此：**$y_C y_D + z_C z_D = 1$**
+
+## 逐项验证
+
+### 选项 B：CD ≥ √3
+
+$$CD^2 = (x_C - x_D)^2 + (y_C - y_D)^2 + (z_C - z_D)^2$$
+
+展开后两项：
+$$(y_C-y_D)^2 + (z_C-z_D)^2 = (y_C^2+z_C^2) + (y_D^2+z_D^2) - 2(y_C y_D + z_C z_D) = 4 + 1 - 2(1) = 3$$
+
+因此：
+$$CD^2 = (x_C - x_D)^2 + 3 \geq 3$$
+
+$$\boxed{CD \geq \sqrt{3}} \quad \checkmark$$
+
+### 选项 A：∠CAD ≥ 60°（反例）
+
+取 $x_C = x_D = 1$，$y_C=2, z_C=0, y_D=\frac{1}{2}, z_D=\frac{\sqrt{3}}{2}$（满足所有条件），则：
+
+$$\cos\angle CAD = \frac{1\times1 + 1}{\sqrt{5}\cdot\sqrt{2}} = \frac{2}{\sqrt{10}} \approx 0.632 &gt; \cos 60° = 0.5$$
+
+故 ∠CAD &lt; 60°，**A 错误**。
+
+### 选项 C：AB⊥CD 时，CD⊥平面 ABD（反例）
+
+AB⊥CD 要求 $x_C = x_D$。用上述反例验证，CD 方向为 $(0, -\frac{3}{2}, -\frac{\sqrt{3}}{2})$，而平面 ABD 法向量为 $(0, -z_D, y_D) = (0, -\frac{\sqrt{3}}{2}, \frac{1}{2})$，两者不平行，**C 错误**。
+
+### 选项 D：AB⊥平面 ACD 时，AC⊥AD（反例）
+
+AB⊥平面 ACD 要求平面 ACD 的法向量平行于 x 轴，即 $z_C x_D - x_C z_D = 0$ 且 $x_C y_D - y_C x_D = 0$。
+
+结合 $y_C z_D - z_C y_D = \pm\sqrt{3} \neq 0$（由二面角 60° 确定），可推出 $x_C = x_D = 0$。
+
+此时 $\vec{AC}\cdot\vec{AD} = y_C y_D + z_C z_D = 1 \neq 0$，**D 错误**。
+
+## 最终答案
+
+$$\boxed{B}$$</pre>
+                        <b>Reasoning</b><pre>Let me analyze this problem carefully.
+
+We have two fixed points A and B in space. Point C is a moving point such that the distance from C to line AB is 2. Point D is a moving point such that the distance from D to line AB is 1. The dihedral angle C-AB-D is 60°.
+
+Let me set up a coordinate system. Let me place A at the origin and B along the x-axis.
+
+Let A = (0, 0, 0) and B = (b, 0, 0) for some b &gt; 0.
+
+Point C is at distance 2 from line AB (the x-axis). So C = (x_C, y_C, z_C) where y_C² + z_C² = 4.
+
+Point D is at distance 1 from line AB (the x-axis). So D = (x_D, y_D, z_D) where y_D² + z_D² = 1.
+
+The dihedral angle C-AB-D is 60°. The dihedral angle along edge AB between the half-planes containing C and D is 60°.
+
+The dihedral angle C-AB-D is the angle between the projections of AC and AD onto the plane perpendicular to AB.
+
+Wait, let me reconsider. The dihedral angle C-AB-D means: take the edge AB, the half-plane containing C, and the half-plane containing D. The angle between these two half-planes is 60°.
+
+The projection of C onto the x-axis is (x_C, 0, 0). The perpendicular from C to line AB has length 2, so the vector from (x_C, 0, 0) to C is (0, y_C, z_C) with y_C² + z_C² = 4.
+
+Similarly, the projection of D onto the x-axis is (x_D, 0, 0). The vector from (x_D, 0, 0) to D is (0, y_D, z_D) with y_D² + z_D² = 1.
+
+The dihedral angle is the angle between the vectors (0, y_C, z_C) and (0, y_D, z_D), which is 60°.
+
+So: (y_C · y_D + z_C · z_D) / (2 · 1) = cos 60° = 1/2
+
+Therefore: y_C · y_D + z_C · z_D = 1.
+
+Now let me check each option:
+
+**Option B: CD ≥ √3**
+
+C = (x_C, y_C, z_C), D = (x_D, y_D, z_D)
+
+CD² = (x_C - x_D)² + (y_C - y_D)² + (z_C - z_D)²
+
+(y_C - y_D)² + (z_C - z_D)² = y_C² + z_C² + y_D² + z_D² - 2(y_C·y_D + z_C·z_D) = 4 + 1 - 2(1) = 3
+
+So CD² = (x_C - x_D)² + 3 ≥ 3
+
+Therefore CD ≥ √3.
+
+So option B is correct!
+
+**Option A: ∠CAD ≥ 60°**
+
+A = (0,0,0), C = (x_C, y_C, z_C), D = (x_D, y_D, z_D)
+
+AC = (x_C, y_C, z_C), AD = (x_D, y_D, z_D)
+
+cos ∠CAD = (x_C·x_D + y_C·y_D + z_C·z_D) / (|AC| · |AD|)
+
+|AC| = √(x_C² + 4), |AD| = √(x_D² + 1)
+
+The numerator = x_C·x_D + (y_C·y_D + z_C·z_D) = x_C·x_D + 1
+
+This depends on x_C and x_D. Let&#39;s see if we can make ∠CAD &lt; 60°.
+
+If x_C = x_D = 0, then C = (0, y_C, z_C), D = (0, y_D, z_D) with y_C² + z_C² = 4, y_D² + z_D² = 1, and y_C·y_D + z_C·z_D = 1.
+
+cos ∠CAD = 1 / (2 · 1) = 1/2, so ∠CAD = 60°.
+
+But if x_C = x_D = 1, then C = (1, y_C, z_C), D = (1, y_D, z_D).
+
+cos ∠CAD = (1 + 1) / (√5 · √2) = 2/√10 ≈ 0.632
+
+∠CAD ≈ 50.8° &lt; 60°
+
+So option A is NOT always true. Wait, let me recalculate.
+
+If x_C = x_D = 1:
+|AC| = √(1 + 4) = √5
+|AD| = √(1 + 1) = √2
+Numerator = 1·1 + 1 = 2
+cos ∠CAD = 2/(√5 · √2) = 2/√10
+
+cos 60° = 1/2 = 0.5
+2/√10 ≈ 2/3.162 ≈ 0.632 &gt; 0.5
+
+So ∠CAD &lt; 60° (since cos is larger means angle is smaller).
+
+So A is not necessarily true. Option A is incorrect.
+
+Wait, but I need to check: can x_C = x_D = 1 work? C is at (1, y_C, z_C) where y_C² + z_C² = 4. D is at (1, y_D, z_D) where y_D² + z_D² = 1. And y_C·y_D + z_C·z_D = 1.
+
+Let y_C = 2, z_C = 0. Then y_D·2 + 0 = 1, so y_D = 1/2. z_D² = 1 - 1/4 = 3/4, z_D = √3/2.
+
+Check: y_C·y_D + z_C·z_D = 2·(1/2) + 0·(√3/2) = 1. ✓
+
+So this is a valid configuration, and ∠CAD &lt; 60°. So A is not correct.
+
+**Option C: When AB ⊥ CD, CD ⊥ plane ABD**
+
+AB is along the x-axis, direction (1, 0, 0).
+
+CD = D - C = (x_D - x_C, y_D - y_C, z_D - z_C)
+
+AB ⊥ CD means (x_D - x_C) = 0, so x_D = x_C.
+
+Now, is CD ⊥ plane ABD?
+
+Plane ABD: A = (0,0,0), B = (b, 0, 0), D = (x_D, y_D, z_D).
+
+The normal to plane ABD: AB × AD = (b, 0, 0) × (x_D, y_D, z_D) = (0·z_D - 0·y_D, 0·x_D - b·z_D, b·y_D - 0·x_D) = (0, -b·z_D, b·y_D) = b(0, -z_D, y_D)
+
+So the normal direction is (0, -z_D, y_D).
+
+CD = (0, y_D - y_C, z_D - z_C) (since x_D = x_C)
+
+For CD ⊥ plane ABD, CD must be parallel to the normal (0, -z_D, y_D).
+
+This means: (y_D - y_C)/(-z_D) = (z_D - z_C)/(y_D)
+
+y_D(z_D - z_C) = -z_D(y_D - y_C)
+y_D·z_D - y_D·z_C = -z_D·y_D + z_D·y_C
+y_D·z_D - y_D·z_C + z_D·y_D - z_D·y_C = 0
+2·y_D·z_D - y_D·z_C - z_D·y_C = 0
+
+This is NOT generally true. Let me check with the example: y_C = 2, z_C = 0, y_D = 1/2, z_D = √3/2.
+
+2·(1/2)·(√3/2) - (1/2)·0 - (√3/2)·2 = √3/2 - 0 - √3 = -√3/2 ≠ 0
+
+So CD is NOT perpendicular to plane ABD in this case. Option C is incorrect.
+
+**Option D: When AB ⊥ plane ACD, AC ⊥ AD**
+
+AB is along x-axis. AB ⊥ plane ACD means the x-axis is perpendicular to plane ACD.
+
+Plane ACD: A = (0,0,0), C = (x_C, y_C, z_C), D = (x_D, y_D, z_D).
+
+Normal to plane ACD: AC × AD = (x_C, y_C, z_C) × (x_D, y_D, z_D)
+
+= (y_C·z_D - z_C·y_D, z_C·x_D - x_C·z_D, x_C·y_D - y_C·x_D)
+
+For x-axis to be perpendicular to plane ACD, the normal must be parallel to (1, 0, 0).
+
+So y_C·z_D - z_C·y_D = 0 and z_C·x_D - x_C·z_D = 0.
+
+Wait, actually, the x-axis being perpendicular to plane ACD means the x-axis direction (1,0,0) is parallel to the normal of plane ACD. This means:
+- y_C·z_D - z_C·y_D = 0
+- z_C·x_D - x_C·z_D = 0
+
+And we need x_C·y_D - y_C·x_D ≠ 0.
+
+Now, is AC ⊥ AD?
+
+AC · AD = x_C·x_D + y_C·y_D + z_C·z_D = x_C·x_D + 1
+
+For AC ⊥ AD, we need x_C·x_D + 1 = 0, i.e., x_C·x_D = -1.
+
+From the condition z_C·x_D - x_C·z_D = 0, we get x_D = x_C·z_D/z_C (assuming z_C ≠ 0).
+
+And y_C·z_D = z_C·y_D, so y_D = y_C·z_D/z_C.
+
+Then x_C·x_D = x_C · x_C·z_D/z_C = x_C²·z_D/z_C
+
+For this to equal -1, we need x_C²·z_D/z_C = -1.
+
+This is not necessarily true. Let me check with specific values.
+
+Let me try: y_C = 2, z_C = 0. Then from y_C·z_D = z_C·y_D, we get 2·z_D = 0, so z_D = 0. Then y_D² = 1, y_D = ±1. And y_C·y_D + z_C·z_D = 2·(±1) + 0 = ±2 ≠ 1.
+
+So this doesn&#39;t work. Let me try different values.
+
+Let y_C = √2, z_C = √2 (so y_C² + z_C² = 4 ✓).
+Let y_D = 1/√2, z_D = 1/√2 (so y_D² + z_D² = 1 ✓).
+Check: y_C·y_D + z_C·z_D = √2/√2 + √2/√2 = 1 + 1 = 2 ≠ 1. ✗
+
+Let me try: y_C = 2cos α, z_C = 2sin α, y_D = cos β, z_D = sin β.
+Condition: 2cos α cos β + 2sin α sin β = 1, i.e., 2cos(α-β) = 1, so cos(α-β) = 1/2, α-β = ±60°.
+
+Let α = 90°, β = 30°: y_C = 0, z_C = 2, y_D = √3/2, z_D = 1/2.
+Check: 0·(√3/2) + 2·(1/2) = 1 ✓
+
+Now check AB ⊥ plane ACD condition:
+y_C·z_D - z_C·y_D = 0·(1/2) - 2·(√3/2) = -√3 ≠ 0.
+
+So this doesn&#39;t satisfy AB ⊥ plane ACD.
+
+Let me try α = 60°, β = 0°: y_C = 1, z_C = √3, y_D = 1, z_D = 0.
+Check: 1·1 + √3·0 = 1 ✓
+
+AB ⊥ plane ACD: y_C·z_D - z_C·y_D = 1·0 - √3·1 = -√3 ≠ 0. Doesn&#39;t work.
+
+Let me try α = 0°, β = -60°: y_C = 2, z_C = 0, y_D = 1/2, z_D = -√3/2.
+Check: 2·(1/2) + 0·(-√3/2) = 1 ✓
+
+AB ⊥ plane ACD: y_C·z_D - z_C·y_D = 2·(-√3/2) - 0·(1/2) = -√3 ≠ 0. Doesn&#39;t work.
+
+Let me try α = 30°, β = -30°: y_C = 2cos30° = √3, z_C = 2sin30° = 1, y_D = cos(-30°) = √3/2, z_D = sin(-30°) = -1/2.
+Check: √3·(√3/2) + 1·(-1/2) = 3/2 - 1/2 = 1 ✓
+
+AB ⊥ plane ACD: y_C·z_D - z_C·y_D = √3·(-1/2) - 1·(√3/2) = -√3/2 - √3/2 = -√3 ≠ 0. Doesn&#39;t work.
+
+Hmm, it seems like when the angle between the projections is 60°, the cross product y_C·z_D - z_C·y_D is related to sin of the angle.
+
+y_C·z_D - z_C·y_D = 2sin α · cos β - 2cos α · sin β = 2sin(α - β)
+
+And α - β = ±60°, so y_C·z_D - z_C·y_D = ±2sin 60° = ±√3.
+
+This is NEVER 0! So AB can never be perpendicular to plane ACD when the dihedral angle is 60°?
+
+Wait, let me reconsider. The condition for AB (x-axis) to be perpendicular to plane ACD is that the x-axis is parallel to the normal of plane ACD. The normal of plane ACD is:
+
+n = AC × AD = (x_C, y_C, z_C) × (x_D, y_D, z_D)
+= (y_C·z_D - z_C·y_D, z_C·x_D - x_C·z_D, x_C·y_D - y_C·x_D)
+
+For the x-axis (1,0,0) to be parallel to n, we need:
+- The y-component of n = 0: z_C·x_D - x_C·z_D = 0
+- The z-component of n = 0: x_C·y_D - y_C·x_D = 0
+- The x-component of n ≠ 0: y_C·z_D - z_C·y_D ≠ 0
+
+From the second condition: x_C·y_D = y_C·x_D, so x_C/y_C = x_D/y_D (assuming y_C, y_D ≠ 0). Let&#39;s call this ratio t. So x_C = t·y_C, x_D = t·y_D.
+
+Now AC · AD = x_C·x_D + y_C·y_D + z_C·z_D = t²·y_C·y_D + y_C·y_D + z_C·z_D
+
+Hmm, this doesn&#39;t simplify to 0 in general.
+
+Wait, actually I made an error. Let me redo.
+
+From condition 2: x_C·y_D - y_C·x_D = 0, meaning x_C/y_C = x_D/y_D (if both nonzero). Let&#39;s say x_C = t·y_C, x_D = t·y_D.
+
+From condition 1: z_C·x_D - x_C·z_D = z_C·t·y_D - t·y_C·z_D = t(z_C·y_D - y_C·z_D) = -t(y_C·z_D - z_C·y_D)
+
+For this to be 0: either t = 0 or y_C·z_D - z_C·y_D = 0.
+
+But we showed y_C·z_D - z_C·y_D = ±√3 ≠ 0.
+
+So we must have t = 0, meaning x_C = 0 and x_D = 0.
+
+So AB ⊥ plane ACD implies x_C = x_D = 0.
+
+Then AC · AD = 0·0 + y_C·y_D + z_C·z_D = 0 + 1 = 1 ≠ 0.
+
+So AC is NOT perpendicular to AD. Option D is incorrect!
+
+Wait, let me double-check. If x_C = x_D = 0:
+C = (0, y_C, z_C), D = (0, y_D, z_D)
+AC = (0, y_C, z_C), AD = (0, y_D, z_D)
+AC · AD = y_C·y_D + z_C·z_D = 1 ≠ 0
+
+So AC is not perpendicular to AD. Option D is incorrect.
+
+Let me verify the normal condition. If x_C = x_D = 0:
+n = (y_C, z_C) × (y_D, z_D) in the yz-plane... wait, let me redo.
+
+AC = (0, y_C, z_C), AD = (0, y_D, z_D)
+AC × AD = (y_C·z_D - z_C·y_D, z_C·0 - 0·z_D, 0·y_D - y_C·0) = (y_C·z_D - z_C·y_D, 0, 0)
+
+So the normal is (y_C·z_D - z_C·y_D, 0, 0), which is indeed parallel to the x-axis. ✓
+
+And AC · AD = y_C·y_D + z_C·z_D = 1 ≠ 0. So AC is not perpendicular to AD.
+
+Therefore, option D is incorrect.
+
+So the only correct answer is B.
+
+Let me verify B once more:
+CD² = (x_C - x_D)² + (y_C - y_D)² + (z_C - z_D)²
+= (x_C - x_D)² + y_C² - 2y_C·y_D + y_D² + z_C² - 2z_C·z_D + z_D²
+= (x_C - x_D)² + (y_C² + z_C²) + (y_D² + z_D²) - 2(y_C·y_D + z_C·z_D)
+= (x_C - x_D)² + 4 + 1 - 2(1)
+= (x_C - x_D)² + 3 ≥ 3
+
+So CD ≥ √3. ✓
+
+The answer is B.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly identified B as true and A, D as false. However, it incorrectly rejected option C due to a sign error in computing the CD vector (wrote (0, -3/2, -√3/2) instead of (0, 3/2, -√3/2)). With the correct CD vector, it is indeed parallel to the normal of plane ABD, confirming C is true. The expected answer is BC, but the model only selected B, making it an incomplete set of option letters (semantic error, not format error).</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u7a7a\u95f4\u51e0\u4f55\u9898\u89e3\u7b54\n\n## \u5efa\u7acb\u5750\u6807\u7cfb\n\n\u8bbe A \u4e3a\u539f\u70b9\uff0c\u76f4\u7ebf AB \u6cbf x \u8f74\u65b9\u5411\u3002\n\n- \u70b9 C \u5230\u76f4\u7ebf AB \u7684\u8ddd\u79bb\u4e3a 2\uff1aC = (x_C, y_C, z_C)\uff0c\u5176\u4e2d $y_C^2 + z_C^2 = 4$\n- \u70b9 D \u5230\u76f4\u7ebf AB \u7684\u8ddd\u79bb\u4e3a 1\uff1aD = (x_D, y_D, z_D)\uff0c\u5176\u4e2d $y_D^2 + z_D^2 = 1$\n\n**\u4e8c\u9762\u89d2\u6761\u4ef6\uff1a** C-AB-D \u7684\u4e8c\u9762\u89d2\u4e3a 60\u00b0\uff0c\u5373 C\u3001D \u5728\u5782\u76f4\u4e8e AB \u7684\u5e73\u9762\u4e0a\u7684\u6295\u5f71\u65b9\u5411\u5939\u89d2\u4e3a 60\u00b0\uff1a\n\n$$\\frac{y_C y_D + z_C z_D}{2 \\times 1} = \\cos 60\u00b0 = \\frac{1}{2}$$\n\n\u56e0\u6b64\uff1a**$y_C y_D + z_C z_D = 1$**\n\n## \u9010\u9879\u9a8c\u8bc1\n\n### \u9009\u9879 B\uff1aCD \u2265 \u221a3\n\n$$CD^2 = (x_C - x_D)^2 + (y_C - y_D)^2 + (z_C - z_D)^2$$\n\n\u5c55\u5f00\u540e\u4e24\u9879\uff1a\n$$(y_C-y_D)^2 + (z_C-z_D)^2 = (y_C^2+z_C^2) + (y_D^2+z_D^2) - 2(y_C y_D + z_C z_D) = 4 + 1 - 2(1) = 3$$\n\n\u56e0\u6b64\uff1a\n$$CD^2 = (x_C - x_D)^2 + 3 \\geq 3$$\n\n$$\\boxed{CD \\geq \\sqrt{3}} \\quad \\checkmark$$\n\n### \u9009\u9879 A\uff1a\u2220CAD \u2265 60\u00b0\uff08\u53cd\u4f8b\uff09\n\n\u53d6 $x_C = x_D = 1$\uff0c$y_C=2, z_C=0, y_D=\\frac{1}{2}, z_D=\\frac{\\sqrt{3}}{2}$\uff08\u6ee1\u8db3\u6240\u6709\u6761\u4ef6\uff09\uff0c\u5219\uff1a\n\n$$\\cos\\angle CAD = \\frac{1\\times1 + 1}{\\sqrt{5}\\cdot\\sqrt{2}} = \\frac{2}{\\sqrt{10}} \\approx 0.632 &gt; \\cos 60\u00b0 = 0.5$$\n\n\u6545 \u2220CAD &lt; 60\u00b0\uff0c**A \u9519\u8bef**\u3002\n\n### \u9009\u9879 C\uff1aAB\u22a5CD \u65f6\uff0cCD\u22a5\u5e73\u9762 ABD\uff08\u53cd\u4f8b\uff09\n\nAB\u22a5CD \u8981\u6c42 $x_C = x_D$\u3002\u7528\u4e0a\u8ff0\u53cd\u4f8b\u9a8c\u8bc1\uff0cCD \u65b9\u5411\u4e3a $(0, -\\frac{3}{2}, -\\frac{\\sqrt{3}}{2})$\uff0c\u800c\u5e73\u9762 ABD \u6cd5\u5411\u91cf\u4e3a $(0, -z_D, y_D) = (0, -\\frac{\\sqrt{3}}{2}, \\frac{1}{2})$\uff0c\u4e24\u8005\u4e0d\u5e73\u884c\uff0c**C \u9519\u8bef**\u3002\n\n### \u9009\u9879 D\uff1aAB\u22a5\u5e73\u9762 ACD \u65f6\uff0cAC\u22a5AD\uff08\u53cd\u4f8b\uff09\n\nAB\u22a5\u5e73\u9762 ACD \u8981\u6c42\u5e73\u9762 ACD \u7684\u6cd5\u5411\u91cf\u5e73\u884c\u4e8e x \u8f74\uff0c\u5373 $z_C x_D - x_C z_D = 0$ \u4e14 $x_C y_D - y_C x_D = 0$\u3002\n\n\u7ed3\u5408 $y_C z_D - z_C y_D = \\pm\\sqrt{3} \\neq 0$\uff08\u7531\u4e8c\u9762\u89d2 60\u00b0 \u786e\u5b9a\uff09\uff0c\u53ef\u63a8\u51fa $x_C = x_D = 0$\u3002\n\n\u6b64\u65f6 $\\vec{AC}\\cdot\\vec{AD} = y_C y_D + z_C z_D = 1 \\neq 0$\uff0c**D \u9519\u8bef**\u3002\n\n## \u6700\u7ec8\u7b54\u6848\n\n$$\\boxed{B}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\&quot;semantic_correct\&quot;: false, \&quot;format_correct\&quot;: true, \&quot;normalized_answer\&quot;: \&quot;B\&quot;, \&quot;reason\&quot;: \&quot;The model correctly identified B as true and A, D as false. However, it incorrectly rejected option C due to a sign error in computing the CD vector (wrote (0, -3/2, -\u221a3/2) instead of (0, 3/2, -\u221a3/2)). With the correct CD vector, it is indeed parallel to the normal of plane ABD, confirming C is true. The expected answer is BC, but the model only selected B, making it an incomplete set of option letters (semantic error, not format error).\&quot;}&quot;,
+  &quot;reason&quot;: &quot;The model correctly identified B as true and A, D as false. However, it incorrectly rejected option C due to a sign error in computing the CD vector (wrote (0, -3/2, -\u221a3/2) instead of (0, 3/2, -\u221a3/2)). With the correct CD vector, it is indeed parallel to the normal of plane ABD, confirming C is true. The expected answer is BC, but the model only selected B, making it an incomplete set of option letters (semantic error, not format error).&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_010')">
+                <td>gaokao_000_010</td>
+                <td class="correct">✓</td>
+                <td>BCD</td>
+                <td class="correct">BCD</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>12944</td>
+                <td>69.0</td>
+                <td>187.5</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_010" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+11. 已知圆C_1:(x+1)^2+y^2=1，圆C_2:(x-1)^2+y^2=1，圆C_3:x^2+(y-\sqrt{3})^2=1，直线l:y=kx+b与C_1, C_2, C_3均有两个交点。记l被C_1, C_2, C_3截得的弦长分别为s_1、s_2、s_3，则（ ）
+A. k可以取任意实数
+B. 满足s_1=s_2=s_3的直线l共有3条
+C. 满足s_1+s_2+s_3=3的直线l多于3条
+D. 当b=0时，s_1+s_2+s_3的最大值为\frac{2\sqrt{21}}{3}
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 解答
+
+## 基本设置
+
+三个圆的圆心和半径均为1：
+- $C_1$：圆心 $(-1, 0)$
+- $C_2$：圆心 $(1, 0)$  
+- $C_3$：圆心 $(0, \sqrt{3})$
+
+直线 $l: kx - y + b = 0$ 到各圆心的距离：
+$$d_1 = \frac{|b-k|}{\sqrt{k^2+1}},\quad d_2 = \frac{|b+k|}{\sqrt{k^2+1}},\quad d_3 = \frac{|b-\sqrt{3}|}{\sqrt{k^2+1}}$$
+
+弦长：$s_i = 2\sqrt{1-d_i^2}$，要求 $d_i &lt; 1$（两个交点）。
+
+## 选项A：k可以取任意实数 ❌
+
+三个条件给出 $b$ 的区间，其交集非空需满足 $2\sqrt{k^2+1} - |k| &gt; \sqrt{3}$。
+
+令 $g(k) = 2\sqrt{k^2+1} - |k| - \sqrt{3}$，求导发现 $|k| = \frac{\sqrt{3}}{3}$ 时 $g$ 取得最小值 $g = 0$。
+
+此时三个区间仅在边界相切（严格不等式下交集为空），故 $k = \pm\frac{\sqrt{3}}{3}$ 时不存在满足条件的 $b$。**A错误。**
+
+## 选项B：满足 $s_1=s_2=s_3$ 的直线共3条 ✅
+
+$s_1 = s_2 \Rightarrow |b-k| = |b+k| \Rightarrow b=0$ 或 $k=0$。
+
+**当 $b=0$：** $d_1=d_2=\frac{|k|}{\sqrt{k^2+1}}$，$d_3=\frac{\sqrt{3}}{\sqrt{k^2+1}}$。
+
+令 $d_1=d_3$：$|k|=\sqrt{3}$，得 $k=\pm\sqrt{3}$（两条直线）。
+
+**当 $k=0$：** $d_1=d_2=|b|$，$d_3=|b-\sqrt{3}|$。
+
+令 $d_1=d_3$：$b=\frac{\sqrt{3}}{2}$（一条直线）。
+
+共 **3条**：$y=\sqrt{3}x$，$y=-\sqrt{3}x$，$y=\frac{\sqrt{3}}{2}$。验证均满足 $d_i=\frac{\sqrt{3}}{2}&lt;1$。**B正确。**
+
+## 选项C：满足 $s_1+s_2+s_3=3$ 的直线多于3条 ✅
+
+仅考虑 $b=0$ 的情形：
+$$s_1+s_2+s_3 = \frac{4}{\sqrt{k^2+1}} + 2\sqrt{\frac{k^2-2}{k^2+1}} = 3$$
+
+令 $u=k^2+1&gt;3$，化简得 $5u^2 - 24u\sqrt{u}+28u=0$，设 $v=\sqrt{u}$：
+$$5v^2 - 24v + 28 = 0 \implies v=2 \text{ 或 } v=\frac{14}{5}$$
+
+对应 $k^2=3$ 和 $k^2=\frac{171}{25}$，即 $k=\pm\sqrt{3},\;\pm\frac{3\sqrt{19}}{5}$。
+
+仅 $b=0$ 就有 **4条** 直线满足条件，$4&gt;3$。**C正确。**
+
+## 选项D：$b=0$ 时 $s_1+s_2+s_3$ 的最大值为 $\frac{2\sqrt{21}}{3}$ ✅
+
+令 $t=k^2+1&gt;3$：
+$$f(t) = \frac{4+2\sqrt{t-3}}{\sqrt{t}}$$
+
+求导令 $f&#39;(t)=0$：
+$$\frac{\sqrt{t}}{\sqrt{t-3}} = \frac{4+2\sqrt{t-3}}{2\sqrt{t}} \implies 2t = 4\sqrt{t-3}+2(t-3) \implies \sqrt{t-3}=\frac{3}{2}$$
+
+得 $t = \frac{21}{4}$，此时：
+$$f\!\left(\frac{21}{4}\right) = \frac{4+3}{\sqrt{21}/2} = \frac{14}{\sqrt{21}} = \frac{14\sqrt{21}}{21} = \frac{2\sqrt{21}}{3}$$
+
+验证边界：$t\to 3^+$ 时 $f\to\frac{4}{\sqrt{3}}$，$t\to\infty$ 时 $f\to 2$，均小于 $\frac{2\sqrt{21}}{3}\approx 3.056$。
+
+最大值为 $\dfrac{2\sqrt{21}}{3}$。**D正确。**
+
+## 最终答案
+
+$$\boxed{BCD}$$</pre>
+                        <b>Reasoning</b><pre>Let me analyze this problem about circles and lines.
+
+We have three circles:
+- C₁: (x+1)² + y² = 1, center (-1, 0), radius 1
+- C₂: (x-1)² + y² = 1, center (1, 0), radius 1
+- C₃: x² + (y-√3)² = 1, center (0, √3), radius 1
+
+Line l: y = kx + b intersects all three circles at two points each.
+
+The chord length of a line cutting a circle of radius r at distance d from the center is: 2√(r² - d²) = 2√(1 - d²)
+
+Let me find the distance from each center to the line y = kx + b, which is kx - y + b = 0.
+
+Distance from C₁ center (-1, 0): d₁ = |k(-1) - 0 + b|/√(k²+1) = |b-k|/√(k²+1)
+Distance from C₂ center (1, 0): d₂ = |k(1) - 0 + b|/√(k²+1) = |b+k|/√(k²+1)
+Distance from C₃ center (0, √3): d₃ = |k(0) - √3 + b|/√(k²+1) = |b-√3|/√(k²+1)
+
+For the line to intersect each circle at two points: d₁ &lt; 1, d₂ &lt; 1, d₃ &lt; 1
+
+So:
+- |b-k| &lt; √(k²+1)
+- |b+k| &lt; √(k²+1)
+- |b-√3| &lt; √(k²+1)
+
+The chord lengths are:
+s₁ = 2√(1 - d₁²) = 2√(1 - (b-k)²/(k²+1))
+s₂ = 2√(1 - d₂²) = 2√(1 - (b+k)²/(k²+1))
+s₃ = 2√(1 - d₃²) = 2√(1 - (b-√3)²/(k²+1))
+
+Now let me check each option:
+
+**Option A: k can be any real number**
+
+For any given k, can we find b such that all three conditions are satisfied?
+
+The conditions are:
+- |b-k| &lt; √(k²+1), i.e., k - √(k²+1) &lt; b &lt; k + √(k²+1)
+- |b+k| &lt; √(k²+1), i.e., -k - √(k²+1) &lt; b &lt; -k + √(k²+1)
+- |b-√3| &lt; √(k²+1), i.e., √3 - √(k²+1) &lt; b &lt; √3 + √(k²+1)
+
+For any k, the first interval has length 2√(k²+1), the second has length 2√(k²+1), the third has length 2√(k²+1).
+
+The intersection of all three intervals must be non-empty.
+
+Let me think about this. For large k, √(k²+1) ≈ |k| + 1/(2|k|).
+
+If k is very large positive:
+- Interval 1: k - √(k²+1) &lt; b &lt; k + √(k²+1), approximately (-1/(2k)) &lt; b &lt; (2k + 1/(2k))
+- Interval 2: -k - √(k²+1) &lt; b &lt; -k + √(k²+1), approximately (-2k - 1/(2k)) &lt; b &lt; (1/(2k))
+- Interval 3: √3 - √(k²+1) &lt; b &lt; √3 + √(k²+1), approximately (√3 - k - 1/(2k)) &lt; b &lt; (√3 + k + 1/(2k))
+
+The intersection of intervals 1 and 2:
+max(k - √(k²+1), -k - √(k²+1)) &lt; b &lt; min(k + √(k²+1), -k + √(k²+1))
+
+For k &gt; 0:
+- k - √(k²+1) ≈ -1/(2k)
+- -k - √(k²+1) ≈ -2k - 1/(2k)
+- k + √(k²+1) ≈ 2k + 1/(2k)
+- -k + √(k²+1) ≈ 1/(2k)
+
+So intersection of 1 and 2: max(-1/(2k), -2k-1/(2k)) &lt; b &lt; min(2k+1/(2k), 1/(2k))
+= -1/(2k) &lt; b &lt; 1/(2k) (approximately)
+
+Now checking with interval 3: √3 - k &lt; b &lt; √3 + k (approximately)
+
+For the intersection of (-1/(2k), 1/(2k)) with (√3 - k, √3 + k):
+We need √3 - k &lt; 1/(2k), i.e., √3 &lt; k + 1/(2k). For large k, this is satisfied.
+We also need -1/(2k) &lt; √3 + k, which is clearly true for large k.
+
+So the intersection exists. It seems like for any k, there should be a valid b. But wait, let me check more carefully.
+
+Actually, for the intersection of all three intervals to be non-empty, we need:
+max(k - √(k²+1), -k - √(k²+1), √3 - √(k²+1)) &lt; min(k + √(k²+1), -k + √(k²+1), √3 + √(k²+1))
+
+The max of the lower bounds: max(k - √(k²+1), -k - √(k²+1), √3 - √(k²+1))
+= √(k²+1) · max(k/√(k²+1) - 1, -k/√(k²+1) - 1, √3/√(k²+1) - 1)
+
+Hmm, this is getting complex. Let me think differently.
+
+Actually, the three centers are at (-1,0), (1,0), (0,√3). The line y = kx + b needs to be within distance 1 of all three centers.
+
+The locus of points within distance 1 of a center is a disk of radius 1 around that center. The line needs to pass through all three disks.
+
+Wait, no. The line needs to be at distance &lt; 1 from each center. The set of lines at distance &lt; 1 from a point is the set of lines that pass through the disk of radius 1 around that point.
+
+So we need the line to pass through all three unit disks centered at (-1,0), (1,0), (0,√3).
+
+For a line y = kx + b to pass through a disk of radius 1 centered at (x₀, y₀), the distance from (x₀, y₀) to the line must be &lt; 1.
+
+I think for any k, there exists some b that makes the line pass through all three disks. Let me verify.
+
+Actually, let me think about it geometrically. The three centers form an equilateral triangle with side length 2 (distance between (-1,0) and (1,0) is 2, distance between (-1,0) and (0,√3) is √(1+3) = 2, distance between (1,0) and (0,√3) is √(1+3) = 2).
+
+So the three centers form an equilateral triangle with side 2, and each disk has radius 1.
+
+For a line with slope k, we need to find if there&#39;s a b such that the line passes through all three disks.
+
+The line y = kx + b can be parameterized by b for a fixed k. As b varies, the line translates parallel to itself.
+
+For the line to intersect a disk of radius 1, the distance from the center to the line must be &lt; 1.
+
+For center (x₀, y₀), the distance is |kx₀ - y₀ + b|/√(k²+1) &lt; 1, which gives:
+y₀ - √(k²+1) - kx₀ &lt; b &lt; y₀ + √(k²+1) - kx₀
+
+So:
+- From C₁: -√(k²+1) + k &lt; b &lt; √(k²+1) + k
+  (since x₀=-1, y₀=0: |−k + b|/√(k²+1) &lt; 1, so -√(k²+1) &lt; b-k &lt; √(k²+1), i.e., k-√(k²+1) &lt; b &lt; k+√(k²+1))
+  
+- From C₂: -√(k²+1) - k &lt; b &lt; √(k²+1) - k
+  (since x₀=1, y₀=0: |k + b|/√(k²+1) &lt; 1, so -√(k²+1) &lt; b+k &lt; √(k²+1), i.e., -k-√(k²+1) &lt; b &lt; -k+√(k²+1))
+
+- From C₃: √3 - √(k²+1) &lt; b &lt; √3 + √(k²+1)
+  (since x₀=0, y₀=√3: |-√3 + b|/√(k²+1) &lt; 1, so -√(k²+1) &lt; b-√3 &lt; √(k²+1), i.e., √3-√(k²+1) &lt; b &lt; √3+√(k²+1))
+
+The intersection of the first two intervals:
+Lower bound: max(k - √(k²+1), -k - √(k²+1))
+Upper bound: min(k + √(k²+1), -k + √(k²+1))
+
+For k ≥ 0:
+- k - √(k²+1) ≥ -k - √(k²+1) (since k ≥ -k)
+- -k + √(k²+1) ≤ k + √(k²+1) (since -k ≤ k)
+
+So the intersection is: (k - √(k²+1), -k + √(k²+1))
+
+Note that k - √(k²+1) &lt; 0 and -k + √(k²+1) &gt; 0 for all k.
+
+The width of this interval is: (-k + √(k²+1)) - (k - √(k²+1)) = 2√(k²+1) - 2k = 2(√(k²+1) - k)
+
+For k ≥ 0, √(k²+1) - k &gt; 0 (since k²+1 &gt; k²), so the width is positive.
+
+For k &lt; 0:
+- -k - √(k²+1) ≥ k - √(k²+1) (since -k ≥ k when k &lt; 0)
+- k + √(k²+1) ≤ -k + √(k²+1) (since k ≤ -k when k &lt; 0)
+
+So the intersection is: (-k - √(k²+1), k + √(k²+1))
+
+Width: (k + √(k²+1)) - (-k - √(k²+1)) = 2k + 2√(k²+1) = 2(√(k²+1) + k)
+
+For k &lt; 0, √(k²+1) + k &gt; 0 (since √(k²+1) &gt; |k| = -k), so the width is positive.
+
+In both cases, the intersection of intervals 1 and 2 is:
+For k ≥ 0: (k - √(k²+1), -k + √(k²+1)) = (k - √(k²+1), √(k²+1) - k)
+For k &lt; 0: (-k - √(k²+1), k + √(k²+1)) = (-(√(k²+1) + k), √(k²+1) + k)
+
+Actually, let me just write it as:
+The intersection of intervals 1 and 2 is: (-(√(k²+1) - |k|), √(k²+1) - |k|)
+
+Wait, let me recheck. For k ≥ 0:
+Lower: k - √(k²+1) = -(√(k²+1) - k)
+Upper: -k + √(k²+1) = √(k²+1) - k
+
+For k &lt; 0:
+Lower: -k - √(k²+1) = -(√(k²+1) + k) = -(√(k²+1) - |k|)
+Upper: k + √(k²+1) = √(k²+1) + k = √(k²+1) - |k|
+
+So in both cases, the intersection of intervals 1 and 2 is: (-(√(k²+1) - |k|), √(k²+1) - |k|)
+
+This is a symmetric interval around 0 with half-width √(k²+1) - |k| = 1/(√(k²+1) + |k|).
+
+Now we need this to intersect with interval 3: (√3 - √(k²+1), √3 + √(k²+1)).
+
+The intersection exists if:
+max(-(√(k²+1) - |k|), √3 - √(k²+1)) &lt; min(√(k²+1) - |k|, √3 + √(k²+1))
+
+Let me denote t = √(k²+1). Then the condition is:
+max(-(t - |k|), √3 - t) &lt; min(t - |k|, √3 + t)
+
+Note that t - |k| = 1/(t + |k|) which is always in (0, 1].
+
+So the left interval is (-1/(t+|k|), 1/(t+|k|)), which is a small interval around 0.
+The right interval is (√3 - t, √3 + t), which is centered at √3 with half-width t.
+
+For the intersection to be non-empty:
+√3 - t &lt; 1/(t+|k|)  AND  -1/(t+|k|) &lt; √3 + t
+
+The second condition is always true since -1/(t+|k|) &lt; 0 &lt; √3 + t.
+
+The first condition: √3 - t &lt; 1/(t+|k|)
+
+If t ≥ √3, then √3 - t ≤ 0 &lt; 1/(t+|k|), so it&#39;s always satisfied.
+t ≥ √3 means k²+1 ≥ 3, i.e., |k| ≥ √2.
+
+If t &lt; √3 (i.e., |k| &lt; √2), we need:
+√3 - t &lt; 1/(t + |k|)
+(√3 - t)(t + |k|) &lt; 1
+
+Let me expand: √3·t + √3·|k| - t² - t·|k| &lt; 1
+
+Since t² = k²+1 and |k| = √(t²-1):
+√3·t + √3·√(t²-1) - t² - t·√(t²-1) &lt; 1
+√3·t + √3·√(t²-1) - t² - t·√(t²-1) &lt; 1
+
+Let me try k = 0: t = 1
+(√3 - 1)(1 + 0) = √3 - 1 ≈ 0.732 &lt; 1 ✓
+
+Let me try k = 1: t = √2
+(√3 - √2)(√2 + 1) = √6 + √3 - 2 - √2 ≈ 2.449 + 1.732 - 2 - 1.414 = 0.767 &lt; 1 ✓
+
+Let me try k = √2: t = √3
+(√3 - √3)(√3 + √2) = 0 &lt; 1 ✓
+
+So it seems like for all k, the condition is satisfied. Let me check if there&#39;s a case where it fails.
+
+We need (√3 - t)(t + |k|) &lt; 1 for t &lt; √3.
+
+Let&#39;s try the boundary. We need to check if (√3 - t)(t + √(t²-1)) can ever be ≥ 1 for 1 &lt; t &lt; √3.
+
+Let f(t) = (√3 - t)(t + √(t²-1))
+
+f(1) = (√3-1)(1+0) = √3-1 ≈ 0.732
+f(√3) = 0
+
+Let me find the maximum of f(t) on [1, √3].
+
+f(t) = (√3 - t)(t + √(t²-1))
+= √3·t + √3·√(t²-1) - t² - t·√(t²-1)
+
+Let u = t² - 1, so t = √(u+1), √(t²-1) = √u
+
+f = √3·√(u+1) + √3·√u - (u+1) - √(u+1)·√u
+= √3(√(u+1) + √u) - u - 1 - √(u(u+1))
+
+Hmm, this is getting complicated. Let me try a different approach.
+
+Actually, let me just check: can f(t) ever reach 1?
+
+f(t) = (√3 - t)(t + √(t²-1))
+
+At t = 1: f = (√3-1)·1 = √3 - 1 ≈ 0.732
+At t = 1.1: f = (√3-1.1)(1.1 + √(1.21-1)) = (0.732)(1.1 + 0.458) = 0.732 · 1.558 ≈ 1.140
+
+Wait, that&#39;s greater than 1! Let me recalculate.
+
+t = 1.1, k² = t² - 1 = 1.21 - 1 = 0.21, |k| = √0.21 ≈ 0.458
+
+f(1.1) = (√3 - 1.1)(1.1 + 0.458) = (1.732 - 1.1)(1.558) = 0.632 × 1.558 ≈ 0.984
+
+Hmm, that&#39;s close to 1 but less than 1. Let me be more careful.
+
+√3 = 1.7320508...
+
+f(1.1) = (1.7320508 - 1.1)(1.1 + √0.21) = 0.6320508 × (1.1 + 0.4582576) = 0.6320508 × 1.5582576 ≈ 0.9849
+
+Still less than 1.
+
+Let me try t = 1.2: k² = 0.44, |k| = 0.6633
+f(1.2) = (1.732 - 1.2)(1.2 + 0.6633) = 0.532 × 1.8633 ≈ 0.9913
+
+Still less than 1.
+
+t = 1.3: k² = 0.69, |k| = 0.8307
+f(1.3) = (1.732 - 1.3)(1.3 + 0.8307) = 0.432 × 2.1307 ≈ 0.9205
+
+Getting smaller.
+
+t = 1.05: k² = 0.1025, |k| = 0.3202
+f(1.05) = (1.732 - 1.05)(1.05 + 0.3202) = 0.682 × 1.3702 ≈ 0.9345
+
+So the maximum seems to be around t ≈ 1.2, and it&#39;s less than 1.
+
+Let me try to find the exact maximum.
+
+f(t) = (√3 - t)(t + √(t²-1))
+
+f&#39;(t) = -(t + √(t²-1)) + (√3 - t)(1 + t/√(t²-1))
+= -(t + √(t²-1)) + (√3 - t)(√(t²-1) + t)/√(t²-1)
+= -(t + √(t²-1)) + (√3 - t)(t + √(t²-1))/√(t²-1)
+= (t + √(t²-1))[-1 + (√3 - t)/√(t²-1)]
+= (t + √(t²-1))·[-√(t²-1) + √3 - t]/√(t²-1)
+= (t + √(t²-1))·(√3 - t - √(t²-1))/√(t²-1)
+
+Setting f&#39;(t) = 0:
+√3 - t - √(t²-1) = 0
+√3 = t + √(t²-1)
+
+Squaring: 3 = t² + 2t√(t²-1) + t² - 1 = 2t² + 2t√(t²-1) - 1
+4 = 2t² + 2t√(t²-1)
+2 = t² + t√(t²-1)
+2 - t² = t√(t²-1)
+
+Squaring again: (2-t²)² = t²(t²-1)
+4 - 4t² + t⁴ = t⁴ - t²
+4 - 4t² = -t²
+4 = 3t²
+t² = 4/3
+t = 2/√3 = 2√3/3
+
+Check: t = 2√3/3, t² = 4/3, t² - 1 = 1/3, √(t²-1) = 1/√3
+t + √(t²-1) = 2/√3 + 1/√3 = 3/√3 = √3 ✓
+
+So at t = 2/√3:
+f(2/√3) = (√3 - 2/√3)(2/√3 + 1/√3) = ((3-2)/√3)(3/√3) = (1/√3)(3/√3) = 3/3 = 1
+
+So f(2/√3) = 1!
+
+This means at t = 2/√3, i.e., k² + 1 = 4/3, k² = 1/3, |k| = 1/√3 = √3/3:
+(√3 - t)(t + |k|) = 1
+
+This means the upper bound of the intersection of intervals 1&amp;2 equals the lower bound of interval 3 (or vice versa). Let me check:
+
+At |k| = √3/3, t = √(1/3 + 1) = √(4/3) = 2/√3:
+
+Intersection of 1&amp;2: (-(2/√3 - √3/3), 2/√3 - √3/3) = (-(2/√3 - 1/√3), 2/√3 - 1/√3) = (-1/√3, 1/√3)
+
+Interval 3: (√3 - 2/√3, √3 + 2/√3) = ((3-2)/√3, (3+2)/√3) = (1/√3, 5/√3)
+
+So the intersection of 1&amp;2 is (-1/√3, 1/√3) and interval 3 is (1/√3, 5/√3).
+
+They only touch at b = 1/√3, but since the inequalities are strict (&lt;), b = 1/√3 is not included in either interval. So the intersection is empty!
+
+This means when |k| = √3/3, there is NO line y = kx + b that intersects all three circles at two points each!
+
+So Option A is FALSE. k cannot be any real number.
+
+Wait, let me double-check. The condition is d &lt; 1 (strictly less than 1) for two intersection points. If d = 1, the line is tangent and there&#39;s only one intersection point.
+
+At |k| = √3/3:
+- Interval 1: (k - t, k + t) where t = 2/√3
+  For k = √3/3: (√3/3 - 2/√3, √3/3 + 2/√3) = ((1-2)/√3, (1+2)/√3) = (-1/√3, 3/√3) = (-1/√3, √3)
+  For k = -√3/3: (-√3/3 - 2/√3, -√3/3 + 2/√3) = (-(1+2)/√3, (-1+2)/√3) = (-√3, 1/√3)
+
+- Interval 2: (-k - t, -k + t)
+  For k = √3/3: (-√3/3 - 2/√3, -√3/3 + 2/√3) = (-√3, 1/√3)
+  For k = -√3/3: (√3/3 - 2/√3, √3/3 + 2/√3) = (-1/√3, √3)
+
+- Interval 3: (√3 - t, √3 + t) = (√3 - 2/√3, √3 + 2/√3) = (1/√3, 5/√3) = (1/√3, 5√3/3)
+
+For k = √3/3:
+Interval 1: (-1/√3, √3)
+Interval 2: (-√3, 1/√3)
+Interval 3: (1/√3, 5/√3)
+
+Intersection of 1 and 2: (-1/√3, 1/√3)
+Intersection with 3: need b in (-1/√3, 1/√3) AND b in (1/√3, 5/√3)
+This is empty (they only touch at 1/√3 which is excluded).
+
+So indeed, for k = ±√3/3, there is no valid b.
+
+What about k values near ±√3/3? Let&#39;s say k is slightly less than √3/3 in absolute value.
+
+If |k| &lt; √3/3 (i.e., t &lt; 2/√3), then f(t) &lt; 1 (since the maximum of f is 1 at t = 2/√3).
+This means (√3 - t)(t + |k|) &lt; 1, so √3 - t &lt; 1/(t+|k|) = t - |k| (wait, let me recheck).
+
+Actually, the condition was: the upper bound of intersection of 1&amp;2 must be greater than the lower bound of interval 3.
+Upper bound of 1&amp;2: t - |k| (which is 1/(t+|k|))
+Lower bound of 3: √3 - t
+
+We need: t - |k| &gt; √3 - t, i.e., 2t - |k| &gt; √3, i.e., 2t &gt; √3 + |k|
+
+Hmm wait, let me re-derive. The intersection of intervals 1 and 2 is (-1/(t+|k|), 1/(t+|k|)) where t = √(k²+1).
+
+Actually wait, I had: the intersection of 1&amp;2 is (-(t - |k|), t - |k|).
+And t - |k| = (t² - k²)/(t + |k|) = 1/(t + |k|). ✓
+
+Interval 3 is (√3 - t, √3 + t).
+
+For the three-way intersection to be non-empty, we need:
+-(t - |k|) &lt; √3 + t (always true)
+AND t - |k| &gt; √3 - t (this is the key condition)
+
+So: t - |k| &gt; √3 - t
+2t - |k| &gt; √3
+
+Let me check: t = √(k²+1), |k| = √(t²-1)
+2√(k²+1) - √(k²) &gt; √3 (for k ≠ 0)
+
+Let me define g(k) = 2√(k²+1) - |k| - √3
+
+g(0) = 2 - 0 - √3 = 2 - 1.732 = 0.268 &gt; 0
+g(√3/3) = 2·(2/√3) - √3/3 - √3 = 4/√3 - 2√3/3 = 4√3/3 - 2√3/3 = 2√3/3 ≈ 1.155
+
+Wait, that&#39;s not right. Let me recalculate.
+
+g(√3/3) = 2√((√3/3)²+1) - √3/3 - √3 = 2√(1/3+1) - √3/3 - √3 = 2√(4/3) - √3/3 - √3 = 2·(2/√3) - √3/3 - √3 = 4/√3 - √3/3 - √3 = 4√3/3 - √3/3 - 3√3/3 = 0
+
+So g(√3/3) = 0. The condition 2t - |k| &gt; √3 becomes equality at |k| = √3/3.
+
+Let me check if g(k) &gt; 0 for |k| &lt; √3/3 and g(k) &lt; 0 for |k| &gt; √3/3.
+
+g(k) = 2√(k²+1) - |k| - √3
+
+g&#39;(k) for k &gt; 0: 2k/√(k²+1) - 1
+
+Setting g&#39;(k) = 0: 2k/√(k²+1) = 1, so 4k² = k²+1, 3k² = 1, k = 1/√3 = √3/3.
+
+So g has a critical point at k = √3/3.
+
+g&#39;&#39;(k) for k &gt; 0: derivative of 2k/√(k²+1) - 1 = 2(√(k²+1) - k²/√(k²+1))/(k²+1) = 2(k²+1-k²)/(k²+1)^(3/2) = 2/(k²+1)^(3/2) &gt; 0
+
+So g is convex for k &gt; 0, and the critical point at k = √3/3 is a minimum.
+
+g(√3/3) = 0 (as computed above).
+
+Since g is convex and its minimum is 0 at k = √3/3, we have g(k) ≥ 0 for all k &gt; 0, with equality only at k = √3/3.
+
+Wait, that means 2t - |k| ≥ √3 for all k, with equality at |k| = √3/3.
+
+So the condition t - |k| &gt; √3 - t (i.e., 2t - |k| &gt; √3) is satisfied for all k EXCEPT |k| = √3/3, where it becomes equality.
+
+At |k| = √3/3, the three intervals just touch (the upper bound of 1&amp;2 intersection equals the lower bound of interval 3), and since the inequalities are strict, there&#39;s no valid b.
+
+For all other k values, the three-way intersection is non-empty, so there exists a valid b.
+
+Therefore, k can be any real number EXCEPT k = ±√3/3.
+
+So Option A is FALSE.
+
+**Option B: There are exactly 3 lines l satisfying s₁ = s₂ = s₃**
+
+s₁ = s₂ means d₁ = d₂ (since the chord length depends only on the distance from center for a given radius).
+d₁ = |b-k|/√(k²+1), d₂ = |b+k|/√(k²+1)
+d₁ = d₂ means |b-k| = |b+k|, which gives b = 0 or k = 0.
+
+Case 1: b = 0. Then the line is y = kx, passing through the origin.
+d₁ = |−k|/√(k²+1) = |k|/√(k²+1)
+d₂ = |k|/√(k²+1) = d₁ ✓
+d₃ = |−√3|/√(k²+1) = √3/√(k²+1)
+
+s₁ = s₃ means d₁ = d₃:
+|k|/√(k²+1) = √3/√(k²+1)
+|k| = √3
+k = ±√3
+
+Check: with k = √3, b = 0:
+d₁ = √3/√(3+1) = √3/2
+d₃ = √3/√(3+1) = √3/2
+All distances are √3/2 &lt; 1, so all intersections are valid.
+
+Similarly k = -√3, b = 0 works.
+
+Case 2: k = 0. The line is y = b (horizontal).
+d₁ = |b|/1 = |b|
+d₂ = |b|/1 = |b|
+d₃ = |b-√3|/1 = |b-√3|
+
+s₁ = s₃ means d₁ = d₃:
+|b| = |b-√3|
+b = √3/2
+
+Check: with k = 0, b = √3/2:
+d₁ = √3/2 &lt; 1 ✓
+d₂ = √3/2 &lt; 1 ✓
+d₃ = |√3/2 - √3| = √3/2 &lt; 1 ✓
+
+So we have 3 lines: y = √3x, y = -√3x, y = √3/2.
+
+Are there any other possibilities? Let me reconsider.
+
+s₁ = s₂ requires |b-k| = |b+k|.
+This means (b-k)² = (b+k)², so b²-2bk+k² = b²+2bk+k², so -2bk = 2bk, so 4bk = 0.
+Thus b = 0 or k = 0.
+
+I&#39;ve covered both cases. In case b = 0, we found k = ±√3. In case k = 0, we found b = √3/2.
+
+So there are exactly 3 lines. Option B says &quot;共有3条&quot; (there are exactly 3), which matches.
+
+Wait, but I need to verify these are all valid (the line intersects each circle at two points).
+
+For y = √3x:
+d₁ = √3/2 &lt; 1 ✓
+d₂ = √3/2 &lt; 1 ✓
+d₃ = √3/2 &lt; 1 ✓
+
+For y = -√3x: same distances. ✓
+
+For y = √3/2:
+d₁ = √3/2 &lt; 1 ✓
+d₂ = √3/2 &lt; 1 ✓
+d₃ = √3/2 &lt; 1 ✓
+
+All valid. So Option B is TRUE.
+
+**Option C: There are more than 3 lines l satisfying s₁ + s₂ + s₃ = 3**
+
+s₁ + s₂ + s₃ = 3 means the sum of the three chord lengths equals 3.
+
+Each chord length is 2√(1-dᵢ²), where dᵢ is the distance from the center to the line.
+
+s₁ + s₂ + s₃ = 2√(1-d₁²) + 2√(1-d₂²) + 2√(1-d₃²) = 3
+
+Let me think about when this can happen.
+
+Each sᵢ is in (0, 2] (since dᵢ &lt; 1 for two intersection points, and dᵢ ≥ 0).
+
+Actually, sᵢ can be 0 if dᵢ → 1 (but dᵢ must be &lt; 1 for two intersection points). And sᵢ = 2 if dᵢ = 0.
+
+So each sᵢ ∈ (0, 2], and we need their sum to be 3.
+
+Let me think about specific cases:
+
+Case: b = 0 (line through origin, y = kx)
+d₁ = d₂ = |k|/√(k²+1), d₃ = √3/√(k²+1)
+
+s₁ = s₂ = 2√(1 - k²/(k²+1)) = 2√(1/(k²+1)) = 2/√(k²+1)
+s₃ = 2√(1 - 3/(k²+1)) = 2√((k²+1-3)/(k²+1)) = 2√((k²-2)/(k²+1))
+
+For s₃ to be real, we need k² ≥ 2 (actually k² &gt; 2 for s₃ &gt; 0, since d₃ &lt; 1 requires 3/(k²+1) &lt; 1, i.e., k² &gt; 2).
+
+s₁ + s₂ + s₃ = 4/√(k²+1) + 2√((k²-2)/(k²+1)) = 3
+
+Let u = k²+1 &gt; 3 (since k² &gt; 2):
+4/√u + 2√((u-3)/u) = 3
+4/√u + 2√(u-3)/√u = 3
+(4 + 2√(u-3))/√u = 3
+4 + 2√(u-3) = 3√u
+2√(u-3) = 3√u - 4
+4(u-3) = 9u - 24√u + 16
+4u - 12 = 9u - 24√u + 16
+0 = 5u - 24√u + 28
+
+Let v = √u (v &gt; √3):
+5v² - 24v + 28 = 0
+v = (24 ± √(576-560))/10 = (24 ± 4)/10
+v = 28/10 = 14/5 or v = 20/10 = 2
+
+v = 2: u = 4, k² = 3, k = ±√3. Check: 24√u - 4 = 24·2 - 4 = 44 &gt; 0 ✓ (need 3√u - 4 &gt; 0 for the squaring to be valid)
+v = 14/5: u = 196/25, k² = 196/25 - 1 = 171/25. Check: 3√u - 4 = 42/5 - 4 = 22/5 &gt; 0 ✓
+
+So with b = 0, we get k = ±√3 and k = ±√(171/25) = ±(3√19)/5.
+
+Wait, let me double-check k = √3:
+d₁ = √3/2, s₁ = 2√(1-3/4) = 2·(1/2) = 1
+s₃ = 2√(1-3/4) = 1
+Sum = 1+1+1 = 3 ✓
+
+k = √(171/25): k² = 171/25, k²+1 = 196/25
+d₁ = √(171/25)/√(196/25) = √171/14
+s₁ = 2√(1-171/196) = 2√(25/196) = 2·5/14 = 10/14 = 5/7
+d₃ = √3/√(196/25) = √3·5/14 = 5√3/14
+s₃ = 2√(1-75/196) = 2√(121/196) = 2·11/14 = 22/14 = 11/7
+Sum = 5/7 + 5/7 + 11/7 = 21/7 = 3 ✓
+
+So with b = 0, we have 4 lines satisfying the condition. That&#39;s already more than 3!
+
+But wait, I should also check other values of b. The option says &quot;more than 3 lines&quot;, and we&#39;ve already found 4 with b = 0 alone. So Option C is TRUE.
+
+Actually wait, let me re-examine. With b = 0, I found k = ±√3 and k = ±√(171/25). But I need to verify that all these lines actually intersect all three circles at two points.
+
+For k = ±√3, b = 0: d₁ = d₂ = d₃ = √3/2 &lt; 1 ✓
+For k = ±√(171/25), b = 0:
+d₁ = d₂ = √171/14 ≈ 13.077/14 ≈ 0.934 &lt; 1 ✓
+d₃ = 5√3/14 ≈ 8.66/14 ≈ 0.619 &lt; 1 ✓
+
+All valid. So there are at least 4 lines with b = 0 satisfying s₁+s₂+s₃ = 3.
+
+Since 4 &gt; 3, Option C is TRUE.
+
+**Option D: When b = 0, the maximum value of s₁+s₂+s₃ is 2√21/3**
+
+When b = 0, the line is y = kx.
+s₁ = s₂ = 2/√(k²+1)
+s₃ = 2√((k²-2)/(k²+1)) (valid when k² &gt; 2)
+
+s₁ + s₂ + s₃ = 4/√(k²+1) + 2√((k²-2)/(k²+1))
+
+Let t = k²+1 &gt; 3:
+f(t) = 4/√t + 2√(t-3)/√t = (4 + 2√(t-3))/√t
+
+Let me find the maximum of f(t) for t &gt; 3.
+
+f(t) = (4 + 2√(t-3))/√t
+
+f&#39;(t) = [2·(1/(2√(t-3)))·√t - (4+2√(t-3))·(1/(2√t))]/t
+= [1/√(t-3)·√t - (4+2√(t-3))/(2√t)]/t
+= [√t/√(t-3) - (4+2√(t-3))/(2√t)]/t
+
+Setting the numerator to 0:
+√t/√(t-3) = (4+2√(t-3))/(2√t)
+2t = (4+2√(t-3))·√(t-3)
+2t = 4√(t-3) + 2(t-3)
+2t = 4√(t-3) + 2t - 6
+0 = 4√(t-3) - 6
+4√(t-3) = 6
+√(t-3) = 3/2
+t-3 = 9/4
+t = 21/4
+
+Check: t = 21/4 &gt; 3 ✓
+
+f(21/4) = (4 + 2·(3/2))/√(21/4) = (4+3)/(√21/2) = 7·2/√21 = 14/√21 = 14√21/21 = 2√21/3
+
+Let me verify: 14/√21 = 14√21/21 = 2·7√21/21 = 2√21/3 ✓
+
+So the maximum value is 2√21/3.
+
+But wait, I need to check the endpoints. As t → 3⁺:
+f(t) → (4 + 0)/√3 = 4/√3 = 4√3/3 ≈ 2.309
+2√21/3 ≈ 2·4.583/3 ≈ 3.056
+
+As t → ∞:
+f(t) → (4 + 2√t)/√t → 2
+
+So the maximum is indeed at t = 21/4, giving f = 2√21/3.
+
+But I should also check: is the maximum actually achieved? At t = 21/4, k² = 17/4, k = ±√17/2.
+
+d₁ = d₂ = √(17/4)/√(21/4) = √17/√21 &lt; 1 ✓
+d₃ = √3/√(21/4) = 2√3/√21 = 2/√7 &lt; 1 ✓
+
+So the maximum is achieved. Option D is TRUE.
+
+Now let me also verify that when b = 0, the constraint k² &gt; 2 is needed for s₃ to be a real chord (i.e., d₃ &lt; 1).
+
+d₃ = √3/√(k²+1) &lt; 1 ⟺ 3 &lt; k²+1 ⟺ k² &gt; 2. ✓
+
+So the domain is k² &gt; 2, i.e., t &gt; 3.
+
+Also, I should check: when b = 0, do we also need d₁ &lt; 1 and d₂ &lt; 1?
+d₁ = |k|/√(k²+1) &lt; 1 ⟺ k² &lt; k²+1, which is always true. ✓
+
+So the maximum is indeed 2√21/3.
+
+Let me also double-check: is the problem asking for the maximum over all valid k (where the line intersects all three circles)? Yes, and we&#39;ve verified the constraints are satisfied.
+
+So the answers are:
+A: FALSE
+B: TRUE
+C: TRUE
+D: TRUE
+
+The question asks which options are correct. Looking at the format, it seems like a multiple choice question where we need to select all correct options.
+
+The correct answers are B, C, D.
+
+Wait, let me re-read the problem. It says &quot;则（ ）&quot; which suggests we need to select the correct option(s). In Chinese math exams, this could be single or multiple choice.
+
+Given the options A, B, C, D, and the analysis:
+- A is false (k cannot be any real number; k = ±√3/3 are excluded)
+- B is true (exactly 3 lines)
+- C is true (more than 3 lines)
+- D is true (maximum is 2√21/3)
+
+So the answer is BCD.
+
+Hmm wait, let me reconsider option C more carefully. The problem says &quot;满足s₁+s₂+s₃=3的直线l多于3条&quot; (there are more than 3 lines l satisfying s₁+s₂+s₃=3).
+
+I found 4 lines with b = 0 alone. But I should make sure these are all distinct lines.
+- y = √3x
+- y = -√3x
+- y = (3√19/5)x
+- y = -(3√19/5)x
+
+Yes, these are 4 distinct lines. So there are indeed more than 3 lines.
+
+Actually, there could be even more lines with b ≠ 0. But 4 &gt; 3 is sufficient to confirm option C.
+
+So the final answer is BCD.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly identifies B, C, and D as the correct options. The mathematical reasoning for each option is sound: A is correctly rejected (k cannot be arbitrary), B correctly identifies 3 lines where s₁=s₂=s₃, C correctly shows more than 3 lines satisfy s₁+s₂+s₃=3, and D correctly computes the maximum as 2√21/3. The final answer \boxed{BCD} matches the expected answer and follows the required format for a multiple-choice question.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u89e3\u7b54\n\n## \u57fa\u672c\u8bbe\u7f6e\n\n\u4e09\u4e2a\u5706\u7684\u5706\u5fc3\u548c\u534a\u5f84\u5747\u4e3a1\uff1a\n- $C_1$\uff1a\u5706\u5fc3 $(-1, 0)$\n- $C_2$\uff1a\u5706\u5fc3 $(1, 0)$  \n- $C_3$\uff1a\u5706\u5fc3 $(0, \\sqrt{3})$\n\n\u76f4\u7ebf $l: kx - y + b = 0$ \u5230\u5404\u5706\u5fc3\u7684\u8ddd\u79bb\uff1a\n$$d_1 = \\frac{|b-k|}{\\sqrt{k^2+1}},\\quad d_2 = \\frac{|b+k|}{\\sqrt{k^2+1}},\\quad d_3 = \\frac{|b-\\sqrt{3}|}{\\sqrt{k^2+1}}$$\n\n\u5f26\u957f\uff1a$s_i = 2\\sqrt{1-d_i^2}$\uff0c\u8981\u6c42 $d_i &lt; 1$\uff08\u4e24\u4e2a\u4ea4\u70b9\uff09\u3002\n\n## \u9009\u9879A\uff1ak\u53ef\u4ee5\u53d6\u4efb\u610f\u5b9e\u6570 \u274c\n\n\u4e09\u4e2a\u6761\u4ef6\u7ed9\u51fa $b$ \u7684\u533a\u95f4\uff0c\u5176\u4ea4\u96c6\u975e\u7a7a\u9700\u6ee1\u8db3 $2\\sqrt{k^2+1} - |k| &gt; \\sqrt{3}$\u3002\n\n\u4ee4 $g(k) = 2\\sqrt{k^2+1} - |k| - \\sqrt{3}$\uff0c\u6c42\u5bfc\u53d1\u73b0 $|k| = \\frac{\\sqrt{3}}{3}$ \u65f6 $g$ \u53d6\u5f97\u6700\u5c0f\u503c $g = 0$\u3002\n\n\u6b64\u65f6\u4e09\u4e2a\u533a\u95f4\u4ec5\u5728\u8fb9\u754c\u76f8\u5207\uff08\u4e25\u683c\u4e0d\u7b49\u5f0f\u4e0b\u4ea4\u96c6\u4e3a\u7a7a\uff09\uff0c\u6545 $k = \\pm\\frac{\\sqrt{3}}{3}$ \u65f6\u4e0d\u5b58\u5728\u6ee1\u8db3\u6761\u4ef6\u7684 $b$\u3002**A\u9519\u8bef\u3002**\n\n## \u9009\u9879B\uff1a\u6ee1\u8db3 $s_1=s_2=s_3$ \u7684\u76f4\u7ebf\u51713\u6761 \u2705\n\n$s_1 = s_2 \\Rightarrow |b-k| = |b+k| \\Rightarrow b=0$ \u6216 $k=0$\u3002\n\n**\u5f53 $b=0$\uff1a** $d_1=d_2=\\frac{|k|}{\\sqrt{k^2+1}}$\uff0c$d_3=\\frac{\\sqrt{3}}{\\sqrt{k^2+1}}$\u3002\n\n\u4ee4 $d_1=d_3$\uff1a$|k|=\\sqrt{3}$\uff0c\u5f97 $k=\\pm\\sqrt{3}$\uff08\u4e24\u6761\u76f4\u7ebf\uff09\u3002\n\n**\u5f53 $k=0$\uff1a** $d_1=d_2=|b|$\uff0c$d_3=|b-\\sqrt{3}|$\u3002\n\n\u4ee4 $d_1=d_3$\uff1a$b=\\frac{\\sqrt{3}}{2}$\uff08\u4e00\u6761\u76f4\u7ebf\uff09\u3002\n\n\u5171 **3\u6761**\uff1a$y=\\sqrt{3}x$\uff0c$y=-\\sqrt{3}x$\uff0c$y=\\frac{\\sqrt{3}}{2}$\u3002\u9a8c\u8bc1\u5747\u6ee1\u8db3 $d_i=\\frac{\\sqrt{3}}{2}&lt;1$\u3002**B\u6b63\u786e\u3002**\n\n## \u9009\u9879C\uff1a\u6ee1\u8db3 $s_1+s_2+s_3=3$ \u7684\u76f4\u7ebf\u591a\u4e8e3\u6761 \u2705\n\n\u4ec5\u8003\u8651 $b=0$ \u7684\u60c5\u5f62\uff1a\n$$s_1+s_2+s_3 = \\frac{4}{\\sqrt{k^2+1}} + 2\\sqrt{\\frac{k^2-2}{k^2+1}} = 3$$\n\n\u4ee4 $u=k^2+1&gt;3$\uff0c\u5316\u7b80\u5f97 $5u^2 - 24u\\sqrt{u}+28u=0$\uff0c\u8bbe $v=\\sqrt{u}$\uff1a\n$$5v^2 - 24v + 28 = 0 \\implies v=2 \\text{ \u6216 } v=\\frac{14}{5}$$\n\n\u5bf9\u5e94 $k^2=3$ \u548c $k^2=\\frac{171}{25}$\uff0c\u5373 $k=\\pm\\sqrt{3},\\;\\pm\\frac{3\\sqrt{19}}{5}$\u3002\n\n\u4ec5 $b=0$ \u5c31\u6709 **4\u6761** \u76f4\u7ebf\u6ee1\u8db3\u6761\u4ef6\uff0c$4&gt;3$\u3002**C\u6b63\u786e\u3002**\n\n## \u9009\u9879D\uff1a$b=0$ \u65f6 $s_1+s_2+s_3$ \u7684\u6700\u5927\u503c\u4e3a $\\frac{2\\sqrt{21}}{3}$ \u2705\n\n\u4ee4 $t=k^2+1&gt;3$\uff1a\n$$f(t) = \\frac{4+2\\sqrt{t-3}}{\\sqrt{t}}$$\n\n\u6c42\u5bfc\u4ee4 $f&#39;(t)=0$\uff1a\n$$\\frac{\\sqrt{t}}{\\sqrt{t-3}} = \\frac{4+2\\sqrt{t-3}}{2\\sqrt{t}} \\implies 2t = 4\\sqrt{t-3}+2(t-3) \\implies \\sqrt{t-3}=\\frac{3}{2}$$\n\n\u5f97 $t = \\frac{21}{4}$\uff0c\u6b64\u65f6\uff1a\n$$f\\!\\left(\\frac{21}{4}\\right) = \\frac{4+3}{\\sqrt{21}/2} = \\frac{14}{\\sqrt{21}} = \\frac{14\\sqrt{21}}{21} = \\frac{2\\sqrt{21}}{3}$$\n\n\u9a8c\u8bc1\u8fb9\u754c\uff1a$t\\to 3^+$ \u65f6 $f\\to\\frac{4}{\\sqrt{3}}$\uff0c$t\\to\\infty$ \u65f6 $f\\to 2$\uff0c\u5747\u5c0f\u4e8e $\\frac{2\\sqrt{21}}{3}\\approx 3.056$\u3002\n\n\u6700\u5927\u503c\u4e3a $\\dfrac{2\\sqrt{21}}{3}$\u3002**D\u6b63\u786e\u3002**\n\n## \u6700\u7ec8\u7b54\u6848\n\n$$\\boxed{BCD}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\&quot;semantic_correct\&quot;: true, \&quot;format_correct\&quot;: true, \&quot;normalized_answer\&quot;: \&quot;BCD\&quot;, \&quot;reason\&quot;: \&quot;The model correctly identifies B, C, and D as the correct options. The mathematical reasoning for each option is sound: A is correctly rejected (k cannot be arbitrary), B correctly identifies 3 lines where s\u2081=s\u2082=s\u2083, C correctly shows more than 3 lines satisfy s\u2081+s\u2082+s\u2083=3, and D correctly computes the maximum as 2\u221a21/3. The final answer \\\\boxed{BCD} matches the expected answer and follows the required format for a multiple-choice question.\&quot;}&quot;,
+  &quot;reason&quot;: &quot;The model correctly identifies B, C, and D as the correct options. The mathematical reasoning for each option is sound: A is correctly rejected (k cannot be arbitrary), B correctly identifies 3 lines where s\u2081=s\u2082=s\u2083, C correctly shows more than 3 lines satisfy s\u2081+s\u2082+s\u2083=3, and D correctly computes the maximum as 2\u221a21/3. The final answer \\boxed{BCD} matches the expected answer and follows the required format for a multiple-choice question.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_011')">
+                <td>gaokao_000_011</td>
+                <td class="correct">✓</td>
+                <td>\frac{\sqrt{66}}{6}</td>
+                <td class="correct">\dfrac{\sqrt{66}}{6}</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>756</td>
+                <td>80.8</td>
+                <td>9.3</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_011" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+12. 双曲线5x^2 - 6y^2 = 1的离心率为__________.
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求双曲线 $5x^2 - 6y^2 = 1$ 的离心率
+
+## 化为标准形式
+
+将方程两边同除以 1，整理为标准形式：
+
+$$\frac{x^2}{\dfrac{1}{5}} - \frac{y^2}{\dfrac{1}{6}} = 1$$
+
+由此可得：
+$$a^2 = \frac{1}{5}, \quad b^2 = \frac{1}{6}$$
+
+## 求 $c$
+
+对于双曲线，$c^2 = a^2 + b^2$：
+
+$$c^2 = \frac{1}{5} + \frac{1}{6} = \frac{6}{30} + \frac{5}{30} = \frac{11}{30}$$
+
+## 计算离心率
+
+$$e = \frac{c}{a} = \sqrt{\frac{c^2}{a^2}} = \sqrt{\frac{\dfrac{11}{30}}{\dfrac{1}{5}}} = \sqrt{\frac{11}{30} \times \frac{5}{1}} = \sqrt{\frac{11}{6}}$$
+
+有理化分母：
+
+$$e = \frac{\sqrt{66}}{6}$$
+
+$$\boxed{\dfrac{\sqrt{66}}{6}}$$</pre>
+                        <b>Reasoning</b><pre>We need to find the eccentricity of the hyperbola 5x² - 6y² = 1.
+
+First, let me put this in standard form. The standard form of a hyperbola is:
+x²/a² - y²/b² = 1 (horizontal) or y²/a² - x²/b² = 1 (vertical)
+
+5x² - 6y² = 1
+
+Divide both sides by 1:
+x²/(1/5) - y²/(1/6) = 1
+
+So a² = 1/5, b² = 1/6
+
+For a hyperbola, c² = a² + b² = 1/5 + 1/6 = 6/30 + 5/30 = 11/30
+
+The eccentricity e = c/a
+
+e = c/a = √(c²/a²) = √((11/30)/(1/5)) = √(11/30 × 5/1) = √(55/30) = √(11/6)
+
+Let me rationalize: √(11/6) = √66/6
+
+So the eccentricity is √66/6.
+
+Let me verify:
+a² = 1/5, b² = 1/6
+c² = a² + b² = 1/5 + 1/6 = 6/30 + 5/30 = 11/30
+e = c/a = √(11/30) / √(1/5) = √(11/30) / (1/√5) = √(11/30) × √5 = √(55/30) = √(11/6)
+
+√(11/6) = √66/6
+
+Yes, the answer is √66/6.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly identifies a²=1/5, b²=1/6, computes c²=11/30, and derives e=√(11/6)=√66/6. The final answer matches the expected answer exactly and is properly placed in \boxed{}.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u53cc\u66f2\u7ebf $5x^2 - 6y^2 = 1$ \u7684\u79bb\u5fc3\u7387\n\n## \u5316\u4e3a\u6807\u51c6\u5f62\u5f0f\n\n\u5c06\u65b9\u7a0b\u4e24\u8fb9\u540c\u9664\u4ee5 1\uff0c\u6574\u7406\u4e3a\u6807\u51c6\u5f62\u5f0f\uff1a\n\n$$\\frac{x^2}{\\dfrac{1}{5}} - \\frac{y^2}{\\dfrac{1}{6}} = 1$$\n\n\u7531\u6b64\u53ef\u5f97\uff1a\n$$a^2 = \\frac{1}{5}, \\quad b^2 = \\frac{1}{6}$$\n\n## \u6c42 $c$\n\n\u5bf9\u4e8e\u53cc\u66f2\u7ebf\uff0c$c^2 = a^2 + b^2$\uff1a\n\n$$c^2 = \\frac{1}{5} + \\frac{1}{6} = \\frac{6}{30} + \\frac{5}{30} = \\frac{11}{30}$$\n\n## \u8ba1\u7b97\u79bb\u5fc3\u7387\n\n$$e = \\frac{c}{a} = \\sqrt{\\frac{c^2}{a^2}} = \\sqrt{\\frac{\\dfrac{11}{30}}{\\dfrac{1}{5}}} = \\sqrt{\\frac{11}{30} \\times \\frac{5}{1}} = \\sqrt{\\frac{11}{6}}$$\n\n\u6709\u7406\u5316\u5206\u6bcd\uff1a\n\n$$e = \\frac{\\sqrt{66}}{6}$$\n\n$$\\boxed{\\dfrac{\\sqrt{66}}{6}}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;\\\\dfrac{\\\\sqrt{66}}{6}\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly identifies a\u00b2=1/5, b\u00b2=1/6, computes c\u00b2=11/30, and derives e=\u221a(11/6)=\u221a66/6. The final answer matches the expected answer exactly and is properly placed in \\\\boxed{}.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly identifies a\u00b2=1/5, b\u00b2=1/6, computes c\u00b2=11/30, and derives e=\u221a(11/6)=\u221a66/6. The final answer matches the expected answer exactly and is properly placed in \\boxed{}.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_012')">
+                <td>gaokao_000_012</td>
+                <td class="correct">✓</td>
+                <td>\frac{3\pi}{2}, 1</td>
+                <td class="correct">\theta=\dfrac{3\pi}{2},\;f\!\left(\dfrac{2\pi}{3}\right)=1</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>3018</td>
+                <td>73.6</td>
+                <td>41.0</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_012" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+13. 已知f(x)=2sin(ax+\theta) (a \in Z, 0 \le \theta &lt; 2\pi)是偶函数，f(x)在区间(0, \frac{\pi}{2})单调递增。则\theta =__________，f(\frac{2\pi}{3}) =__________.
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解偶函数 f(x) = 2sin(ax+θ)
+
+## 第一步：利用偶函数条件
+
+f(x) 为偶函数，即 f(−x) = f(x) 对所有 x 成立：
+
+$$\sin(\theta - ax) = \sin(\theta + ax)$$
+
+利用差化积公式：
+
+$$\sin(\theta - ax) - \sin(\theta + ax) = -2\cos\theta \cdot \sin(ax) = 0$$
+
+对**所有** x 成立，必须：
+
+$$\cos\theta = 0 \implies \theta = \frac{\pi}{2} \quad \text{或} \quad \theta = \frac{3\pi}{2}$$
+
+## 第二步：利用单调递增条件
+
+**情形一：θ = π/2**
+
+$$f(x) = 2\cos(ax), \quad f&#39;(x) = -2a\sin(ax)$$
+
+无论 a 正负，当 x→0⁺ 时 sin(ax) 与 a 同号，导致 f&#39;(x) &lt; 0，**不满足递增**。❌
+
+**情形二：θ = 3π/2**
+
+$$f(x) = 2\sin\!\left(ax+\tfrac{3\pi}{2}\right) = -2\cos(ax), \quad f&#39;(x) = 2a\sin(ax)$$
+
+要求 f&#39;(x) ≥ 0 在 (0, π/2) 上恒成立：
+
+- 若 a = 1：f&#39;(x) = 2sin x &gt; 0 ✓  
+- 若 a = 2：f&#39;(x) = 4sin 2x &gt; 0（因 2x∈(0,π)）✓  
+- 若 a = −1, −2：同理可验证 ✓
+
+因此 **θ = 3π/2** 是唯一满足条件的值。
+
+## 第三步：计算 f(2π/3)
+
+由 θ = 3π/2，f(x) = −2cos(ax)，所以：
+
+$$f\!\left(\frac{2\pi}{3}\right) = -2\cos\!\left(\frac{2a\pi}{3}\right)$$
+
+验证各可能的 a 值：
+
+| a | $\cos\!\left(\dfrac{2a\pi}{3}\right)$ | $f\!\left(\dfrac{2\pi}{3}\right)$ |
+|---|---|---|
+| 1 | $\cos\dfrac{2\pi}{3} = -\dfrac{1}{2}$ | 1 |
+| 2 | $\cos\dfrac{4\pi}{3} = -\dfrac{1}{2}$ | 1 |
+| −1 | $\cos\dfrac{2\pi}{3} = -\dfrac{1}{2}$ | 1 |
+| −2 | $\cos\dfrac{4\pi}{3} = -\dfrac{1}{2}$ | 1 |
+
+**无论 a 取何值，结果均为 1。**
+
+## 最终答案
+
+$$\theta = \frac{3\pi}{2}, \quad f\!\left(\frac{2\pi}{3}\right) = 1$$
+
+$$\boxed{\theta=\dfrac{3\pi}{2},\;f\!\left(\dfrac{2\pi}{3}\right)=1}$$</pre>
+                        <b>Reasoning</b><pre>Let me work through this problem step by step.
+
+Given: f(x) = 2sin(ax + θ) where a ∈ ℤ, 0 ≤ θ &lt; 2π
+
+Conditions:
+1. f(x) is an even function
+2. f(x) is monotonically increasing on (0, π/2)
+
+**Step 1: f(x) is an even function**
+
+f(-x) = f(x) for all x
+2sin(-ax + θ) = 2sin(ax + θ)
+sin(θ - ax) = sin(ax + θ)
+
+Using the identity: sin(θ - ax) - sin(ax + θ) = 0
+
+sin(θ - ax) - sin(θ + ax) = 0
+
+Using sin A - sin B = 2cos((A+B)/2)sin((A-B)/2):
+= 2cos(θ)sin(-ax) = 0
+= -2cos(θ)sin(ax) = 0
+
+For this to hold for all x, we need cos(θ) = 0.
+
+So θ = π/2 or θ = 3π/2.
+
+**Step 2: f(x) is monotonically increasing on (0, π/2)**
+
+Case 1: θ = π/2
+f(x) = 2sin(ax + π/2) = 2cos(ax)
+
+f&#39;(x) = -2a·sin(ax)
+
+For f(x) to be monotonically increasing on (0, π/2):
+f&#39;(x) ≥ 0 for all x ∈ (0, π/2)
+-2a·sin(ax) ≥ 0 for all x ∈ (0, π/2)
+
+If a &gt; 0: we need sin(ax) ≤ 0 for all x ∈ (0, π/2)
+ax ranges over (0, aπ/2)
+For sin(ax) ≤ 0 on (0, aπ/2), we&#39;d need... actually sin(ax) starts positive for small positive ax, so this won&#39;t work for a &gt; 0.
+
+If a &lt; 0: Let a = -b where b &gt; 0.
+f(x) = 2cos(-bx) = 2cos(bx)
+f&#39;(x) = -2(-b)sin(-bx) = 2b·sin(-bx) = -2b·sin(bx)
+
+Wait, let me redo this. f(x) = 2cos(ax), f&#39;(x) = -2a sin(ax).
+
+If a &lt; 0, let a = -b, b &gt; 0.
+f&#39;(x) = -2(-b)sin(-bx) = 2b·(-sin(bx)) = -2b·sin(bx)
+
+For x ∈ (0, π/2), bx ∈ (0, bπ/2).
+We need f&#39;(x) ≥ 0, so -2b sin(bx) ≥ 0, meaning sin(bx) ≤ 0 for all x ∈ (0, π/2).
+
+But for small x &gt; 0, bx is small and positive, so sin(bx) &gt; 0. This contradicts sin(bx) ≤ 0.
+
+Hmm, so Case 1 (θ = π/2) doesn&#39;t seem to work for any nonzero a. Wait, let me reconsider.
+
+Actually, wait. Let me reconsider. If a = 0, then f(x) = 2sin(θ) which is a constant, and it&#39;s trivially even and &quot;increasing&quot; (non-decreasing). But typically in such problems, a ≠ 0.
+
+Hmm, but the problem says a ∈ ℤ, so a could be 0. But if a = 0, f(x) = 2sin(θ) is a constant, which is both even and monotonically increasing (non-decreasing). But then θ could be anything... that doesn&#39;t give a unique answer. So probably a ≠ 0.
+
+Let me reconsider. Maybe I need to think about this differently.
+
+Case 2: θ = 3π/2
+f(x) = 2sin(ax + 3π/2) = 2(-cos(ax)) = -2cos(ax)
+
+f&#39;(x) = 2a·sin(ax)
+
+For f(x) to be monotonically increasing on (0, π/2):
+f&#39;(x) ≥ 0 for all x ∈ (0, π/2)
+2a·sin(ax) ≥ 0 for all x ∈ (0, π/2)
+
+If a &gt; 0: we need sin(ax) ≥ 0 for all x ∈ (0, π/2)
+ax ranges over (0, aπ/2)
+For sin(ax) ≥ 0 on (0, aπ/2), we need aπ/2 ≤ π, i.e., a ≤ 2.
+
+So a = 1 or a = 2.
+
+If a = 1: ax ∈ (0, π/2), sin(ax) &gt; 0 ✓
+If a = 2: ax ∈ (0, π), sin(ax) &gt; 0 ✓
+
+If a &lt; 0: Let a = -b, b &gt; 0.
+f&#39;(x) = 2(-b)sin(-bx) = -2b·(-sin(bx)) = 2b·sin(bx)
+For x ∈ (0, π/2), bx ∈ (0, bπ/2)
+We need sin(bx) ≥ 0 for all x ∈ (0, π/2), so bπ/2 ≤ π, b ≤ 2.
+So b = 1 or b = 2, meaning a = -1 or a = -2.
+
+If a = -1: f(x) = -2cos(-x) = -2cos(x), f&#39;(x) = 2sin(x) &gt; 0 on (0, π/2) ✓
+If a = -2: f(x) = -2cos(-2x) = -2cos(2x), f&#39;(x) = 4sin(2x), for x ∈ (0, π/2), 2x ∈ (0, π), sin(2x) &gt; 0 ✓
+
+So we have multiple possibilities: a = 1, 2, -1, -2 with θ = 3π/2.
+
+Hmm, but the problem asks for a specific θ and f(2π/3). Let me check if the answer for f(2π/3) is the same regardless of which a we choose.
+
+With θ = 3π/2:
+f(x) = -2cos(ax)
+
+f(2π/3) = -2cos(2aπ/3)
+
+For a = 1: -2cos(2π/3) = -2·(-1/2) = 1
+For a = 2: -2cos(4π/3) = -2·(-1/2) = 1
+For a = -1: -2cos(-2π/3) = -2cos(2π/3) = -2·(-1/2) = 1
+For a = -2: -2cos(-4π/3) = -2cos(4π/3) = -2·(-1/2) = 1
+
+So f(2π/3) = 1 in all cases.
+
+Wait, but what about the case θ = π/2? Let me reconsider whether it truly doesn&#39;t work.
+
+With θ = π/2: f(x) = 2cos(ax), f&#39;(x) = -2a sin(ax)
+
+For f to be increasing on (0, π/2): -2a sin(ax) ≥ 0 for all x ∈ (0, π/2).
+
+If a &gt; 0: need sin(ax) ≤ 0 for all x ∈ (0, π/2). But for x near 0+, ax is near 0+ (positive), so sin(ax) &gt; 0. Contradiction.
+
+If a &lt; 0, a = -b, b &gt; 0: need sin(-bx) ≥ 0 for all x ∈ (0, π/2), i.e., -sin(bx) ≥ 0, i.e., sin(bx) ≤ 0 for all x ∈ (0, π/2). Again, for x near 0+, sin(bx) &gt; 0. Contradiction.
+
+So θ = π/2 doesn&#39;t work. Only θ = 3π/2 works.
+
+Actually, wait. I should double-check: is the problem asking for a unique answer? It says θ = ___ and f(2π/3) = ___. Since θ = 3π/2 is unique, and f(2π/3) = 1 is unique regardless of the specific value of a, the answers are θ = 3π/2 and f(2π/3) = 1.
+
+Let me verify with a = 1, θ = 3π/2:
+f(x) = 2sin(x + 3π/2) = -2cos(x)
+f(-x) = -2cos(-x) = -2cos(x) = f(x) ✓ (even)
+f&#39;(x) = 2sin(x) &gt; 0 on (0, π/2) ✓ (increasing)
+f(2π/3) = -2cos(2π/3) = -2(-1/2) = 1 ✓
+
+With a = 2, θ = 3π/2:
+f(x) = 2sin(2x + 3π/2) = -2cos(2x)
+f(-x) = -2cos(-2x) = -2cos(2x) = f(x) ✓ (even)
+f&#39;(x) = 4sin(2x) &gt; 0 on (0, π/2) since 2x ∈ (0, π) ✓ (increasing)
+f(2π/3) = -2cos(4π/3) = -2(-1/2) = 1 ✓
+
+Great, so the answers are θ = 3π/2 and f(2π/3) = 1.
+</pre>
+                        <b>Grader reason</b><pre>The model correctly identifies θ = 3π/2 and f(2π/3) = 1, matching the expected answer. The reasoning is sound: the even function condition yields cos(θ)=0, the monotonicity condition eliminates θ=π/2, and the computation of f(2π/3) = -2cos(2aπ/3) = 1 is verified for all valid integer values of a. The answer is properly placed in \boxed{}.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3\u5076\u51fd\u6570 f(x) = 2sin(ax+\u03b8)\n\n## \u7b2c\u4e00\u6b65\uff1a\u5229\u7528\u5076\u51fd\u6570\u6761\u4ef6\n\nf(x) \u4e3a\u5076\u51fd\u6570\uff0c\u5373 f(\u2212x) = f(x) \u5bf9\u6240\u6709 x \u6210\u7acb\uff1a\n\n$$\\sin(\\theta - ax) = \\sin(\\theta + ax)$$\n\n\u5229\u7528\u5dee\u5316\u79ef\u516c\u5f0f\uff1a\n\n$$\\sin(\\theta - ax) - \\sin(\\theta + ax) = -2\\cos\\theta \\cdot \\sin(ax) = 0$$\n\n\u5bf9**\u6240\u6709** x \u6210\u7acb\uff0c\u5fc5\u987b\uff1a\n\n$$\\cos\\theta = 0 \\implies \\theta = \\frac{\\pi}{2} \\quad \\text{\u6216} \\quad \\theta = \\frac{3\\pi}{2}$$\n\n## \u7b2c\u4e8c\u6b65\uff1a\u5229\u7528\u5355\u8c03\u9012\u589e\u6761\u4ef6\n\n**\u60c5\u5f62\u4e00\uff1a\u03b8 = \u03c0/2**\n\n$$f(x) = 2\\cos(ax), \\quad f&#39;(x) = -2a\\sin(ax)$$\n\n\u65e0\u8bba a \u6b63\u8d1f\uff0c\u5f53 x\u21920\u207a \u65f6 sin(ax) \u4e0e a \u540c\u53f7\uff0c\u5bfc\u81f4 f&#39;(x) &lt; 0\uff0c**\u4e0d\u6ee1\u8db3\u9012\u589e**\u3002\u274c\n\n**\u60c5\u5f62\u4e8c\uff1a\u03b8 = 3\u03c0/2**\n\n$$f(x) = 2\\sin\\!\\left(ax+\\tfrac{3\\pi}{2}\\right) = -2\\cos(ax), \\quad f&#39;(x) = 2a\\sin(ax)$$\n\n\u8981\u6c42 f&#39;(x) \u2265 0 \u5728 (0, \u03c0/2) \u4e0a\u6052\u6210\u7acb\uff1a\n\n- \u82e5 a = 1\uff1af&#39;(x) = 2sin x &gt; 0 \u2713  \n- \u82e5 a = 2\uff1af&#39;(x) = 4sin 2x &gt; 0\uff08\u56e0 2x\u2208(0,\u03c0)\uff09\u2713  \n- \u82e5 a = \u22121, \u22122\uff1a\u540c\u7406\u53ef\u9a8c\u8bc1 \u2713\n\n\u56e0\u6b64 **\u03b8 = 3\u03c0/2** \u662f\u552f\u4e00\u6ee1\u8db3\u6761\u4ef6\u7684\u503c\u3002\n\n## \u7b2c\u4e09\u6b65\uff1a\u8ba1\u7b97 f(2\u03c0/3)\n\n\u7531 \u03b8 = 3\u03c0/2\uff0cf(x) = \u22122cos(ax)\uff0c\u6240\u4ee5\uff1a\n\n$$f\\!\\left(\\frac{2\\pi}{3}\\right) = -2\\cos\\!\\left(\\frac{2a\\pi}{3}\\right)$$\n\n\u9a8c\u8bc1\u5404\u53ef\u80fd\u7684 a \u503c\uff1a\n\n| a | $\\cos\\!\\left(\\dfrac{2a\\pi}{3}\\right)$ | $f\\!\\left(\\dfrac{2\\pi}{3}\\right)$ |\n|---|---|---|\n| 1 | $\\cos\\dfrac{2\\pi}{3} = -\\dfrac{1}{2}$ | 1 |\n| 2 | $\\cos\\dfrac{4\\pi}{3} = -\\dfrac{1}{2}$ | 1 |\n| \u22121 | $\\cos\\dfrac{2\\pi}{3} = -\\dfrac{1}{2}$ | 1 |\n| \u22122 | $\\cos\\dfrac{4\\pi}{3} = -\\dfrac{1}{2}$ | 1 |\n\n**\u65e0\u8bba a \u53d6\u4f55\u503c\uff0c\u7ed3\u679c\u5747\u4e3a 1\u3002**\n\n## \u6700\u7ec8\u7b54\u6848\n\n$$\\theta = \\frac{3\\pi}{2}, \\quad f\\!\\left(\\frac{2\\pi}{3}\\right) = 1$$\n\n$$\\boxed{\\theta=\\dfrac{3\\pi}{2},\\;f\\!\\left(\\dfrac{2\\pi}{3}\\right)=1}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\n  \&quot;semantic_correct\&quot;: true,\n  \&quot;format_correct\&quot;: true,\n  \&quot;normalized_answer\&quot;: \&quot;\\\\theta=\\\\dfrac{3\\\\pi}{2},\\\\;f\\\\!\\\\left(\\\\dfrac{2\\\\pi}{3}\\\\right)=1\&quot;,\n  \&quot;reason\&quot;: \&quot;The model correctly identifies \u03b8 = 3\u03c0/2 and f(2\u03c0/3) = 1, matching the expected answer. The reasoning is sound: the even function condition yields cos(\u03b8)=0, the monotonicity condition eliminates \u03b8=\u03c0/2, and the computation of f(2\u03c0/3) = -2cos(2a\u03c0/3) = 1 is verified for all valid integer values of a. The answer is properly placed in \\\\boxed{}.\&quot;\n}&quot;,
+  &quot;reason&quot;: &quot;The model correctly identifies \u03b8 = 3\u03c0/2 and f(2\u03c0/3) = 1, matching the expected answer. The reasoning is sound: the even function condition yields cos(\u03b8)=0, the monotonicity condition eliminates \u03b8=\u03c0/2, and the computation of f(2\u03c0/3) = -2cos(2a\u03c0/3) = 1 is verified for all valid integer values of a. The answer is properly placed in \\boxed{}.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+<tr class="task-row" onclick="toggleDetails('gaokao_000_013')">
+                <td>gaokao_000_013</td>
+                <td class="correct">✓</td>
+                <td>\sqrt[3]{\frac{3}{2}}</td>
+                <td class="correct">\dfrac{\sqrt[3]{12}}{2}</td>
+                    <td class="correct">Y</td>
+                    <td class="correct">Y</td>
+                <td>8893</td>
+                <td>74.5</td>
+                <td>119.4</td>
+                <td>http://192.168.0.41:9292</td>
+            </tr>
+            <tr id="details-gaokao_000_013" class="details-row">
+                <td colspan="10">
+                    <div class="details-content">
+                        <b>Prompt</b><pre>请解答以下数学题。逐步推理，将最终答案放在 \boxed{} 中。
+
+14. 设实数q满足：存在数列{a_n}，使得对于任意n \in N^*，均有a_1 + a_2 + \cdots + a_{3n} = n^2 + n，且{a_n}中有某连续9项a_k, a_{k+1}, \cdots, a_{k+8}是公比为q的等比数列。则q的最大值为__________.
+
+请将答案放在 \boxed{} 中。
+</pre>
+                        <b>Response</b><pre># 求解 $q$ 的最大值
+
+## 基本关系建立
+
+由 $a_1 + a_2 + \cdots + a_{3n} = n^2 + n$，相邻两式相减得：
+
+$$a_{3n-2} + a_{3n-1} + a_{3n} = 2n \quad (\text{第 } n \text{ 组和为 } 2n)$$
+
+## 分类讨论 9 个连续项与&quot;组&quot;的对齐方式
+
+9 个连续项 $a_k, \ldots, a_{k+8}$ 的起始位置 $k \bmod 3$ 决定其与组的对齐：
+
+### 情形 1：$k = 3m+1$（9 项恰好覆盖 3 个完整组）
+
+设首项为 $A$，则三组的和分别为：
+- $A(1+q+q^2) = 2(m+1)$
+- $Aq^3(1+q+q^2) = 2(m+2)$  
+- $Aq^6(1+q+q^2) = 2(m+3)$
+
+由此需 $q^3 = \dfrac{m+2}{m+1} = \dfrac{m+3}{m+2}$，即 $(m+2)^2 = (m+1)(m+3)$，得 $4=3$，**矛盾！**
+
+### 情形 2：$k = 3m$（覆盖 4 个组的部分）
+
+9 项为 $a_{3m}, a_{3m+1}, \ldots, a_{3m+8}$，设 $a_{3m}=A$。完整组约束：
+- 组 $m+1$：$Aq(1+q+q^2) = 2(m+1)$  …… (i)
+- 组 $m+2$：$Aq^4(1+q+q^2) = 2(m+2)$  …… (ii)
+
+两式相除：$\boxed{q^3 = \dfrac{m+2}{m+1}}$（$m \geq 1$）
+
+### 情形 3：$k = 3m+2$（覆盖 4 个组的部分）
+
+9 项为 $a_{3m+2}, \ldots, a_{3m+10}$，设 $a_{3m+2}=A$。完整组约束：
+- 组 $m+2$：$Aq^2(1+q+q^2) = 2(m+2)$  …… (i)
+- 组 $m+3$：$Aq^5(1+q+q^2) = 2(m+3)$  …… (ii)
+
+两式相除：$\boxed{q^3 = \dfrac{m+3}{m+2}}$（$m \geq 0$）
+
+## 求 $q$ 的最大值
+
+由于 $m \geq 1$ 或 $m \geq 0$ 时 $\dfrac{m+2}{m+1}$、$\dfrac{m+3}{m+2}$ 均为正数，故 $q&gt;0$。
+
+- **情形 2**：$q^3 = 1+\dfrac{1}{m+1}$，$m$ 最小取 $1$，得 $q^3 = \dfrac{3}{2}$
+- **情形 3**：$q^3 = 1+\dfrac{1}{m+2}$，$m$ 最小取 $0$，得 $q^3 = \dfrac{3}{2}$
+
+两者最大值相同，均为 $q^3 = \dfrac{3}{2}$。
+
+随着 $m$ 增大，$q$ 单调递减趋近于 1，因此**最大值**在 $m$ 最小时取得。
+
+## 验证可行性（情形 3，$m=0$）
+
+取 $k=2$，9 项为 $a_2, a_3, \ldots, a_{10}$，$q^3=\frac{3}{2}$。
+- 组 2：$Aq^2(1+q+q^2)=2$，可解出 $A&gt;0$
+- 组 3：$Aq^5(1+q+q^2)=4$，与上式一致 ✓
+- 组 1：$a_1 = 2 - A(1+q)$，可取实数 ✓
+- 组 4：$a_{12} = 8 - Aq^8$，可取实数 ✓
+
+## 最终结果
+
+$$q_{\max} = \sqrt[3]{\frac{3}{2}} = \frac{\sqrt[3]{12}}{2}$$
+
+$$\boxed{\dfrac{\sqrt[3]{12}}{2}}$$</pre>
+                        <b>Reasoning</b><pre>Let me carefully work through this problem.
+
+We have a sequence $\{a_n\}$ such that for all $n \in \mathbb{N}^*$:
+$$a_1 + a_2 + \cdots + a_{3n} = n^2 + n$$
+
+This means the sum of the first $3n$ terms equals $n^2 + n$.
+
+From this, I can determine some terms:
+- For $n=1$: $a_1 + a_2 + a_3 = 1 + 1 = 2$
+- For $n=2$: $a_1 + a_2 + \cdots + a_6 = 4 + 2 = 6$
+- For $n=3$: $a_1 + a_2 + \cdots + a_9 = 9 + 3 = 12$
+- For $n=4$: $a_1 + a_2 + \cdots + a_{12} = 16 + 4 = 20$
+
+So the sum of terms $a_{3n-2}, a_{3n-1}, a_{3n}$ equals $(n^2+n) - ((n-1)^2+(n-1)) = n^2+n - (n^2-n) = 2n$.
+
+So for each $n$: $a_{3n-2} + a_{3n-1} + a_{3n} = 2n$.
+
+Now, we need that there exist some 9 consecutive terms $a_k, a_{k+1}, \ldots, a_{k+8}$ that form a geometric sequence with common ratio $q$.
+
+9 consecutive terms span indices $k, k+1, \ldots, k+8$. These 9 terms span at least 3 groups of 3 (since 9 terms cover 3 complete groups of 3 if aligned, or parts of 4 groups).
+
+Let me think about the groups. The groups are:
+- Group $m$: $a_{3m-2}, a_{3m-1}, a_{3m}$ with sum $2m$.
+
+9 consecutive terms $a_k$ through $a_{k+8}$ will span groups. Let me figure out which groups are involved.
+
+If $k = 3m+1$ (i.e., $k \equiv 1 \pmod{3}$), then the 9 terms are $a_{3m+1}, a_{3m+2}, a_{3m+3}, \ldots, a_{3m+9}$. These are groups $m+1, m+2, m+3$ completely.
+
+If $k = 3m$ (i.e., $k \equiv 0 \pmod{3}$), then the 9 terms are $a_{3m}, a_{3m+1}, \ldots, a_{3m+8}$. These span group $m$ (last term), group $m+1$ (all), group $m+2$ (all), group $m+3$ (first two terms).
+
+If $k = 3m+2$ (i.e., $k \equiv 2 \pmod{3}$), then the 9 terms are $a_{3m+2}, a_{3m+3}, \ldots, a_{3m+10}$. These span group $m+1$ (last term), group $m+2$ (all), group $m+3$ (all), group $m+4$ (first two terms).
+
+Case 1: $k = 3m+1$ (9 terms span exactly 3 complete groups)
+The 9 terms are: $a_{3m+1}, a_{3m+2}, a_{3m+3}, a_{3m+4}, a_{3m+5}, a_{3m+6}, a_{3m+7}, a_{3m+8}, a_{3m+9}$.
+
+These form groups:
+- Group $m+1$: $a_{3m+1}, a_{3m+2}, a_{3m+3}$ with sum $2(m+1)$
+- Group $m+2$: $a_{3m+4}, a_{3m+5}, a_{3m+6}$ with sum $2(m+2)$
+- Group $m+3$: $a_{3m+7}, a_{3m+8}, a_{3m+9}$ with sum $2(m+3)$
+
+If these 9 terms form a geometric sequence with ratio $q$:
+Let $a_{3m+1} = A$. Then:
+- $a_{3m+1} = A$
+- $a_{3m+2} = Aq$
+- $a_{3m+3} = Aq^2$
+- $a_{3m+4} = Aq^3$
+- $a_{3m+5} = Aq^4$
+- $a_{3m+6} = Aq^5$
+- $a_{3m+7} = Aq^6$
+- $a_{3m+8} = Aq^7$
+- $a_{3m+9} = Aq^8$
+
+Group sums:
+- Group $m+1$: $A(1+q+q^2) = 2(m+1)$
+- Group $m+2$: $Aq^3(1+q+q^2) = 2(m+2)$
+- Group $m+3$: $Aq^6(1+q+q^2) = 2(m+3)$
+
+From the first two: $q^3 = \frac{m+2}{m+1}$
+From the second and third: $q^3 = \frac{m+3}{m+2}$
+
+So we need: $\frac{m+2}{m+1} = \frac{m+3}{m+2}$
+
+$(m+2)^2 = (m+1)(m+3)$
+$m^2 + 4m + 4 = m^2 + 4m + 3$
+$4 = 3$
+
+This is a contradiction! So Case 1 is impossible.
+
+Case 2: $k = 3m$ (9 terms span parts of 4 groups)
+The 9 terms are: $a_{3m}, a_{3m+1}, a_{3m+2}, a_{3m+3}, a_{3m+4}, a_{3m+5}, a_{3m+6}, a_{3m+7}, a_{3m+8}$.
+
+Let me label them: $a_{3m} = A, a_{3m+1} = Aq, a_{3m+2} = Aq^2, a_{3m+3} = Aq^3, a_{3m+4} = Aq^4, a_{3m+5} = Aq^5, a_{3m+6} = Aq^6, a_{3m+7} = Aq^7, a_{3m+8} = Aq^8$.
+
+Now the group constraints:
+- Group $m$: $a_{3m-2} + a_{3m-1} + a_{3m} = 2m$. So $a_{3m} = A$ is the last term of group $m$. We know $a_{3m-2} + a_{3m-1} + A = 2m$, but we don&#39;t know $a_{3m-2}$ and $a_{3m-1}$ individually.
+- Group $m+1$: $a_{3m+1} + a_{3m+2} + a_{3m+3} = Aq + Aq^2 + Aq^3 = 2(m+1)$
+- Group $m+2$: $a_{3m+4} + a_{3m+5} + a_{3m+6} = Aq^4 + Aq^5 + Aq^6 = 2(m+2)$
+- Group $m+3$: $a_{3m+7} + a_{3m+8} + a_{3m+9} = 2(m+3)$. We have $a_{3m+7} = Aq^7, a_{3m+8} = Aq^8$, but $a_{3m+9}$ is not in our geometric sequence.
+
+So we get:
+- $Aq(1+q+q^2) = 2(m+1)$ ... (i)
+- $Aq^4(1+q+q^2) = 2(m+2)$ ... (ii)
+
+From (i) and (ii): $q^3 = \frac{m+2}{m+1}$ ... (iii)
+
+We also need to be able to satisfy the group $m$ constraint and the group $m+3$ constraint.
+
+For group $m$: $a_{3m-2} + a_{3m-1} + A = 2m$, so $a_{3m-2} + a_{3m-1} = 2m - A$. This just needs to be satisfiable (we can choose $a_{3m-2}$ and $a_{3m-1}$ to satisfy this).
+
+For group $m+3$: $a_{3m+7} + a_{3m+8} + a_{3m+9} = 2(m+3)$, so $Aq^7 + Aq^8 + a_{3m+9} = 2(m+3)$, which gives $a_{3m+9} = 2(m+3) - Aq^7(1+q)$. This just needs to be a valid value.
+
+Also, we need the partial sums to be consistent. Let me check: the sum $a_1 + \cdots + a_{3n} = n^2+n$ for all $n$. The terms outside the geometric sequence can be freely chosen as long as they satisfy the group sum constraints.
+
+Wait, actually I need to be more careful. The constraint is on the sum of the first $3n$ terms, not just on individual groups. But since the sum of the first $3n$ terms is $n^2+n$, and the sum of the first $3(n-1)$ terms is $(n-1)^2+(n-1)$, the difference (which is the sum of terms $a_{3n-2}+a_{3n-1}+a_{3n}$) is indeed $2n$. So the group constraints are the only constraints on the terms (each group of 3 must sum to the correct value).
+
+Actually wait, that&#39;s not quite right. The constraint is on the partial sums, which means each group independently must sum to the right value. So yes, the only constraints are the group sums.
+
+So in Case 2, the constraints from the geometric sequence are:
+- (i): $Aq(1+q+q^2) = 2(m+1)$
+- (ii): $Aq^4(1+q+q^2) = 2(m+2)$
+
+And we need:
+- $A &gt; 0$ or whatever sign works (actually $A$ can be any real number)
+- $q$ is a real number (common ratio)
+- The other group constraints can be satisfied by appropriate choices of the remaining terms.
+
+From (i) and (ii): $q^3 = \frac{m+2}{m+1}$
+
+For $q$ to be real, we need $\frac{m+2}{m+1} &gt; 0$ (since $q^3$ must be positive for real $q$... wait, no, $q^3$ can be negative for real $q$).
+
+Actually, $\frac{m+2}{m+1}$ is always positive for $m \geq 1$ (since $m \geq 1$, both $m+1$ and $m+2$ are positive). So $q^3 &gt; 0$, meaning $q &gt; 0$.
+
+From (i): $A = \frac{2(m+1)}{q(1+q+q^2)}$
+
+For $A$ to be well-defined, we need $q(1+q+q^2) \neq 0$. Since $q &gt; 0$, $q \neq 0$ and $1+q+q^2 &gt; 0$, so this is fine.
+
+Now, we also need to check that the terms in the geometric sequence are consistent with the group constraints for groups that are partially covered.
+
+For group $m$: The 9 terms include $a_{3m}$ (the last term of group $m$). We need $a_{3m-2} + a_{3m-1} + a_{3m} = 2m$. Since $a_{3m} = A$, we need $a_{3m-2} + a_{3m-1} = 2m - A$. We can always choose $a_{3m-2}$ and $a_{3m-1}$ to satisfy this (e.g., $a_{3m-2} = 2m - A, a_{3m-1} = 0$).
+
+For group $m+3$: The 9 terms include $a_{3m+7} = Aq^7$ and $a_{3m+8} = Aq^8$ (the first two terms of group $m+3$). We need $a_{3m+7} + a_{3m+8} + a_{3m+9} = 2(m+3)$, so $a_{3m+9} = 2(m+3) - Aq^7(1+q)$. This is always satisfiable.
+
+So in Case 2, the only constraint on $q$ is $q^3 = \frac{m+2}{m+1}$ for some positive integer $m \geq 1$.
+
+Since $m \geq 1$: $\frac{m+2}{m+1} = 1 + \frac{1}{m+1}$
+
+For $m = 1$: $q^3 = \frac{3}{2}$, so $q = \sqrt[3]{\frac{3}{2}}$
+For $m = 2$: $q^3 = \frac{4}{3}$, so $q = \sqrt[3]{\frac{4}{3}}$
+For $m = 3$: $q^3 = \frac{5}{4}$, so $q = \sqrt[3]{\frac{5}{4}}$
+...
+
+As $m$ increases, $q^3$ approaches 1 from above, so $q$ approaches 1 from above.
+
+The maximum value of $q$ occurs when $m$ is smallest, i.e., $m = 1$.
+
+Wait, but I need to check: as $m$ increases, $q^3 = 1 + \frac{1}{m+1}$ decreases toward 1. So $q$ decreases toward 1. The maximum $q$ is at $m=1$: $q = \sqrt[3]{3/2}$.
+
+But wait, I also need to consider Case 3.
+
+Case 3: $k = 3m+2$ (9 terms span parts of 4 groups)
+The 9 terms are: $a_{3m+2}, a_{3m+3}, a_{3m+4}, a_{3m+5}, a_{3m+6}, a_{3m+7}, a_{3m+8}, a_{3m+9}, a_{3m+10}$.
+
+Let me label: $a_{3m+2} = A, a_{3m+3} = Aq, a_{3m+4} = Aq^2, a_{3m+5} = Aq^3, a_{3m+6} = Aq^4, a_{3m+7} = Aq^5, a_{3m+8} = Aq^6, a_{3m+9} = Aq^7, a_{3m+10} = Aq^8$.
+
+Group constraints:
+- Group $m+1$: $a_{3m+1} + a_{3m+2} + a_{3m+3} = 2(m+1)$. We have $a_{3m+2} = A$ and $a_{3m+3} = Aq$, so $a_{3m+1} + A + Aq = 2(m+1)$, giving $a_{3m+1} = 2(m+1) - A(1+q)$.
+- Group $m+2$: $a_{3m+4} + a_{3m+5} + a_{3m+6} = Aq^2 + Aq^3 + Aq^4 = Aq^2(1+q+q^2) = 2(m+2)$ ... (i)
+- Group $m+3$: $a_{3m+7} + a_{3m+8} + a_{3m+9} = Aq^5 + Aq^6 + Aq^7 = Aq^5(1+q+q^2) = 2(m+3)$ ... (ii)
+- Group $m+4$: $a_{3m+10} + a_{3m+11} + a_{3m+12} = 2(m+4)$. We have $a_{3m+10} = Aq^8$, so $a_{3m+11} + a_{3m+12} = 2(m+4) - Aq^8$.
+
+From (i) and (ii): $q^3 = \frac{m+3}{m+2}$
+
+For $m \geq 1$: $q^3 = \frac{m+3}{m+2} = 1 + \frac{1}{m+2}$
+
+For $m = 1$: $q^3 = \frac{4}{3}$, $q = \sqrt[3]{4/3}$
+For $m = 2$: $q^3 = \frac{5}{4}$, $q = \sqrt[3]{5/4}$
+...
+
+Again, as $m$ increases, $q$ decreases toward 1. Maximum at $m=1$: $q = \sqrt[3]{4/3}$.
+
+Now comparing Cases 2 and 3:
+- Case 2 maximum: $q = \sqrt[3]{3/2} = \sqrt[3]{1.5}$
+- Case 3 maximum: $q = \sqrt[3]{4/3} = \sqrt[3]{1.333...}$
+
+Since $3/2 = 1.5 &gt; 4/3 \approx 1.333$, Case 2 gives a larger $q$.
+
+Wait, but I should also consider whether $q$ can be negative. Let me reconsider.
+
+Actually, for Case 2, $q^3 = \frac{m+2}{m+1} &gt; 0$, so $q &gt; 0$ (since $q$ is real).
+
+For Case 3, $q^3 = \frac{m+3}{m+2} &gt; 0$, so $q &gt; 0$.
+
+So $q$ must be positive in both cases.
+
+Hmm wait, but I need to double-check. In Case 2, from (i): $Aq(1+q+q^2) = 2(m+1)$. If $q &gt; 0$ and $A$ can be any real number, this is fine.
+
+Actually, let me reconsider. Can $q$ be negative? If $q &lt; 0$, then $q^3 &lt; 0$. But $\frac{m+2}{m+1} &gt; 0$ for all $m \geq 1$. So $q^3 &gt; 0$ is required, meaning $q &gt; 0$.
+
+So the answer is $q_{\max} = \sqrt[3]{\frac{3}{2}}$.
+
+Wait, let me double-check this. Let me verify with $m=1$ in Case 2.
+
+$m=1$: $q^3 = 3/2$, so $q = \sqrt[3]{3/2}$.
+
+The 9 terms start at $k = 3(1) = 3$, so $a_3, a_4, a_5, a_6, a_7, a_8, a_9, a_{10}, a_{11}$.
+
+Wait, let me recheck. $k = 3m = 3$ when $m=1$. The 9 terms are $a_3, a_4, \ldots, a_{11}$.
+
+Group 1: $a_1, a_2, a_3$ with sum 2.
+Group 2: $a_4, a_5, a_6$ with sum 4.
+Group 3: $a_7, a_8, a_9$ with sum 6.
+Group 4: $a_{10}, a_{11}, a_{12}$ with sum 8.
+
+The 9 terms $a_3$ through $a_{11}$:
+- $a_3 = A$ (last of group 1)
+- $a_4 = Aq, a_5 = Aq^2, a_6 = Aq^3$ (group 2)
+- $a_7 = Aq^4, a_8 = Aq^5, a_9 = Aq^6$ (group 3)
+- $a_{10} = Aq^7, a_{11} = Aq^8$ (first two of group 4)
+
+Group 2 sum: $Aq(1+q+q^2) = 4$
+Group 3 sum: $Aq^4(1+q+q^2) = 6$
+
+Ratio: $q^3 = 6/4 = 3/2$. ✓
+
+Group 1: $a_1 + a_2 + a_3 = a_1 + a_2 + A = 2$, so $a_1 + a_2 = 2 - A$. Fine.
+Group 4: $a_{10} + a_{11} + a_{12} = Aq^7 + Aq^8 + a_{12} = 8$, so $a_{12} = 8 - Aq^7(1+q)$. Fine.
+
+And $A = \frac{4}{q(1+q+q^2)}$.
+
+With $q = \sqrt[3]{3/2}$:
+$q^2 = (3/2)^{2/3}$
+$1+q+q^2 = 1 + (3/2)^{1/3} + (3/2)^{2/3}$
+$A = \frac{4}{(3/2)^{1/3}(1+(3/2)^{1/3}+(3/2)^{2/3})}$
+
+This is a valid positive real number. So the construction works.
+
+Therefore, the maximum value of $q$ is $\sqrt[3]{\frac{3}{2}}$.
+
+Let me write this as $\sqrt[3]{\frac{3}{2}}$ or equivalently $\frac{\sqrt[3]{3}}{\sqrt[3]{2}} = \frac{\sqrt[3]{3}}{\sqrt[3]{2}} \cdot \frac{\sqrt[3]{4}}{\sqrt[3]{4}} = \frac{\sqrt[3]{12}}{2}$.
+
+So $q_{\max} = \frac{\sqrt[3]{12}}{2}$.
+
+Let me verify: $\left(\frac{\sqrt[3]{12}}{2}\right)^3 = \frac{12}{8} = \frac{3}{2}$. ✓
+
+So the answer is $\boxed{\dfrac{\sqrt[3]{12}}{2}}$.
+
+Hmm wait, I want to make sure I haven&#39;t missed any edge cases. What if $k$ is such that the 9 terms don&#39;t align with the group boundaries in the ways I considered? Let me re-examine.
+
+The 9 terms $a_k, a_{k+1}, \ldots, a_{k+8}$ span indices from $k$ to $k+8$. The groups are $\{3m-2, 3m-1, 3m\}$ for $m = 1, 2, 3, \ldots$.
+
+The position of $k$ in its group determines the case:
+- If $k \equiv 1 \pmod{3}$: $k = 3m+1$ for some $m \geq 0$. If $m \geq 1$, the 9 terms span groups $m+1, m+2, m+3$ completely. If $m = 0$, $k = 1$, and the 9 terms are $a_1, \ldots, a_9$, spanning groups 1, 2, 3 completely. This is Case 1, which we showed is impossible.
+
+Actually wait, if $k = 1$ (i.e., $m=0$ in $k=3m+1$), the 9 terms are $a_1, \ldots, a_9$, spanning groups 1, 2, 3. Same as Case 1.
+
+- If $k \equiv 0 \pmod{3}$: $k = 3m$ for some $m \geq 1$ (since $k \geq 1$). This is Case 2.
+- If $k \equiv 2 \pmod{3}$: $k = 3m+2$ for some $m \geq 0$. If $m = 0$, $k = 2$, and the 9 terms are $a_2, \ldots, a_{10}$. Let me check: group 1 has $a_1, a_2, a_3$, so $a_2$ and $a_3$ are in group 1. Group 2 has $a_4, a_5, a_6$. Group 3 has $a_7, a_8, a_9$. Group 4 has $a_{10}, a_{11}, a_{12}$. So the 9 terms $a_2, \ldots, a_{10}$ span: last two of group 1, all of group 2, all of group 3, first of group 4. This is a sub-case of Case 3 (with $m=0$).
+
+Wait, in my Case 3, I had $k = 3m+2$ and the 9 terms start at $a_{3m+2}$. For $m=0$: $a_2, a_3, \ldots, a_{10}$.
+
+Group constraints for Case 3 with general $m$:
+- Group $m+1$: contains $a_{3m+1}, a_{3m+2}, a_{3m+3}$. Our sequence has $a_{3m+2} = A$ and $a_{3m+3} = Aq$.
+- Group $m+2$: contains $a_{3m+4}, a_{3m+5}, a_{3m+6}$. Our sequence has all three: $Aq^2, Aq^3, Aq^4$.
+- Group $m+3$: contains $a_{3m+7}, a_{3m+8}, a_{3m+9}$. Our sequence has all three: $Aq^5, Aq^6, Aq^7$.
+- Group $m+4$: contains $a_{3m+10}, a_{3m+11}, a_{3m+12}$. Our sequence has $a_{3m+10} = Aq^8$.
+
+This matches what I had. For $m=0$:
+- Group 1: $a_1, a_2, a_3$ → $a_2 = A, a_3 = Aq$
+- Group 2: $a_4, a_5, a_6$ → $Aq^2, Aq^3, Aq^4$
+- Group 3: $a_7, a_8, a_9$ → $Aq^5, Aq^6, Aq^7$
+- Group 4: $a_{10}, a_{11}, a_{12}$ → $a_{10} = Aq^8$
+
+Group 2 sum: $Aq^2(1+q+q^2) = 2(1) = 2$ (since $m+2 = 2$, sum is $2(m+2) = 4$... wait)
+
+Hold on. The sum of group $n$ is $2n$. Let me re-index.
+
+Group $m$: $a_{3m-2} + a_{3m-1} + a_{3m} = 2m$.
+
+For Case 3 with $k = 3m+2$:
+- Group $m+1$: $a_{3(m+1)-2} + a_{3(m+1)-1} + a_{3(m+1)} = a_{3m+1} + a_{3m+2} + a_{3m+3} = 2(m+1)$
+- Group $m+2$: $a_{3m+4} + a_{3m+5} + a_{3m+6} = 2(m+2)$
+- Group $m+3$: $a_{3m+7} + a_{3m+8} + a_{3m+9} = 2(m+3)$
+- Group $m+4$: $a_{3m+10} + a_{3m+11} + a_{3m+12} = 2(m+4)$
+
+So:
+- Group $m+2$: $Aq^2(1+q+q^2) = 2(m+2)$ ... (i)
+- Group $m+3$: $Aq^5(1+q+q^2) = 2(m+3)$ ... (ii)
+
+From (i)/(ii): $q^3 = \frac{m+3}{m+2}$
+
+For $m = 0$: $q^3 = \frac{3}{2}$, $q = \sqrt[3]{3/2}$.
+
+Oh! For $m=0$ in Case 3, we get $q^3 = 3/2$, same as Case 2 with $m=1$!
+
+So the maximum is still $\sqrt[3]{3/2}$.
+
+But wait, can $m=0$ in Case 3? $k = 3(0)+2 = 2$. The 9 terms are $a_2, a_3, \ldots, a_{10}$. We need $a_1 + a_2 + \cdots + a_{3n} = n^2+n$ for all $n$. The terms $a_1$ is in group 1 but not in the geometric sequence. We need $a_1 + a_2 + a_3 = 2$, i.e., $a_1 + A + Aq = 2$, so $a_1 = 2 - A(1+q)$. This is fine as long as we can choose $a_1$ to be a real number, which we always can.
+
+So yes, $m=0$ works in Case 3, giving $q^3 = 3/2$.
+
+Similarly, can I get an even larger $q$? Let me think about whether there are other configurations.
+
+Actually, I realize I should also check: what if the 9 terms span more than 4 groups, or fewer than 3 groups? 9 terms can span at most 4 groups (if starting at position 2 of a group) and at least 3 groups (if starting at position 1 of a group). So I&#39;ve covered all cases.
+
+Let me also verify: in Case 1, I showed it&#39;s impossible. Let me double-check.
+
+Case 1: $k = 3m+1$ (for $m \geq 0$). 9 terms: $a_{3m+1}, \ldots, a_{3m+9}$.
+- Group $m+1$: $A(1+q+q^2) = 2(m+1)$
+- Group $m+2$: $Aq^3(1+q+q^2) = 2(m+2)$
+- Group $m+3$: $Aq^6(1+q+q^2) = 2(m+3)$
+
+From first two: $q^3 = \frac{m+2}{m+1}$
+From last two: $q^3 = \frac{m+3}{m+2}$
+
+Need $\frac{m+2}{m+1} = \frac{m+3}{m+2}$, which gives $(m+2)^2 = (m+1)(m+3)$, i.e., $m^2+4m+4 = m^2+4m+3$, i.e., $4 = 3$. Contradiction. ✓
+
+So Case 1 is indeed impossible.
+
+Therefore, the maximum value of $q$ is $\sqrt[3]{\frac{3}{2}} = \frac{\sqrt[3]{12}}{2}$.
+
+Actually, let me reconsider whether I should write it as $\sqrt[3]{\frac{3}{2}}$ or $\frac{\sqrt[3]{12}}{2}$. Both are equivalent. The problem likely expects one or the other form. Let me go with $\dfrac{\sqrt[3]{12}}{2}$.
+
+Hmm, actually I want to double-check my arithmetic. $(\frac{\sqrt[3]{12}}{2})^3 = \frac{12}{8} = \frac{3}{2}$. Yes. ✓
+
+So the answer is $\boxed{\dfrac{\sqrt[3]{12}}{2}}$.
+</pre>
+                        <b>Grader reason</b><pre>The model&#39;s answer \dfrac{\sqrt[3]{12}}{2} is mathematically equivalent to the expected answer \sqrt[3]{\frac{3}{2}}, since \sqrt[3]{\frac{3}{2}} = \frac{\sqrt[3]{3}}{\sqrt[3]{2}} = \frac{\sqrt[3]{3} \cdot \sqrt[3]{4}}{\sqrt[3]{2} \cdot \sqrt[3]{4}} = \frac{\sqrt[3]{12}}{\sqrt[3]{8}} = \frac{\sqrt[3]{12}}{2}. The answer is correctly placed in \boxed{} as required.</pre>
+                        <b>Grader</b><pre>{
+  &quot;pred&quot;: &quot;# \u6c42\u89e3 $q$ \u7684\u6700\u5927\u503c\n\n## \u57fa\u672c\u5173\u7cfb\u5efa\u7acb\n\n\u7531 $a_1 + a_2 + \\cdots + a_{3n} = n^2 + n$\uff0c\u76f8\u90bb\u4e24\u5f0f\u76f8\u51cf\u5f97\uff1a\n\n$$a_{3n-2} + a_{3n-1} + a_{3n} = 2n \\quad (\\text{\u7b2c } n \\text{ \u7ec4\u548c\u4e3a } 2n)$$\n\n## \u5206\u7c7b\u8ba8\u8bba 9 \u4e2a\u8fde\u7eed\u9879\u4e0e\&quot;\u7ec4\&quot;\u7684\u5bf9\u9f50\u65b9\u5f0f\n\n9 \u4e2a\u8fde\u7eed\u9879 $a_k, \\ldots, a_{k+8}$ \u7684\u8d77\u59cb\u4f4d\u7f6e $k \\bmod 3$ \u51b3\u5b9a\u5176\u4e0e\u7ec4\u7684\u5bf9\u9f50\uff1a\n\n### \u60c5\u5f62 1\uff1a$k = 3m+1$\uff089 \u9879\u6070\u597d\u8986\u76d6 3 \u4e2a\u5b8c\u6574\u7ec4\uff09\n\n\u8bbe\u9996\u9879\u4e3a $A$\uff0c\u5219\u4e09\u7ec4\u7684\u548c\u5206\u522b\u4e3a\uff1a\n- $A(1+q+q^2) = 2(m+1)$\n- $Aq^3(1+q+q^2) = 2(m+2)$  \n- $Aq^6(1+q+q^2) = 2(m+3)$\n\n\u7531\u6b64\u9700 $q^3 = \\dfrac{m+2}{m+1} = \\dfrac{m+3}{m+2}$\uff0c\u5373 $(m+2)^2 = (m+1)(m+3)$\uff0c\u5f97 $4=3$\uff0c**\u77db\u76fe\uff01**\n\n### \u60c5\u5f62 2\uff1a$k = 3m$\uff08\u8986\u76d6 4 \u4e2a\u7ec4\u7684\u90e8\u5206\uff09\n\n9 \u9879\u4e3a $a_{3m}, a_{3m+1}, \\ldots, a_{3m+8}$\uff0c\u8bbe $a_{3m}=A$\u3002\u5b8c\u6574\u7ec4\u7ea6\u675f\uff1a\n- \u7ec4 $m+1$\uff1a$Aq(1+q+q^2) = 2(m+1)$  \u2026\u2026 (i)\n- \u7ec4 $m+2$\uff1a$Aq^4(1+q+q^2) = 2(m+2)$  \u2026\u2026 (ii)\n\n\u4e24\u5f0f\u76f8\u9664\uff1a$\\boxed{q^3 = \\dfrac{m+2}{m+1}}$\uff08$m \\geq 1$\uff09\n\n### \u60c5\u5f62 3\uff1a$k = 3m+2$\uff08\u8986\u76d6 4 \u4e2a\u7ec4\u7684\u90e8\u5206\uff09\n\n9 \u9879\u4e3a $a_{3m+2}, \\ldots, a_{3m+10}$\uff0c\u8bbe $a_{3m+2}=A$\u3002\u5b8c\u6574\u7ec4\u7ea6\u675f\uff1a\n- \u7ec4 $m+2$\uff1a$Aq^2(1+q+q^2) = 2(m+2)$  \u2026\u2026 (i)\n- \u7ec4 $m+3$\uff1a$Aq^5(1+q+q^2) = 2(m+3)$  \u2026\u2026 (ii)\n\n\u4e24\u5f0f\u76f8\u9664\uff1a$\\boxed{q^3 = \\dfrac{m+3}{m+2}}$\uff08$m \\geq 0$\uff09\n\n## \u6c42 $q$ \u7684\u6700\u5927\u503c\n\n\u7531\u4e8e $m \\geq 1$ \u6216 $m \\geq 0$ \u65f6 $\\dfrac{m+2}{m+1}$\u3001$\\dfrac{m+3}{m+2}$ \u5747\u4e3a\u6b63\u6570\uff0c\u6545 $q&gt;0$\u3002\n\n- **\u60c5\u5f62 2**\uff1a$q^3 = 1+\\dfrac{1}{m+1}$\uff0c$m$ \u6700\u5c0f\u53d6 $1$\uff0c\u5f97 $q^3 = \\dfrac{3}{2}$\n- **\u60c5\u5f62 3**\uff1a$q^3 = 1+\\dfrac{1}{m+2}$\uff0c$m$ \u6700\u5c0f\u53d6 $0$\uff0c\u5f97 $q^3 = \\dfrac{3}{2}$\n\n\u4e24\u8005\u6700\u5927\u503c\u76f8\u540c\uff0c\u5747\u4e3a $q^3 = \\dfrac{3}{2}$\u3002\n\n\u968f\u7740 $m$ \u589e\u5927\uff0c$q$ \u5355\u8c03\u9012\u51cf\u8d8b\u8fd1\u4e8e 1\uff0c\u56e0\u6b64**\u6700\u5927\u503c**\u5728 $m$ \u6700\u5c0f\u65f6\u53d6\u5f97\u3002\n\n## \u9a8c\u8bc1\u53ef\u884c\u6027\uff08\u60c5\u5f62 3\uff0c$m=0$\uff09\n\n\u53d6 $k=2$\uff0c9 \u9879\u4e3a $a_2, a_3, \\ldots, a_{10}$\uff0c$q^3=\\frac{3}{2}$\u3002\n- \u7ec4 2\uff1a$Aq^2(1+q+q^2)=2$\uff0c\u53ef\u89e3\u51fa $A&gt;0$\n- \u7ec4 3\uff1a$Aq^5(1+q+q^2)=4$\uff0c\u4e0e\u4e0a\u5f0f\u4e00\u81f4 \u2713\n- \u7ec4 1\uff1a$a_1 = 2 - A(1+q)$\uff0c\u53ef\u53d6\u5b9e\u6570 \u2713\n- \u7ec4 4\uff1a$a_{12} = 8 - Aq^8$\uff0c\u53ef\u53d6\u5b9e\u6570 \u2713\n\n## \u6700\u7ec8\u7ed3\u679c\n\n$$q_{\\max} = \\sqrt[3]{\\frac{3}{2}} = \\frac{\\sqrt[3]{12}}{2}$$\n\n$$\\boxed{\\dfrac{\\sqrt[3]{12}}{2}}$$&quot;,
+  &quot;grader_type&quot;: &quot;llm&quot;,
+  &quot;grader_response&quot;: &quot;{\&quot;semantic_correct\&quot;: true, \&quot;format_correct\&quot;: true, \&quot;normalized_answer\&quot;: \&quot;\\\\dfrac{\\\\sqrt[3]{12}}{2}\&quot;, \&quot;reason\&quot;: \&quot;The model&#39;s answer \\\\dfrac{\\\\sqrt[3]{12}}{2} is mathematically equivalent to the expected answer \\\\sqrt[3]{\\\\frac{3}{2}}, since \\\\sqrt[3]{\\\\frac{3}{2}} = \\\\frac{\\\\sqrt[3]{3}}{\\\\sqrt[3]{2}} = \\\\frac{\\\\sqrt[3]{3} \\\\cdot \\\\sqrt[3]{4}}{\\\\sqrt[3]{2} \\\\cdot \\\\sqrt[3]{4}} = \\\\frac{\\\\sqrt[3]{12}}{\\\\sqrt[3]{8}} = \\\\frac{\\\\sqrt[3]{12}}{2}. The answer is correctly placed in \\\\boxed{} as required.\&quot;}&quot;,
+  &quot;reason&quot;: &quot;The model&#39;s answer \\dfrac{\\sqrt[3]{12}}{2} is mathematically equivalent to the expected answer \\sqrt[3]{\\frac{3}{2}}, since \\sqrt[3]{\\frac{3}{2}} = \\frac{\\sqrt[3]{3}}{\\sqrt[3]{2}} = \\frac{\\sqrt[3]{3} \\cdot \\sqrt[3]{4}}{\\sqrt[3]{2} \\cdot \\sqrt[3]{4}} = \\frac{\\sqrt[3]{12}}{\\sqrt[3]{8}} = \\frac{\\sqrt[3]{12}}{2}. The answer is correctly placed in \\boxed{} as required.&quot;
+}</pre>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="tab-summary" class="tab-content">
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Problem</th>
+                    <th>Runs</th>
+                    <th>Correct</th>
+                    <th colspan="3">Tokens</th>
+                    <th colspan="3">T/s</th>
+                    <th colspan="3">Gen s</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>min</th><th>avg</th><th>max</th>
+                    <th>min</th><th>avg</th><th>max</th>
+                    <th>min</th><th>avg</th><th>max</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="summary-row">
+                    <td>000</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>197</td><td>197</td><td>197</td>
+                    <td>74.7</td><td>74.7</td><td>74.7</td>
+                    <td>2.6</td><td>2.6</td><td>2.6</td>
+                </tr>
+<tr class="summary-row">
+                    <td>001</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>346</td><td>346</td><td>346</td>
+                    <td>59.1</td><td>59.1</td><td>59.1</td>
+                    <td>5.8</td><td>5.8</td><td>5.8</td>
+                </tr>
+<tr class="summary-row">
+                    <td>002</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>807</td><td>807</td><td>807</td>
+                    <td>69.4</td><td>69.4</td><td>69.4</td>
+                    <td>11.6</td><td>11.6</td><td>11.6</td>
+                </tr>
+<tr class="summary-row">
+                    <td>003</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>457</td><td>457</td><td>457</td>
+                    <td>83.7</td><td>83.7</td><td>83.7</td>
+                    <td>5.4</td><td>5.4</td><td>5.4</td>
+                </tr>
+<tr class="summary-row">
+                    <td>004</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>1026</td><td>1026</td><td>1026</td>
+                    <td>78.0</td><td>78.0</td><td>78.0</td>
+                    <td>13.1</td><td>13.1</td><td>13.1</td>
+                </tr>
+<tr class="summary-row">
+                    <td>005</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>2235</td><td>2235</td><td>2235</td>
+                    <td>72.4</td><td>72.4</td><td>72.4</td>
+                    <td>30.9</td><td>30.9</td><td>30.9</td>
+                </tr>
+<tr class="summary-row">
+                    <td>006</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>2635</td><td>2635</td><td>2635</td>
+                    <td>73.0</td><td>73.0</td><td>73.0</td>
+                    <td>36.1</td><td>36.1</td><td>36.1</td>
+                </tr>
+<tr class="summary-row">
+                    <td>007</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>1403</td><td>1403</td><td>1403</td>
+                    <td>64.6</td><td>64.6</td><td>64.6</td>
+                    <td>21.7</td><td>21.7</td><td>21.7</td>
+                </tr>
+<tr class="summary-row">
+                    <td>008</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>949</td><td>949</td><td>949</td>
+                    <td>75.4</td><td>75.4</td><td>75.4</td>
+                    <td>12.6</td><td>12.6</td><td>12.6</td>
+                </tr>
+<tr class="summary-row">
+                    <td>009</td>
+                    <td>1</td>
+                    <td>0/1</td>
+                    <td>5386</td><td>5386</td><td>5386</td>
+                    <td>72.8</td><td>72.8</td><td>72.8</td>
+                    <td>74.0</td><td>74.0</td><td>74.0</td>
+                </tr>
+<tr class="summary-row">
+                    <td>010</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>12944</td><td>12944</td><td>12944</td>
+                    <td>69.0</td><td>69.0</td><td>69.0</td>
+                    <td>187.5</td><td>187.5</td><td>187.5</td>
+                </tr>
+<tr class="summary-row">
+                    <td>011</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>756</td><td>756</td><td>756</td>
+                    <td>80.8</td><td>80.8</td><td>80.8</td>
+                    <td>9.3</td><td>9.3</td><td>9.3</td>
+                </tr>
+<tr class="summary-row">
+                    <td>012</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>3018</td><td>3018</td><td>3018</td>
+                    <td>73.6</td><td>73.6</td><td>73.6</td>
+                    <td>41.0</td><td>41.0</td><td>41.0</td>
+                </tr>
+<tr class="summary-row">
+                    <td>013</td>
+                    <td>1</td>
+                    <td>1/1</td>
+                    <td>8893</td><td>8893</td><td>8893</td>
+                    <td>74.5</td><td>74.5</td><td>74.5</td>
+                    <td>119.4</td><td>119.4</td><td>119.4</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function toggleDetails(id) { document.getElementById('details-'+id).classList.toggle('open'); }
+        function switchTab(btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+        }
+    </script>
+</body>
+</html>

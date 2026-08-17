@@ -530,7 +530,8 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
 
     for model_cfg in models:
         model_name = model_cfg["name"]
-        model_dir = output_root / year / paper_dir / model_name
+        safe_model_name = re.sub(r'[<>:"/\\|?*]', '_', model_name)
+        model_dir = output_root / year / paper_dir / safe_model_name
         if not model_dir.exists():
             continue
 
@@ -747,6 +748,228 @@ def analyze_results(config: dict, output_root: Path, year: str, paper_dir: str,
     return all_results
 
 
+# ---------------------------------------------------------------------------
+# Reasoning effort analysis (token efficiency across :low / default / :high)
+# ---------------------------------------------------------------------------
+
+_EFFORT_RE = re.compile(r":(low|medium|high)$")
+
+
+def _effort_level(model_name: str) -> str:
+    """Extract reasoning-effort level from model name suffix (no suffix = default)."""
+    m = _EFFORT_RE.search(model_name)
+    return m.group(1) if m else "default"
+
+
+def _base_model_name(model_name: str) -> str:
+    return _EFFORT_RE.sub("", model_name)
+
+
+def _estimate_tokens(text: str) -> int:
+    """Rough token estimate: CJK char ≈ 0.65 tok, latin/digit word ≈ 1.3 tok."""
+    if not text:
+        return 0
+    cjk = sum(1 for ch in text if "\u4e00" <= ch <= "\u9fff")
+    words = len(re.findall(r"[A-Za-z0-9]+(?:[.\-/][A-Za-z0-9]+)*", text))
+    return int(cjk * 0.65 + words * 1.3)
+
+
+def _percentile(values: list[float], p: float) -> float:
+    if not values:
+        return 0.0
+    vs = sorted(values)
+    k = (len(vs) - 1) * p
+    f = int(k)
+    c = min(f + 1, len(vs) - 1)
+    return vs[f] + (vs[c] - vs[f]) * (k - f)
+
+
+def analyze_reasoning_effort(config: dict, output_root: Path, year: str,
+                             paper_dir: str, base_output: str, runs: int):
+    """Compare token output & efficiency across reasoning-effort variants of the same base model.
+
+    Prints a console summary and returns structured data (or None if no
+    multi-effort group is found).
+    """
+    groups: dict[str, list[tuple[str, str]]] = {}
+    for model_cfg in config["models"]:
+        name = model_cfg["name"]
+        groups.setdefault(_base_model_name(name), []).append((name, _effort_level(name)))
+    groups = {b: v for b, v in groups.items() if len({lvl for _, lvl in v}) >= 2}
+    if not groups:
+        return None
+
+    header = "=" * 100
+    sep = "-" * 100
+    all_data = []
+
+    for base, variants in groups.items():
+        order = {"low": 0, "default": 1, "medium": 1, "high": 2}
+        variants = sorted(variants, key=lambda nv: order.get(nv[1], 9))
+
+        levels = []
+        for name, level in variants:
+            safe = re.sub(r'[<>:"/\\|?*]', '_', name)
+            model_dir = output_root / year / paper_dir / safe
+            run_files = find_run_files(model_dir, base_output, runs)
+            if not run_files:
+                continue
+            cases = []
+            for _, fp in run_files:
+                data = load_run(fp)
+                cases.extend(data.get("task_states", {}).get("cases", {}).values())
+            if not cases:
+                continue
+
+            toks = [c.get("tokens") or 0 for c in cases]
+            reason_est = [_estimate_tokens(c.get("reasoning_content") or "") for c in cases]
+            t_gens = [c.get("t_gen_ms") or 0 for c in cases]
+            correct_flags = [bool(c.get("correct")) for c in cases]
+            n_correct = sum(correct_flags)
+            total_tok = sum(toks)
+            wasted = sum(t for t, ok in zip(toks, correct_flags) if not ok)
+
+            # per-task aggregation across runs
+            per_task: dict[str, dict] = {}
+            for c in cases:
+                tid = c["task_id"]
+                e = per_task.setdefault(tid, {"toks": [], "correct": 0})
+                e["toks"].append(c.get("tokens") or 0)
+                if c.get("correct"):
+                    e["correct"] += 1
+            n_tasks = len(per_task)
+            pass3 = sum(1 for e in per_task.values() if e["correct"] > 0)
+
+            levels.append({
+                "model": name,
+                "level": level,
+                "n_cases": len(cases),
+                "n_runs": len(run_files),
+                "tok_mean": total_tok / len(toks),
+                "tok_median": _percentile(toks, 0.5),
+                "tok_p90": _percentile(toks, 0.9),
+                "tok_total": total_tok,
+                "reason_mean": sum(reason_est) / len(reason_est),
+                "reason_ratio": sum(reason_est) / total_tok if total_tok else 0.0,
+                "t_gen_mean_s": sum(t_gens) / len(t_gens) / 1000.0,
+                "pass1": n_correct / len(cases),
+                "pass3": pass3 / n_tasks if n_tasks else 0.0,
+                "tok_per_correct": total_tok / n_correct if n_correct else float("inf"),
+                "acc_per_1k": (n_correct / len(cases)) / (total_tok / len(cases) / 1000.0) if total_tok else 0.0,
+                "wasted_tokens": wasted,
+                "per_task": per_task,
+            })
+
+        if len(levels) < 2:
+            continue
+        all_data.append({"base": base, "levels": levels})
+
+    if not all_data:
+        return None
+
+    for g in all_data:
+        print()
+        print(header)
+        print(f" Reasoning Effort Analysis — {g['base']}")
+        print(header)
+        fmt = "{:<8} {:>5} {:>9} {:>9} {:>9} {:>9} {:>9} {:>8} {:>8} {:>11} {:>9} {:>10}"
+        print(fmt.format("Level", "Runs", "Avg Tok", "Med Tok", "P90 Tok", "~Reason%",
+                         "Avg Gen s", "Pass@1", "Pass@3", "Tok/Correct", "Acc/1kTok", "Wasted Tok"))
+        print(sep)
+        for lv in g["levels"]:
+            tpc = f"{lv['tok_per_correct']:.0f}" if lv["tok_per_correct"] != float("inf") else "—"
+            print(fmt.format(
+                lv["level"], str(lv["n_runs"]),
+                f"{lv['tok_mean']:.0f}", f"{lv['tok_median']:.0f}", f"{lv['tok_p90']:.0f}",
+                f"{lv['reason_ratio']:.0%}", f"{lv['t_gen_mean_s']:.1f}",
+                f"{lv['pass1']:.0%}", f"{lv['pass3']:.0%}", tpc,
+                f"{lv['acc_per_1k']:.2f}", str(lv["wasted_tokens"]),
+            ))
+        print(sep)
+
+        # per-question table
+        task_ids = sorted({tid for lv in g["levels"] for tid in lv["per_task"]})
+        print("\nPer-question (avg tokens across runs, ✓ = correct in any run):")
+        print(f"{'Task':<14}" + "".join(f"{lv['level']:>16}" for lv in g["levels"]))
+        for tid in task_ids:
+            row = f"{tid:<14}"
+            for lv in g["levels"]:
+                e = lv["per_task"].get(tid)
+                if not e:
+                    row += f"{'—':>16}"
+                    continue
+                avg = sum(e["toks"]) / len(e["toks"])
+                mark = "✓" if e["correct"] > 0 else "✗"
+                row += f"{avg:>12.0f} {mark}"
+            print(row)
+
+    return all_data
+
+
+def append_effort_report_section(report_path: str, effort_data: list[dict]):
+    """Append a Reasoning Effort analysis section to an existing Markdown report.
+
+    If a previous section exists (from an earlier run), it is removed first
+    so re-running --report does not duplicate the section.
+    """
+    marker = "## Reasoning Effort 分析"
+    existing = ""
+    if Path(report_path).exists():
+        existing = Path(report_path).read_text(encoding="utf-8")
+        idx = existing.find(marker)
+        if idx != -1:
+            # also drop the "---" separator line right before the marker
+            pre = existing[:idx].rstrip()
+            if pre.endswith("---"):
+                pre = pre[:-3].rstrip()
+            existing = pre + "\n"
+
+    lines = []
+    def w(line=""):
+        lines.append(line)
+
+    w()
+    w("---")
+    w()
+    w("## Reasoning Effort 分析")
+    w()
+    w("> `default` = 未设置 reasoning_effort（模型默认级别）；`~Reason%` 为基于 `reasoning_content` 文本长度估算的 reasoning token 占比（中文 ≈ 0.65 token/字），其余为精确值。")
+    w()
+
+    for g in effort_data:
+        w(f"### {g['base']}")
+        w()
+        w("| Level | Runs | Avg Tok | Med Tok | P90 Tok | ~Reason% | Avg Gen s | Pass@1 | Pass@3 | Tok/Correct | Acc/1kTok | Wasted Tok |")
+        w("|:-----:|:----:|--------:|--------:|--------:|:--------:|----------:|:------:|:------:|------------:|----------:|-----------:|")
+        for lv in g["levels"]:
+            tpc = f"{lv['tok_per_correct']:.0f}" if lv["tok_per_correct"] != float("inf") else "—"
+            w(f"| {lv['level']} | {lv['n_runs']} | {lv['tok_mean']:.0f} | {lv['tok_median']:.0f} | "
+              f"{lv['tok_p90']:.0f} | {lv['reason_ratio']:.0%} | {lv['t_gen_mean_s']:.1f} | "
+              f"{lv['pass1']:.0%} | {lv['pass3']:.0%} | {tpc} | {lv['acc_per_1k']:.2f} | {lv['wasted_tokens']} |")
+        w()
+
+        task_ids = sorted({tid for lv in g["levels"] for tid in lv["per_task"]})
+        w("**逐题对比**（各 run 平均 tokens，✓ = 至少一次答对）")
+        w()
+        w("| Task | " + " | ".join(lv["level"] for lv in g["levels"]) + " |")
+        w("|------|" + ":---:|" * len(g["levels"]))
+        for tid in task_ids:
+            cells = []
+            for lv in g["levels"]:
+                e = lv["per_task"].get(tid)
+                if not e:
+                    cells.append("—")
+                    continue
+                avg = sum(e["toks"]) / len(e["toks"])
+                mark = "✓" if e["correct"] > 0 else "✗"
+                cells.append(f"{avg:.0f} {mark}")
+            w(f"| {tid} | " + " | ".join(cells) + " |")
+        w()
+
+    Path(report_path).write_text(existing + "\n".join(lines), encoding="utf-8")
+    print(f"📝 Reasoning effort section written: {report_path}")
+
+
 def generate_markdown_report(config: dict, all_results: list[dict],
                              year: str, paper_dir: str, base_output: str,
                              expected_runs: int, output_path: str):
@@ -913,7 +1136,9 @@ def main():
 
     for model_cfg in models:
         model_name = model_cfg["name"]
-        model_dir = output_root / year / paper_dir / model_name
+        # Sanitize model name for safe directory names (replace chars invalid on Windows)
+        safe_model_name = re.sub(r'[<>:"/\\|?*]', '_', model_name)
+        model_dir = output_root / year / paper_dir / safe_model_name
         model_dir.mkdir(parents=True, exist_ok=True)
 
         cfg = resolve_params(global_cfg, presets, model_cfg)
@@ -973,16 +1198,22 @@ def main():
     else:
         print("🎉 Batch evaluation complete.")
 
-    if args.analyze:
+    if args.analyze or args.report:
         all_results = analyze_results(config, output_root, year, paper_dir, base_output, runs, show_detail=args.detail)
-    elif args.report:
-        all_results = analyze_results(config, output_root, year, paper_dir, base_output, runs, show_detail=False)
     else:
         all_results = None
 
     if args.report and all_results:
         report_path = str(output_root / year / paper_dir / "report.md")
         generate_markdown_report(config, all_results, year, paper_dir, base_output, runs, report_path)
+
+    # Reasoning effort comparison (auto-detected from model name suffixes)
+    if args.analyze or args.report:
+        effort_data = analyze_reasoning_effort(config, output_root, year, paper_dir, base_output, runs)
+        if effort_data and args.report:
+            report_path = str(output_root / year / paper_dir / "report.md")
+            if Path(report_path).exists():
+                append_effort_report_section(report_path, effort_data)
 
 
 if __name__ == "__main__":

@@ -85,6 +85,8 @@ python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml
 python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report
 ```
 
+> When the config contains multiple reasoning-effort variants of the same base model (e.g. `:low` / `:high` / no suffix), `--analyze --report` automatically generates a **Reasoning Effort Analysis** (token efficiency comparison). See [Reasoning Effort Analysis](reasoning_effort.en.md).
+
 ### 3.1 YAML Configuration
 
 Edit `eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml` to configure evaluation parameters:

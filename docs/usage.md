@@ -85,6 +85,8 @@ python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml
 python run_eval.py --config eval/configs/2026_gaokao_math_ng1_qwen_vs_gemma.yaml --analyze --report
 ```
 
+> 当配置中存在同一 base 模型的多个 reasoning effort 变体（如 `:low` / `:high` / 无后缀）时，`--analyze --report` 会自动生成 **Reasoning Effort 分析**（token 效率对比），详见 [Reasoning Effort 分析](reasoning_effort.md)。
+
 ### 使用 LLM 对已有结果重新评分
 
 如果模型结果已经生成，但希望区分数学语义正确性和格式遵循率，可以使用：
