@@ -140,20 +140,19 @@
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q4_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>64%</td><td><b>93%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>4</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ3_XXS-MTP</td><td><b>81%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
-
-**小结**:
-
-- **Q8/Q6/Q4 量化几乎无损**: 未标注时三者 Pass@1 同为 83%（Q4 与 Q8/Q6 持平），标注后 Q8 与 Q6 各项指标完全一致（Pass@1=98%, Pass@3=100%）
-- **Q3 量化有明显退化**: 未标注时 Pass@1 仅 74%（比 Q8/Q6/Q4 低 9pp），标注后 Pass@1 也仅 95%（比 Q8/Q6 低 3pp）
-- **低比特量化（Q2 / IQ2_XXS）退化显著**: IQ2_XXS 未标注 Pass@1 仅 67%，All-Pass@3 仅 43%；Q2 略好于 IQ2_XXS（76% vs 67%）
-- **Ternary-Bonsai-27B-Q2 表现超出预期**: 作为二值化模型，Pass@1 达 81%，与 IQ3_XXS 持平，优于 Q2 和 IQ2_XXS
-
 <tr style="border-bottom: 1px solid #eee;"><td>5</td><td style="text-align: left;">Ternary-Bonsai-27B-Q2_g64</td><td><b>81%</b></td><td><b>86%</b></td><td>71%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>6</td><td style="text-align: left;">Qwen3.6-27b-UD-Q2_K_XL-MTP</td><td><b>76%</b></td><td><b>86%</b></td><td>64%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>7</td><td style="text-align: left;">Qwen3.6-27b-UD-Q3_K_XL-MTP</td><td><b>74%</b></td><td><b>79%</b></td><td>64%</td><td><b>79%</b></td></tr>
 <tr><td>8</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ2_XXS-MTP</td><td><b>67%</b></td><td><b>86%</b></td><td>43%</td><td><b>79%</b></td></tr>
 </tbody>
 </table>
+
+**小结**:
+
+- **Q8/Q6**: 未标注时三者 Pass@1 同为 83%（Q8/Q6 持平），标注后 Q8 与 Q6 各项指标完全一致（Pass@1=98%, Pass@3=100%）
+- **Q3 量化有明显退化**: 未标注时 Pass@1 仅 74%（比 Q8/Q6/Q4 低 9pp），标注后 Pass@1 也仅 95%（比 Q8/Q6 低 3pp）
+- **低比特量化（Q2 / IQ2_XXS）退化显著**: IQ2_XXS 未标注 Pass@1 仅 67%，All-Pass@3 仅 43%；Q2 略好于 IQ2_XXS（76% vs 67%）
+- **Ternary-Bonsai-27B-Q2 表现超出预期**: 作为二值化模型，Pass@1 达 81%，与 IQ3_XXS 持平，优于 Q2 和 IQ2_XXS
 
 ### Reasoning Effort 对比（Qwen3.8 vs Qwen3.6-27b）
 

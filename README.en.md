@@ -140,20 +140,20 @@ Adding the question type label costs only a few extra characters in the prompt, 
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q6_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>1</td><td style="text-align: left;">Qwen3.6-27b-UD-Q4_K_XL-MTP</td><td><b>83%</b></td><td><b>93%</b></td><td>64%</td><td><b>93%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>4</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ3_XXS-MTP</td><td><b>81%</b></td><td><b>93%</b></td><td>71%</td><td><b>86%</b></td></tr>
-
-**Summary**:
-
-- **Q8/Q6/Q4 quantization is nearly lossless**: Without labels, all three share Pass@1=83% (Q4 on par with Q8/Q6); with labels, Q8 and Q6 are identical (Pass@1=98%, Pass@3=100%)
-- **Q3 quantization shows noticeable degradation**: Without labels, Pass@1 drops to 74% (9pp behind Q8/Q6/Q4); with labels, Pass@1 is 95% (3pp behind Q8/Q6)
-- **Low-bit quantization (Q2 / IQ2_XXS) degrades significantly**: IQ2_XXS Pass@1 is only 67% without labels, All-Pass@3 just 43%; Q2 slightly better at 76% vs 67%
-- **Ternary-Bonsai-27B-Q2 exceeds expectations**: As a binarized model, it achieves Pass@1=81%, tying with IQ3_XXS and outperforming both Q2 and IQ2_XXS
-
 <tr style="border-bottom: 1px solid #eee;"><td>5</td><td style="text-align: left;">Ternary-Bonsai-27B-Q2_g64</td><td><b>81%</b></td><td><b>86%</b></td><td>71%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>6</td><td style="text-align: left;">Qwen3.6-27b-UD-Q2_K_XL-MTP</td><td><b>76%</b></td><td><b>86%</b></td><td>64%</td><td><b>86%</b></td></tr>
 <tr style="border-bottom: 1px solid #eee;"><td>7</td><td style="text-align: left;">Qwen3.6-27b-UD-Q3_K_XL-MTP</td><td><b>74%</b></td><td><b>79%</b></td><td>64%</td><td><b>79%</b></td></tr>
 <tr><td>8</td><td style="text-align: left;">Qwen3.6-27b-UD-IQ2_XXS-MTP</td><td><b>67%</b></td><td><b>86%</b></td><td>43%</td><td><b>79%</b></td></tr>
 </tbody>
 </table>
+
+**Summary**:
+
+- **Q8/Q6 quantization is nearly lossless**: Without labels, Q8/Q6/Q4 share Pass@1=83% ; with labels, Q8 and Q6 are identical (Pass@1=98%, Pass@3=100%)
+- **Q3 quantization shows noticeable degradation**: Without labels, Pass@1 drops to 74% (9pp behind Q8/Q6/Q4); with labels, Pass@1 is 95% (3pp behind Q8/Q6)
+- **Low-bit quantization (Q2 / IQ2_XXS) degrades significantly**: IQ2_XXS Pass@1 is only 67% without labels, All-Pass@3 just 43%; Q2 slightly better at 76% vs 67%
+- **Ternary-Bonsai-27B-Q2 exceeds expectations**: As a binarized model, it achieves Pass@1=81%, tying with IQ3_XXS and outperforming both Q2 and IQ2_XXS
+
 
 ### Reasoning Effort Comparison (Qwen3.8 vs Qwen3.6-27b)
 
